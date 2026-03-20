@@ -547,7 +547,7 @@ removeClient(id) {
   }
 };
 
-// PDF Template Moderno - COM CABEÇALHO FIXO E ESTILO ABSTRATO
+// PDF Template Moderno - VERSÃO FINAL COM TODAS AS MELHORIAS
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     const element = document.createElement('div');
@@ -570,22 +570,26 @@ const pdfTemplate = {
     let titleFontSize = 20;
     let headerFontSize = 28;
     let tableFontSize = 11;
+    let paddingSize = 30;
     
     if (totalItems > 15) {
       baseFontSize = 9;
       titleFontSize = 16;
       headerFontSize = 22;
       tableFontSize = 8;
+      paddingSize = 20;
     } else if (totalItems > 10) {
       baseFontSize = 10;
       titleFontSize = 18;
       headerFontSize = 24;
       tableFontSize = 9;
+      paddingSize = 25;
     } else if (totalItems > 5) {
       baseFontSize = 11;
       titleFontSize = 19;
       headerFontSize = 26;
       tableFontSize = 10;
+      paddingSize = 28;
     }
     
     // Agrupar serviços por categoria
@@ -599,8 +603,9 @@ const pdfTemplate = {
     
     element.innerHTML = `
       <div style="font-family: 'Inter', 'Segoe UI', sans-serif; width: 100%; background: white; color: #000000; box-sizing: border-box; font-size: ${baseFontSize}px;">
+        
         <!-- Cabeçalho com estilo abstrato e fixo no topo -->
-        <div style="background: ${primaryColor}; color: white; padding: 25px 30px; position: relative; overflow: hidden;">
+        <div style="background: ${primaryColor}; color: white; padding: ${paddingSize}px ${paddingSize}px; position: relative; overflow: hidden;">
           <!-- Elementos abstratos de fundo -->
           <div style="position: absolute; top: -50px; right: -30px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
           <div style="position: absolute; bottom: -40px; left: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
@@ -612,6 +617,7 @@ const pdfTemplate = {
             <div>
               <h1 style="font-size: ${headerFontSize}px; margin: 0; font-weight: 700; color: white; letter-spacing: -0.5px;">PROPOSTA COMERCIAL</h1>
               <p style="margin: 8px 0 0; opacity: 0.85; font-size: ${baseFontSize + 2}px; color: white;">${settings.name || 'Designer Profissional'}</p>
+              ${settings.email ? `<p style="margin: 4px 0 0; opacity: 0.7; font-size: ${baseFontSize - 1}px; color: white;">${settings.email}</p>` : ''}
             </div>
             <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); padding: 8px 18px; border-radius: 40px; text-align: center;">
               <div style="font-size: ${baseFontSize - 2}px; color: white; opacity: 0.8;">Nº</div>
@@ -621,7 +627,7 @@ const pdfTemplate = {
         </div>
         
         <!-- Informações do orçamento -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: ${paddingSize - 10}px ${paddingSize}px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
           <div>
             <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">CLIENTE</div>
             <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${budget.clientName}</div>
@@ -640,12 +646,12 @@ const pdfTemplate = {
           </div>
         </div>
         
-        <!-- Tabela de serviços - ALINHADA À ESQUERDA -->
-        <div style="padding: 20px 30px;">
+        <!-- Tabela de serviços - ALINHADA À ESQUERDA com quebra de página evitada -->
+        <div style="padding: ${paddingSize - 10}px ${paddingSize}px;">
           <h2 style="color: ${primaryColor}; margin: 0 0 15px 0; font-size: ${titleFontSize}px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 8px;">SERVIÇOS</h2>
           
           ${Object.entries(servicesByCategory).map(([category, items]) => `
-            <div style="margin-bottom: 20px;">
+            <div style="margin-bottom: 20px; page-break-inside: avoid; break-inside: avoid;">
               <h3 style="color: ${primaryDark}; margin: 0 0 10px 0; font-size: ${baseFontSize + 2}px; background: #f0f4f4; padding: 6px 12px; border-radius: 4px;">${category}</h3>
               <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
@@ -654,7 +660,7 @@ const pdfTemplate = {
                     <th style="text-align: center; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 15%;">Qtd</th>
                     <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Valor Unit.</th>
                     <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Total</th>
-                  </tr>
+                   </tr>
                 </thead>
                 <tbody>
                   ${items.map(s => {
@@ -675,9 +681,19 @@ const pdfTemplate = {
           `).join('')}
         </div>
         
+        <!-- Condições de Pagamento (se houver) -->
+        ${budget.paymentTerms ? `
+        <div style="padding: 0 ${paddingSize}px 15px;">
+          <div style="background: #e8f0fe; border-left: 4px solid ${primaryColor}; padding: 12px 15px; border-radius: 8px;">
+            <strong style="color: ${primaryColor}; font-size: ${baseFontSize - 1}px; display: block; margin-bottom: 6px;">💰 CONDIÇÕES DE PAGAMENTO:</strong>
+            <p style="margin: 0; color: #000000; font-size: ${baseFontSize - 1}px; line-height: 1.4;">${budget.paymentTerms}</p>
+          </div>
+        </div>
+        ` : ''}
+        
         <!-- Resumo financeiro -->
-        <div style="padding: 0 30px 20px;">
-          <div style="background: #f8f9fa; border-radius: 10px; padding: 15px 20px; max-width: 300px; margin-left: auto;">
+        <div style="padding: 0 ${paddingSize}px 20px;">
+          <div style="background: #f8f9fa; border-radius: 10px; padding: 15px 20px; max-width: 320px; margin-left: auto;">
             <div style="display: flex; justify-content: space-between; padding: 6px 0;">
               <span style="color: #495057; font-size: ${baseFontSize - 1}px;">Subtotal:</span>
               <span style="font-weight: 600; color: #000000; font-size: ${baseFontSize - 1}px;">R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
@@ -695,16 +711,34 @@ const pdfTemplate = {
           </div>
         </div>
         
-        <!-- Observações - CORRIGIDO PARA SEMPRE APARECER -->
-        <div style="padding: 0 30px 20px;">
+        <!-- Observações - SEMPRE VISÍVEL -->
+        <div style="padding: 0 ${paddingSize}px 20px;">
           <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 12px 15px; border-radius: 8px;">
             <strong style="color: #b45309; font-size: ${baseFontSize - 1}px; display: block; margin-bottom: 6px;">📝 OBSERVAÇÕES:</strong>
             <p style="margin: 0; color: #000000; font-size: ${baseFontSize - 1}px; line-height: 1.4;">${budget.notes || 'Nenhuma observação adicional.'}</p>
           </div>
         </div>
         
-        <!-- Rodapé -->
-        <div style="padding: 15px 30px; text-align: center; background: #f1f3f5; margin-top: 10px;">
+        <!-- Assinaturas -->
+        <div style="padding: 10px ${paddingSize}px 25px;">
+          <div style="display: flex; justify-content: space-between; gap: 40px; margin-top: 10px;">
+            <div style="flex: 1; text-align: center;">
+              <div style="border-top: 1px solid #cbd5e1; padding-top: 12px;">
+                <strong style="color: #000000; font-size: ${baseFontSize - 1}px;">Cliente</strong>
+              </div>
+              <p style="margin: 8px 0 0; font-size: ${baseFontSize - 2}px; color: #6c757d;">Data: ___/___/______</p>
+            </div>
+            <div style="flex: 1; text-align: center;">
+              <div style="border-top: 1px solid #cbd5e1; padding-top: 12px;">
+                <strong style="color: #000000; font-size: ${baseFontSize - 1}px;">${settings.name || 'Designer'}</strong>
+              </div>
+              <p style="margin: 8px 0 0; font-size: ${baseFontSize - 2}px; color: #6c757d;">Data: ___/___/______</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- RODAPÉ FIXO COM NÚMERO DE PÁGINAS -->
+        <div style="padding: 12px ${paddingSize}px; text-align: center; background: #f1f3f5; margin-top: 10px;">
           <p style="margin: 0; font-size: ${baseFontSize - 3}px; color: #495057;">
             Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
           </p>
@@ -714,13 +748,17 @@ const pdfTemplate = {
           <p style="margin: 5px 0 0; font-size: ${baseFontSize - 2}px; color: ${primaryColor};">
             Designer Budget Pro • Sistema Profissional de Orçamentos
           </p>
+          <!-- Número de páginas - será preenchido pelo html2pdf -->
+          <div style="margin-top: 8px; font-size: ${baseFontSize - 4}px; color: #6c757d;">
+            <span class="pageNumber"></span> de <span class="totalPages"></span>
+          </div>
         </div>
       </div>
     `;
     
-    // Configurações do PDF
+    // Configurações do PDF - com margens para impressão
     const opt = {
-      margin: [3, 3, 3, 3],
+      margin: [5, 5, 5, 5], // 5mm em todos os lados para impressão
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
