@@ -2404,7 +2404,8 @@ renderServicesList() {
     this.displayFilteredServices();
     this.updateBudgetTotal();
     this.switchPaletteMode('generator');
-    this.openModal('budget-modal');
+      console.log('Abrindo modal de orçamento...');
+  this.openModal('budget-modal');
   },
   
   editBudget(id) {
