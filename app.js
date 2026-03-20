@@ -1725,36 +1725,43 @@ syncCalculatorWithSettings() {
         
         this.charts = this.charts || {};
         this.charts.status = new Chart(statusCtx, {
-          type: 'doughnut',
-          data: {
-            labels: Object.keys(statusCounts),
-            datasets: [{
-              data: Object.values(statusCounts),
-              backgroundColor: [
-                '#FFA500',
-                '#218040',
-                '#c91530',
-                '#a84d2f',
-                '#2d8a8a',
-                '#1a6b4d'
-              ],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              legend: {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys(statusCounts),
+        datasets: [{
+            data: Object.values(statusCounts),
+            backgroundColor: ['#FFA500', '#218040', '#c91530', '#a84d2f', '#2d8a8a', '#1a6b4d'],
+            borderWidth: 0,
+            cutout: '60%'  // Adiciona um buraco no meio (opcional)
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,  // ← MANTENHA TRUE
+        plugins: {
+            legend: {
                 position: 'bottom',
                 labels: {
-                  color: document.documentElement.classList.contains('dark') ? '#fff' : '#333',
-                  font: { size: 11 }
+                    color: document.documentElement.classList.contains('dark') ? '#fff' : '#333',
+                    font: { size: 10 },  // Fonte menor para mobile
+                    boxWidth: 10,
+                    padding: 8
                 }
-              }
+            },
+            tooltip: {
+                bodyFont: { size: 12 }
             }
-          }
-        });
+        },
+        layout: {
+            padding: {
+                top: 10,
+                bottom: 10,
+                left: 5,
+                right: 5
+            }
+        }
+    }
+});
         
         // Gráfico de Receita Mensal
         const revenueCtx = revenueCanvas.getContext('2d');
