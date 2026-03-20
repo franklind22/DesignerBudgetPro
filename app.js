@@ -547,7 +547,7 @@ removeClient(id) {
   }
 };
 
-// PDF Template Moderno - COM AJUSTE DINÂMICO DE FONTE
+// PDF Template Moderno - COM CABEÇALHO FIXO E ESTILO ABSTRATO
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     const element = document.createElement('div');
@@ -563,16 +563,14 @@ const pdfTemplate = {
     const primaryDark = getComputedStyle(document.documentElement).getPropertyValue('--primary-dark').trim() || '#1e5f5f';
     
     // Calcular quantidade total de serviços
-    const totalServices = budget.services?.reduce((sum, s) => sum + s.qty, 0) || 0;
     const totalItems = budget.services?.length || 0;
     
     // Definir tamanhos de fonte baseado na quantidade de serviços
-    let baseFontSize = 12;      // tamanho base para textos normais
-    let titleFontSize = 20;     // tamanho para títulos
-    let headerFontSize = 28;    // tamanho para cabeçalho
-    let tableFontSize = 12;     // tamanho para tabela
+    let baseFontSize = 12;
+    let titleFontSize = 20;
+    let headerFontSize = 28;
+    let tableFontSize = 11;
     
-    // Ajustar fontes conforme a quantidade de serviços
     if (totalItems > 15) {
       baseFontSize = 9;
       titleFontSize = 16;
@@ -601,54 +599,61 @@ const pdfTemplate = {
     
     element.innerHTML = `
       <div style="font-family: 'Inter', 'Segoe UI', sans-serif; width: 100%; background: white; color: #000000; box-sizing: border-box; font-size: ${baseFontSize}px;">
-        <!-- Cabeçalho com cores do tema -->
-        <div style="background: ${primaryColor}; color: white; padding: 20px 25px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <!-- Cabeçalho com estilo abstrato e fixo no topo -->
+        <div style="background: ${primaryColor}; color: white; padding: 25px 30px; position: relative; overflow: hidden;">
+          <!-- Elementos abstratos de fundo -->
+          <div style="position: absolute; top: -50px; right: -30px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+          <div style="position: absolute; bottom: -40px; left: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+          <div style="position: absolute; top: 50%; left: 20%; width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 50%; transform: translateY(-50%);"></div>
+          <div style="position: absolute; bottom: 10px; right: 15%; width: 60px; height: 60px; background: rgba(255,255,255,0.03); border-radius: 50%;"></div>
+          
+          <!-- Conteúdo do cabeçalho -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; position: relative; z-index: 2;">
             <div>
-              <h1 style="font-size: ${headerFontSize}px; margin: 0; font-weight: 700; color: white;">PROPOSTA COMERCIAL</h1>
-              <p style="margin: 5px 0 0; opacity: 0.9; font-size: ${baseFontSize + 2}px; color: white;">${settings.name || 'Designer Profissional'}</p>
+              <h1 style="font-size: ${headerFontSize}px; margin: 0; font-weight: 700; color: white; letter-spacing: -0.5px;">PROPOSTA COMERCIAL</h1>
+              <p style="margin: 8px 0 0; opacity: 0.85; font-size: ${baseFontSize + 2}px; color: white;">${settings.name || 'Designer Profissional'}</p>
             </div>
-            <div style="background: rgba(255,255,255,0.2); padding: 6px 15px; border-radius: 40px; text-align: center;">
-              <div style="font-size: ${baseFontSize - 2}px; color: white;">Nº</div>
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); padding: 8px 18px; border-radius: 40px; text-align: center;">
+              <div style="font-size: ${baseFontSize - 2}px; color: white; opacity: 0.8;">Nº</div>
               <div style="font-size: ${baseFontSize + 4}px; font-weight: bold; color: white;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
             </div>
           </div>
         </div>
         
         <!-- Informações do orçamento -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 15px 25px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 20px 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
           <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 3px;">CLIENTE</div>
+            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">CLIENTE</div>
             <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${budget.clientName}</div>
           </div>
           <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 3px;">DATA</div>
+            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">DATA</div>
             <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
           </div>
           <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 3px;">VALIDADE</div>
+            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">VALIDADE</div>
             <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${validityDate.toLocaleDateString('pt-BR')}</div>
           </div>
           <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 3px;">PROJETO</div>
+            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">PROJETO</div>
             <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${budget.projectName || 'Não especificado'}</div>
           </div>
         </div>
         
-        <!-- Tabela de serviços -->
-        <div style="padding: 15px 25px;">
-          <h2 style="color: ${primaryColor}; margin: 0 0 12px 0; font-size: ${titleFontSize}px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 6px;">SERVIÇOS</h2>
+        <!-- Tabela de serviços - ALINHADA À ESQUERDA -->
+        <div style="padding: 20px 30px;">
+          <h2 style="color: ${primaryColor}; margin: 0 0 15px 0; font-size: ${titleFontSize}px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 8px;">SERVIÇOS</h2>
           
           ${Object.entries(servicesByCategory).map(([category, items]) => `
-            <div style="margin-bottom: 15px;">
-              <h3 style="color: ${primaryDark}; margin: 0 0 8px 0; font-size: ${baseFontSize + 2}px; background: #f0f4f4; padding: 5px 10px; border-radius: 4px;">${category}</h3>
-              <table style="width: 100%; border-collapse: collapse;">
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: ${primaryDark}; margin: 0 0 10px 0; font-size: ${baseFontSize + 2}px; background: #f0f4f4; padding: 6px 12px; border-radius: 4px;">${category}</h3>
+              <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
                   <tr style="border-bottom: 1px solid #dee2e6;">
-                    <th style="text-align: left; padding: 6px 5px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px;">Serviço</th>
-                    <th style="text-align: center; padding: 6px 5px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 50px;">Qtd</th>
-                    <th style="text-align: right; padding: 6px 5px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 90px;">Valor Unit.</th>
-                    <th style="text-align: right; padding: 6px 5px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 90px;">Total</th>
+                    <th style="text-align: left; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 50%;">Serviço</th>
+                    <th style="text-align: center; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 15%;">Qtd</th>
+                    <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Valor Unit.</th>
+                    <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -657,10 +662,10 @@ const pdfTemplate = {
                     const total = price * s.qty;
                     return `
                       <tr style="border-bottom: 1px solid #f1f3f5;">
-                        <td style="padding: 6px 5px; color: #000000; font-size: ${tableFontSize}px;">${s.name}</td>
-                        <td style="text-align: center; padding: 6px 5px; color: #000000; font-size: ${tableFontSize}px;">${s.qty}</td>
-                        <td style="text-align: right; padding: 6px 5px; color: #000000; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
-                        <td style="text-align: right; padding: 6px 5px; font-weight: 500; color: #000000; font-size: ${tableFontSize}px;">R$ ${total.toFixed(2).replace('.', ',')}</td>
+                        <td style="text-align: left; padding: 8px 8px; color: #000000; font-size: ${tableFontSize}px;">${s.name}</td>
+                        <td style="text-align: center; padding: 8px 8px; color: #000000; font-size: ${tableFontSize}px;">${s.qty}</td>
+                        <td style="text-align: right; padding: 8px 8px; color: #000000; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                        <td style="text-align: right; padding: 8px 8px; font-weight: 500; color: #000000; font-size: ${tableFontSize}px;">R$ ${total.toFixed(2).replace('.', ',')}</td>
                       </tr>
                     `;
                   }).join('')}
@@ -671,44 +676,42 @@ const pdfTemplate = {
         </div>
         
         <!-- Resumo financeiro -->
-        <div style="padding: 0 25px 15px;">
-          <div style="background: #f8f9fa; border-radius: 8px; padding: 12px; max-width: 280px; margin-left: auto;">
-            <div style="display: flex; justify-content: space-between; padding: 4px 0;">
+        <div style="padding: 0 30px 20px;">
+          <div style="background: #f8f9fa; border-radius: 10px; padding: 15px 20px; max-width: 300px; margin-left: auto;">
+            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
               <span style="color: #495057; font-size: ${baseFontSize - 1}px;">Subtotal:</span>
               <span style="font-weight: 600; color: #000000; font-size: ${baseFontSize - 1}px;">R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
             </div>
             ${budget.hoursWorked > 0 ? `
-            <div style="display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px solid #e9ecef;">
+            <div style="display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid #e9ecef;">
               <span style="color: #495057; font-size: ${baseFontSize - 1}px;">Horas (${budget.hoursWorked}h):</span>
               <span style="font-weight: 600; color: #000000; font-size: ${baseFontSize - 1}px;">R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</span>
             </div>
             ` : ''}
-            <div style="display: flex; justify-content: space-between; padding: 8px 0 4px; border-top: 2px solid ${primaryColor}; margin-top: 4px;">
+            <div style="display: flex; justify-content: space-between; padding: 10px 0 5px; border-top: 2px solid ${primaryColor}; margin-top: 5px;">
               <span style="font-size: ${baseFontSize + 4}px; font-weight: 700; color: ${primaryColor};">TOTAL:</span>
               <span style="font-size: ${baseFontSize + 4}px; font-weight: 700; color: ${primaryColor};">R$ ${budget.total.toFixed(2).replace('.', ',')}</span>
             </div>
           </div>
         </div>
         
-        <!-- Observações -->
-        ${budget.notes ? `
-        <div style="padding: 0 25px 12px;">
-          <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 10px; border-radius: 6px;">
-            <strong style="color: #b45309; font-size: ${baseFontSize - 1}px;">📝 OBSERVAÇÕES:</strong>
-            <p style="margin: 4px 0 0; color: #000000; font-size: ${baseFontSize - 1}px;">${budget.notes}</p>
+        <!-- Observações - CORRIGIDO PARA SEMPRE APARECER -->
+        <div style="padding: 0 30px 20px;">
+          <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 12px 15px; border-radius: 8px;">
+            <strong style="color: #b45309; font-size: ${baseFontSize - 1}px; display: block; margin-bottom: 6px;">📝 OBSERVAÇÕES:</strong>
+            <p style="margin: 0; color: #000000; font-size: ${baseFontSize - 1}px; line-height: 1.4;">${budget.notes || 'Nenhuma observação adicional.'}</p>
           </div>
         </div>
-        ` : ''}
         
         <!-- Rodapé -->
-        <div style="padding: 12px 25px; text-align: center; background: #f1f3f5; margin-top: 12px;">
+        <div style="padding: 15px 30px; text-align: center; background: #f1f3f5; margin-top: 10px;">
           <p style="margin: 0; font-size: ${baseFontSize - 3}px; color: #495057;">
             Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
           </p>
-          <p style="margin: 4px 0 0; font-size: ${baseFontSize - 4}px; color: #6c757d;">
+          <p style="margin: 5px 0 0; font-size: ${baseFontSize - 4}px; color: #6c757d;">
             Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
           </p>
-          <p style="margin: 4px 0 0; font-size: ${baseFontSize - 2}px; color: ${primaryColor};">
+          <p style="margin: 5px 0 0; font-size: ${baseFontSize - 2}px; color: ${primaryColor};">
             Designer Budget Pro • Sistema Profissional de Orçamentos
           </p>
         </div>
