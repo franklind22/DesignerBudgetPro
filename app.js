@@ -588,7 +588,7 @@ const pdfTemplate = {
                         <div>
                             <h1 style="margin: 0; font-size: 26px; letter-spacing: 1px;">PROPOSTA COMERCIAL</h1>
                             <p style="margin: 8px 0 0; font-size: 16px;">${settings.name || 'Profissional'}</p>
-                            ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px; opacity: 0.9;">${settings.email}</p>` : ''}
+                            ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px; opacity: 1;">${settings.email}</p>` : ''}
                         </div>
                         <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; text-align: center;">
                             <div style="font-size: 10px; text-transform: uppercase;">Nº Documento</div>
@@ -597,7 +597,7 @@ const pdfTemplate = {
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 10px; padding: 20px; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                <div style="display: flex; gap: 10px; padding: 20px; background: #ffffff; border-bottom: 1px solid #000;">
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">CLIENTE</small><br><strong>${budget.clientName}</strong></div>
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">DATA EMISSÃO</small><br><strong>${new Date(budget.date).toLocaleDateString('pt-BR')}</strong></div>
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">VALIDADE</small><br><strong>${validityDate.toLocaleDateString('pt-BR')}</strong></div>
