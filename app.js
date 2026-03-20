@@ -547,10 +547,10 @@ removeClient(id) {
   }
 };
 
-// PDF Template - VERSÃO PÁGINA ÚNICA DINÂMICA (CORRIGIDA)
+// PDF Template - VERSÃO FINAL (FUNDO BRANCO, TEXTO PRETO, COR DO TEMA APENAS EM DESTAQUES)
 const pdfTemplate = {
     gerarOrcamentoPDF(budget, settings) {
-        // 1. Pegar cores do tema ou usar fallbacks
+        // 1. Pegar cores do tema
         const rootStyles = getComputedStyle(document.documentElement);
         const primaryColor = rootStyles.getPropertyValue('--primary').trim() || '#2d8a8a';
         const primaryDark = rootStyles.getPropertyValue('--primary-dark').trim() || '#1e5f5f';
@@ -568,154 +568,174 @@ const pdfTemplate = {
             servicesByCategory[s.category].push(s);
         });
         
-        // 4. Criar container invisível para renderização
+        // 4. Criar container invisível
         const container = document.createElement('div');
         container.style.position = 'absolute';
         container.style.left = '-9999px';
         container.style.top = '-9999px';
         container.style.width = '800px';
-        container.style.backgroundColor = 'white';
+        container.style.backgroundColor = '#FFFFFF';
         container.style.fontFamily = "'Inter', 'Segoe UI', Arial, sans-serif";
-        container.style.padding = '0';
-        container.style.margin = '0';
         
-        // 5. Construir o HTML do PDF
+        // 5. Construir HTML - FUNDO BRANCO, TEXTO PRETO
         let html = `
-            <div style="padding: 25px; background: rgb(255, 255, 255);">
+            <div style="padding: 30px; background: #FFFFFF; color: #000000;">
                 
-                <!-- CABEÇALHO -->
-                <div style="background: ${primaryColor}; color: white; padding: 30px; border-radius: 12px 12px 0 0;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                <!-- CABEÇALHO - AGORA BRANCO COM BORDA COLORIDA -->
+                <div style="border-bottom: 4px solid ${primaryColor}; padding-bottom: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                         <div>
-                            <h1 style="margin: 0; font-size: 26px; letter-spacing: 1px;">PROPOSTA COMERCIAL</h1>
-                            <p style="margin: 8px 0 0; font-size: 16px;">${settings.name || 'Profissional'}</p>
-                            ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px; opacity: 1;">${settings.email}</p>` : ''}
+                            <h1 style="margin: 0; font-size: 28px; color: #000000; font-weight: 700;">PROPOSTA COMERCIAL</h1>
+                            <p style="margin: 8px 0 0; font-size: 16px; color: #333333;">${settings.name || 'Designer Profissional'}</p>
+                            ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px; color: #666666;">${settings.email}</p>` : ''}
                         </div>
-                        <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 10px; text-transform: uppercase;">Nº Documento</div>
-                            <div style="font-size: 18px; font-weight: bold;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 11px; color: #666666;">Nº DOCUMENTO</div>
+                            <div style="font-size: 22px; font-weight: bold; color: ${primaryColor};">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- INFORMAÇÕES -->
-                <div style="display: flex; gap: 10px; padding: 20px; background: #f0f0f0; border-bottom: 1px solid #ddd;">
-                    <div style="flex: 1;"><small style="color: #000; font-size: 10px;">CLIENTE</small><br><strong>${budget.clientName}</strong></div>
-                    <div style="flex: 1;"><small style="color: #000; font-size: 10px;">DATA EMISSÃO</small><br><strong>${new Date(budget.date).toLocaleDateString('pt-BR')}</strong></div>
-                    <div style="flex: 1;"><small style="color: #000; font-size: 10px;">VALIDADE</small><br><strong>${validityDate.toLocaleDateString('pt-BR')}</strong></div>
-                    <div style="flex: 2;"><small style="color: #000; font-size: 10px;">PROJETO</small><br><strong>${budget.projectName || 'Geral'}</strong></div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px 0; background: #F8F9FA; border-radius: 8px; margin-bottom: 25px;">
+                    <div style="padding: 0 15px;">
+                        <div style="font-size: 11px; color: #666666; margin-bottom: 4px;">CLIENTE</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #000000;">${budget.clientName}</div>
+                    </div>
+                    <div style="padding: 0 15px;">
+                        <div style="font-size: 11px; color: #666666; margin-bottom: 4px;">DATA</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #000000;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div style="padding: 0 15px;">
+                        <div style="font-size: 11px; color: #666666; margin-bottom: 4px;">VALIDADE</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #000000;">${validityDate.toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <div style="padding: 0 15px;">
+                        <div style="font-size: 11px; color: #666666; margin-bottom: 4px;">PROJETO</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #000000;">${budget.projectName || 'Não especificado'}</div>
+                    </div>
                 </div>
                 
                 <!-- SERVIÇOS -->
-                <div style="padding: 20px;">
-                    <h2 style="color: ${primaryColor}; font-size: 18px; border-left: 4px solid ${primaryColor}; padding-left: 10px; margin-bottom: 20px;">DETALHAMENTO DOS SERVIÇOS</h2>
+                <div style="margin-top: 20px;">
+                    <h2 style="color: ${primaryColor}; font-size: 20px; margin: 0 0 20px 0; border-left: 4px solid ${primaryColor}; padding-left: 12px;">SERVIÇOS</h2>
         `;
 
         for (const [category, items] of Object.entries(servicesByCategory)) {
             html += `
-                <div style="margin-bottom: 25px;">
-                    <div style="background: ${primaryDark}10; padding: 6px 12px; font-weight: bold; color: ${primaryDark}; margin-bottom: 5px; border-radius: 4px;">${category}</div>
+                <div style="margin-bottom: 30px;">
+                    <div style="background: #F5F5F5; padding: 8px 12px; font-weight: bold; color: #000000; margin-bottom: 12px; border-left: 3px solid ${primaryColor};">${category}</div>
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr style="border-bottom: 2px solid #000; font-size: 12px; color: #000;">
-                                <th style="text-align: left; padding: 10px;">DESCRIÇÃO</th>
-                                <th style="text-align: center; padding: 10px; width: 50px;">QTD</th>
-                                <th style="text-align: right; padding: 10px; width: 100px;">UNITÁRIO</th>
-                                <th style="text-align: right; padding: 10px; width: 100px;">TOTAL</th>
-                             </tr>
+                            <tr style="border-bottom: 2px solid #E0E0E0;">
+                                <th style="text-align: left; padding: 10px 8px; font-weight: 600; color: #000000;">DESCRIÇÃO</th>
+                                <th style="text-align: center; padding: 10px 8px; font-weight: 600; color: #000000; width: 70px;">QTD</th>
+                                <th style="text-align: right; padding: 10px 8px; font-weight: 600; color: #000000; width: 110px;">UNITÁRIO</th>
+                                <th style="text-align: right; padding: 10px 8px; font-weight: 600; color: #000000; width: 110px;">TOTAL</th>
+                              </tr>
                         </thead>
                         <tbody>
             `;
             
-            items.forEach(s => {
+            for (const s of items) {
                 const price = s.customPrice || s.price;
                 const total = price * s.qty;
                 html += `
-                    <tr style="border-bottom: 1px solid #eee; font-size: 13px;">
-                        <td style="padding: 10px;">${s.name}</td>
-                        <td style="text-align: center; padding: 10px;">${s.qty}</td>
-                        <td style="text-align: right; padding: 10px;">R$ ${price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                        <td style="text-align: right; padding: 10px; font-weight: 500;">R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    </tr>
+                    <tr style="border-bottom: 1px solid #F0F0F0;">
+                        <td style="padding: 10px 8px; color: #000000;">${s.name}</td>
+                        <td style="text-align: center; padding: 10px 8px; color: #000000;">${s.qty}</td>
+                        <td style="text-align: right; padding: 10px 8px; color: #000000;">R$ ${price.toFixed(2).replace('.', ',')}</td>
+                        <td style="text-align: right; padding: 10px 8px; font-weight: 500; color: #000000;">R$ ${total.toFixed(2).replace('.', ',')}</td>
+                      </tr>
                 `;
-            });
+            }
             
-            html += `</tbody></table></div>`;
+            html += `</tbody> </table> </div>`;
         }
         
-        // TOTAIS, PAGAMENTO E OBSERVAÇÕES
+        // CONDIÇÕES DE PAGAMENTO E OBSERVAÇÕES
         html += `
-                    <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px; color: #000;">
-                        
-                        <div style="display: flex; gap: 20px;">
-                            <div style="flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: #f8f9fa;">
-                                <strong style="font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px;">💰 CONDIÇÕES DE PAGAMENTO</strong>
-                                <p style="margin: 0; font-size: 13px; line-height: 1.4;">${budget.paymentTerms || 'A combinar'}</p>
-                            </div>
-                            
-                            <div style="flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: #f8f9fa;">
-                                <strong style="font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px;">📝 OBSERVAÇÕES</strong>
-                                <p style="margin: 0; font-size: 13px; line-height: 1.4;">${budget.notes || 'Sem observações adicionais.'}</p>
-                            </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 25px 0;">
+                        <div style="border: 1px solid #E0E0E0; border-radius: 8px; padding: 15px; background: #FAFAFA;">
+                            <strong style="color: ${primaryColor}; font-size: 13px; display: block; margin-bottom: 8px;">💰 CONDIÇÕES DE PAGAMENTO</strong>
+                            <p style="margin: 0; color: #000000; font-size: 13px; line-height: 1.4;">${budget.paymentTerms || 'A combinar'}</p>
                         </div>
-
-                        <div style="display: flex; justify-content: flex-end;">
-                            <div style="width: 320px; border: 2px solid ${primaryColor}; border-radius: 12px; padding: 20px; background: ${primaryColor}08;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                                    <span>Subtotal:</span>
-                                    <span style="font-weight: bold;">R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
-                                </div>
-                                
-                                ${budget.hoursWorked > 0 ? `
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                                    <span>Horas (${budget.hoursWorked}h):</span>
-                                    <span style="font-weight: bold;">R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
-                                </div>
-                                ` : ''}
-
-                                <div style="border-top: 2px solid ${primaryColor}; margin-top: 10px; padding-top: 10px; text-align: right;">
-                                    <span style="font-size: 12px; font-weight: bold; text-transform: uppercase;">Valor Total da Proposta</span><br>
-                                    <span style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: ${primaryColor};">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                        <div style="border: 1px solid #E0E0E0; border-radius: 8px; padding: 15px; background: #FAFAFA;">
+                            <strong style="color: ${primaryColor}; font-size: 13px; display: block; margin-bottom: 8px;">📝 OBSERVAÇÕES</strong>
+                            <p style="margin: 0; color: #000000; font-size: 13px; line-height: 1.4;">${budget.notes || 'Nenhuma observação adicional.'}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- TOTAL -->
+                    <div style="display: flex; justify-content: flex-end; margin: 20px 0;">
+                        <div style="width: 320px; border-top: 2px solid ${primaryColor}; padding-top: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #000000;">Subtotal:</span>
+                                <span style="font-weight: bold; color: #000000;">R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            ${budget.hoursWorked > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span style="color: #000000;">Horas (${budget.hoursWorked}h):</span>
+                                <span style="font-weight: bold; color: #000000;">R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            ` : ''}
+                            <div style="border-top: 1px solid #E0E0E0; margin-top: 10px; padding-top: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                                    <span style="font-size: 14px; font-weight: bold; color: #000000;">TOTAL:</span>
+                                    <span style="font-size: 26px; font-weight: bold; color: ${primaryColor};">R$ ${budget.total.toFixed(2).replace('.', ',')}</span>
                                 </div>
                             </div>
                         </div>
-
-                        <div style="margin-top: 50px; display: flex; justify-content: space-between; gap: 60px;">
-                            <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
-                                <strong style="font-size: 12px; display: block;">Aceite do Cliente</strong>
-                                <span style="font-size: 10px;">Data: ____/____/_______</span>
-                            </div>
-                            <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
-                                <strong style="font-size: 12px; display: block;">${settings.name || 'Responsável'}</strong>
-                                <span style="font-size: 10px;">Assinatura Digital</span>
+                    </div>
+                    
+                    <!-- ASSINATURAS -->
+                    <div style="display: flex; justify-content: space-between; gap: 40px; margin: 40px 0 30px;">
+                        <div style="flex: 1; text-align: center;">
+                            <div style="border-top: 1px solid #CCCCCC; padding-top: 12px;">
+                                <strong style="color: #000000;">Aceite do Cliente</strong>
+                                <div style="font-size: 11px; color: #666666; margin-top: 5px;">Data: ___/___/______</div>
                             </div>
                         </div>
-
-                        <div style="margin-top: 30px; text-align: center; font-size: 10px; border-top: 1px solid #ddd; padding-top: 15px; color: #666;">
-                            Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')} • Válido até ${validityDate.toLocaleDateString('pt-BR')}
+                        <div style="flex: 1; text-align: center;">
+                            <div style="border-top: 1px solid #CCCCCC; padding-top: 12px;">
+                                <strong style="color: #000000;">${settings.name || 'Designer'}</strong>
+                                <div style="font-size: 11px; color: #666666; margin-top: 5px;">Assinatura Digital</div>
+                            </div>
                         </div>
+                    </div>
+                    
+                    <!-- RODAPÉ -->
+                    <div style="text-align: center; padding-top: 20px; border-top: 1px solid #E0E0E0;">
+                        <p style="margin: 0; font-size: 10px; color: #666666;">
+                            Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
+                        </p>
+                        <p style="margin: 5px 0 0; font-size: 9px; color: #999999;">
+                            Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+                        </p>
+                        <p style="margin: 5px 0 0; font-size: 10px; color: ${primaryColor};">
+                            Designer Budget Pro
+                        </p>
                     </div>
                 </div>
             </div>
         `;
-
+        
         container.innerHTML = html;
         document.body.appendChild(container);
         
-        // 6. Gerar o PDF com altura dinâmica
+        // 6. Gerar PDF
         setTimeout(() => {
             html2canvas(container, {
                 scale: 2,
-                backgroundColor: '#ffffff',
+                backgroundColor: '#FFFFFF',
                 useCORS: true,
                 logging: false
             }).then(canvas => {
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
                 const { jsPDF } = window.jspdf;
                 
-                // CÁLCULO DE PÁGINA ÚNICA DINÂMICA
-                const pdfWidth = 210; // Largura A4 padrão em mm
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Altura proporcional ao conteúdo
+                const pdfWidth = 210;
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
                 
                 const pdf = new jsPDF({
                     unit: 'mm',
@@ -724,15 +744,15 @@ const pdfTemplate = {
                 });
                 
                 pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`orcamento_${budget.clientName.replace(/\s+/g, '_')}_${budget.docNumber || 'ORC'}.pdf`);
+                pdf.save(`orcamento_${budget.clientName.replace(/\s+/g, '_')}.pdf`);
                 
                 document.body.removeChild(container);
             }).catch(err => {
-                console.error('Erro na geração do PDF:', err);
-                Toast.error('Erro ao gerar PDF. Tente novamente.');
+                console.error('Erro:', err);
+                Toast.error('Erro ao gerar PDF');
                 document.body.removeChild(container);
             });
-        }, 600);
+        }, 500);
     }
 };
 // ============================================
