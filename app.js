@@ -2019,72 +2019,104 @@ const app = {
     }
   },
   
-  renderServicesList() {
-    const grouped = {};
-    this.services.forEach(s => {
-      if (!grouped[s.category]) grouped[s.category] = [];
-      grouped[s.category].push(s);
-    });
-    
-    const accordion = document.getElementById('services-accordion');
-    if (!accordion) return;
-    
-    if (Object.keys(grouped).length === 0) {
-      accordion.innerHTML = `
-        <div class="text-center py-12 text-gray-500 dark:text-gray-400 animate-fade-in">
-          <i class="fa-solid fa-bullseye text-4xl mb-3 opacity-50"></i>
-          <p>Nenhum serviço cadastrado</p>
-        </div>
-      `;
-      return;
-    }
-    
-    let html = '';
-    Object.keys(grouped).sort().forEach((category, catIndex) => {
-      html += `
-        <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden accordion-item animate-fade-in"
-             style="animation-delay: ${catIndex * 0.1}s">
-          <div class="w-full flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-800 
-                       hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer"
-               onclick="this.closest('.accordion-item').classList.toggle('active')">
-            <span class="font-medium flex items-center gap-2">
-              <i class="fa-regular fa-folder-open text-primary"></i>
-              ${category} <span class="text-xs text-gray-500">(${grouped[category].length})</span>
+renderServicesList() {
+  console.log('Renderizando serviços...', this.services);
+  
+  const grouped = {};
+  this.services.forEach(s => {
+    if (!grouped[s.category]) grouped[s.category] = [];
+    grouped[s.category].push(s);
+  });
+  
+  const accordion = document.getElementById('services-accordion');
+  if (!accordion) {
+    console.error('Elemento services-accordion não encontrado!');
+    return;
+  }
+  
+  if (Object.keys(grouped).length === 0) {
+    accordion.innerHTML = `
+      <div class="text-center py-12 text-gray-500 dark:text-gray-400 animate-fade-in">
+        <i class="fa-solid fa-bullseye text-4xl mb-3 opacity-50"></i>
+        <p>Nenhum serviço cadastrado</p>
+        <button onclick="app.showAddServiceModal()" 
+                class="mt-4 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
+          <i class="fa-solid fa-plus mr-2"></i>Adicionar Primeiro Serviço
+        </button>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = '';
+  Object.keys(grouped).sort().forEach((category, catIndex) => {
+    html += `
+      <div class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden accordion-item animate-fade-in"
+           style="animation-delay: ${catIndex * 0.1}s">
+        
+        <!-- HEADER DO ACCORDION - CLICÁVEL -->
+        <div class="w-full flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-800 
+                    hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer"
+             onclick="this.closest('.accordion-item').classList.toggle('active')">
+          
+          <span class="font-medium flex items-center gap-2">
+            <i class="fa-regular fa-folder-open text-primary"></i>
+            ${category} 
+            <span class="text-xs bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full">
+              ${grouped[category].length}
             </span>
-            <i class="fa-solid fa-chevron-down transform transition-transform duration-300 accordion-chevron"></i>
-          </div>
-          <div class="hidden p-4 space-y-2 bg-white dark:bg-gray-900 accordion-content">
-            ${grouped[category].map((s, index) => `
-              <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg
-                          hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 transform hover:translate-x-1"
-                   style="animation-delay: ${index * 0.05}s">
-                <div>
-                  <div class="font-medium">${s.name}</div>
-                  <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
-                    <span>R$ ${s.price.toLocaleString('pt-BR')}</span>
-                    <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
-                    <span>${s.type === 'hourly' ? 'por hora' : 'fixo'}</span>
-                  </div>
-                </div>
-                <div class="flex gap-2">
-                  <button onclick="app.editService(${s.id})" 
-                          class="p-2 text-gray-600 hover:text-primary transition-colors rounded-lg hover:bg-white dark:hover:bg-gray-600">
-                    <i class="fa-solid fa-pen"></i>
-                  </button>
-                  <button onclick="app.removeService(${s.id})" 
-                          class="p-2 text-gray-600 hover:text-danger transition-colors rounded-lg hover:bg-white dark:hover:bg-gray-600">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
+          </span>
+          
+          <i class="fa-solid fa-chevron-down transform transition-transform duration-300 accordion-chevron"></i>
+        </div>
+        
+        <!-- CONTEÚDO DO ACCORDION - INICIALMENTE OCULTO -->
+        <div class="hidden p-4 space-y-2 bg-white dark:bg-gray-900 accordion-content">
+          ${grouped[category].map((s, index) => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg
+                        hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                 style="animation-delay: ${index * 0.05}s">
+              
+              <div>
+                <div class="font-medium">${s.name}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <span>R$ ${s.price.toLocaleString('pt-BR')}</span>
+                  <span class="w-1 h-1 bg-gray-400 rounded-full"></span>
+                  <span>${s.type === 'hourly' ? 'por hora' : 'preço fixo'}</span>
                 </div>
               </div>
-            `).join('')}
+              
+              <div class="flex gap-2">
+                <button onclick="app.editService(${s.id})" 
+                        class="p-2 text-gray-600 hover:text-primary transition-colors rounded-lg hover:bg-white dark:hover:bg-gray-600"
+                        title="Editar serviço">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="app.removeService(${s.id})" 
+                        class="p-2 text-gray-600 hover:text-red-600 transition-colors rounded-lg hover:bg-white dark:hover:bg-gray-600"
+                        title="Excluir serviço">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `).join('')}
+          
+          <!-- Botão para adicionar novo serviço nesta categoria -->
+          <div class="mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <button onclick="app.showAddServiceModal('${category}')" 
+                    class="text-sm text-primary hover:underline flex items-center gap-1">
+              <i class="fa-solid fa-plus"></i>
+              Adicionar serviço em "${category}"
+            </button>
           </div>
         </div>
-      `;
-    });
-    
-    accordion.innerHTML = html;
-  },
+      </div>
+    `;
+  });
+  
+  accordion.innerHTML = html;
+  console.log('✅ Serviços renderizados com sucesso!');
+},
   
   // Orçamentos
   startNewBudget() {
