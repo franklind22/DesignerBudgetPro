@@ -547,7 +547,7 @@ removeClient(id) {
   }
 };
 
-// PDF Template - VERSÃO ESTÁVEL E COMPLETA
+// PDF Template - VERSÃO ESTÁVEL E COMPLETA (CORRIGIDA)
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     // Calcular datas
@@ -603,7 +603,7 @@ const pdfTemplate = {
                 <th style="text-align: center; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 70px;">Qtd</th>
                 <th style="text-align: right; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 110px;">Valor Unit.</th>
                 <th style="text-align: right; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 110px;">Total</th>
-               </tr>
+                </tr>
             </thead>
             <tbody>
       `;
@@ -617,7 +617,7 @@ const pdfTemplate = {
             <td style="text-align: center; padding: 10px 8px; font-size: ${tableFontSize}px;">${s.qty}</td>
             <td style="text-align: right; padding: 10px 8px; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
             <td style="text-align: right; padding: 10px 8px; font-size: ${tableFontSize}px; font-weight: 500;">R$ ${total.toFixed(2).replace('.', ',')}</td>
-           </tr>
+          </tr>
         `;
       }
       
@@ -655,7 +655,7 @@ const pdfTemplate = {
             position: relative;
           }
           
-          /* CABEÇALHO FIXO - aparece em todas as páginas */
+          /* CABEÇALHO - aparece em todas as páginas */
           .header {
             background: ${primaryColor};
             color: white;
@@ -861,6 +861,15 @@ const pdfTemplate = {
             color: ${primaryColor} !important;
           }
           
+          /* CONTROLE DE QUEBRA DE PÁGINA */
+          .page-break {
+            page-break-before: always;
+            break-before: page;
+            height: 0;
+            margin: 0;
+            padding: 0;
+          }
+          
           table {
             width: 100%;
             border-collapse: collapse;
@@ -875,7 +884,7 @@ const pdfTemplate = {
       </head>
       <body>
         <div class="page">
-          <!-- CABEÇALHO FIXO -->
+          <!-- CABEÇALHO -->
           <div class="header">
             <div class="header-bg"></div>
             <div class="header-bg2"></div>
@@ -918,20 +927,18 @@ const pdfTemplate = {
             ${servicesHTML}
           </div>
           
-          // Substitua a seção de Condições de Pagamento no HTML por:
-
-<!-- QUEBRA DE PÁGINA CONTROLADA -->
-<div style="page-break-before: always; break-before: page; height: 0;"></div>
-
-<!-- CONDIÇÕES DE PAGAMENTO (começa em nova página) -->
-${budget.paymentTerms ? `
-<div class="payment-terms">
-  <div class="payment-box">
-    <strong>💰 CONDIÇÕES DE PAGAMENTO</strong>
-    <p>${budget.paymentTerms}</p>
-  </div>
-</div>
-` : ''}
+          <!-- QUEBRA DE PÁGINA CONTROLADA (sempre antes das condições) -->
+          <div class="page-break"></div>
+          
+          <!-- CONDIÇÕES DE PAGAMENTO (começa em nova página) -->
+          ${budget.paymentTerms ? `
+          <div class="payment-terms">
+            <div class="payment-box">
+              <strong>💰 CONDIÇÕES DE PAGAMENTO</strong>
+              <p>${budget.paymentTerms}</p>
+            </div>
+          </div>
+          ` : ''}
           
           <!-- TOTAL -->
           <div class="total-box">
