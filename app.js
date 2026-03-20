@@ -1686,82 +1686,72 @@ syncCalculatorWithSettings() {
   
   initCharts() {
     // Evitar múltiplas inicializações
+initCharts() {
     if (this._initChartsTimeout) {
-      clearTimeout(this._initChartsTimeout);
+        clearTimeout(this._initChartsTimeout);
     }
     
     this._initChartsTimeout = setTimeout(() => {
-      try {
-        // Verificar se os elementos existem
-        const statusCanvas = document.getElementById('statusChart');
-        const revenueCanvas = document.getElementById('revenueChart');
-        
-        if (!statusCanvas || !revenueCanvas) {
-          console.warn('Elementos de gráfico não encontrados');
-          return;
-        }
-        
-        // Verificar se Chart.js está disponível
-        if (typeof Chart === 'undefined') {
-          console.warn('Chart.js não carregado');
-          return;
-        }
-        
-        // Destruir gráficos anteriores
-        this.destroyCharts();
-        
-        const budgets = this.dateFilterActive ? this.filteredBudgets : this.budgets;
-        
-        // Gráfico de Status
-        const statusCtx = statusCanvas.getContext('2d');
-        const statusCounts = {
-          'Em Processo': budgets.filter(b => b.status === 'em_processo').length,
-          'Aprovado': budgets.filter(b => b.status === 'aprovado').length,
-          'Não Aprovado': budgets.filter(b => b.status === 'nao_aprovado').length,
-          'Alterado': budgets.filter(b => b.status === 'alterado').length,
-          'Concluído': budgets.filter(b => b.status === 'concluido').length,
-          'Pago': budgets.filter(b => b.status === 'pago').length
-        };
-        
-        this.charts = this.charts || {};
-        this.charts.status = new Chart(statusCtx, {
-    type: 'doughnut',
-    data: {
-        labels: Object.keys(statusCounts),
-        datasets: [{
-            data: Object.values(statusCounts),
-            backgroundColor: ['#FFA500', '#218040', '#c91530', '#a84d2f', '#2d8a8a', '#1a6b4d'],
-            borderWidth: 0,
-            cutout: '60%'  // Adiciona um buraco no meio (opcional)
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,  // ← MANTENHA TRUE
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    color: document.documentElement.classList.contains('dark') ? '#fff' : '#333',
-                    font: { size: 10 },  // Fonte menor para mobile
-                    boxWidth: 10,
-                    padding: 8
+        try {
+            const statusCanvas = document.getElementById('statusChart');
+            const revenueCanvas = document.getElementById('revenueChart');
+            
+            if (!statusCanvas || !revenueCanvas) return;
+            if (typeof Chart === 'undefined') return;
+            
+            this.destroyCharts();
+            
+            const budgets = this.dateFilterActive ? this.filteredBudgets : this.budgets;
+            
+            // Detectar se é mobile
+            const isMobile = window.innerWidth < 640;
+            
+            // Configuração adaptada para mobile
+            const statusCtx = statusCanvas.getContext('2d');
+            const statusCounts = {
+                'Em Processo': budgets.filter(b => b.status === 'em_processo').length,
+                'Aprovado': budgets.filter(b => b.status === 'aprovado').length,
+                'Não Aprovado': budgets.filter(b => b.status === 'nao_aprovado').length,
+                'Alterado': budgets.filter(b => b.status === 'alterado').length,
+                'Concluído': budgets.filter(b => b.status === 'concluido').length,
+                'Pago': budgets.filter(b => b.status === 'pago').length
+            };
+            
+            this.charts.status = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusCounts),
+                    datasets: [{
+                        data: Object.values(statusCounts),
+                        backgroundColor: ['#FFA500', '#218040', '#c91530', '#a84d2f', '#2d8a8a', '#1a6b4d'],
+                        borderWidth: 0,
+                        cutout: isMobile ? '65%' : '60%'  // Buraco maior no mobile
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: isMobile ? 'bottom' : 'bottom',
+                            labels: {
+                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#333',
+                                font: { size: isMobile ? 9 : 11 },
+                                boxWidth: isMobile ? 8 : 10,
+                                padding: isMobile ? 4 : 8
+                            }
+                        }
+                    }
                 }
-            },
-            tooltip: {
-                bodyFont: { size: 12 }
-            }
-        },
-        layout: {
-            padding: {
-                top: 10,
-                bottom: 10,
-                left: 5,
-                right: 5
-            }
+            });
+            
+            // ... resto do código do gráfico de receita ...
+            
+        } catch (error) {
+            console.warn('Erro ao inicializar gráficos:', error);
         }
-    }
-});
+    }, 300);
+}
         
         // Gráfico de Receita Mensal
         const revenueCtx = revenueCanvas.getContext('2d');
