@@ -2875,8 +2875,9 @@ startNewBudget() {
     pdfTemplate.gerarOrcamentoPDF(budget, this.settings);
   },
   
-  // Cliente a partir do orçamento
-  openNewClientFromBudget() {
+  // Abrir modal de cliente a partir do orçamento
+openNewClientFromBudget() {
+    // Limpar formulário
     const nameEl = document.getElementById('client-name');
     const emailEl = document.getElementById('client-email');
     const phoneEl = document.getElementById('client-phone');
@@ -2887,20 +2888,73 @@ startNewBudget() {
     if (phoneEl) phoneEl.value = '';
     if (companyEl) companyEl.value = '';
     
+    // Marcar que está vindo do orçamento
     window.creatingClientFromBudget = true;
+    
+    // Abrir modal de cliente
     this.openModal('client-modal');
-  },
-  
-  updateBudgetClientSelect(clientId) {
+},
+
+// Modificar a função saveClient para fechar e atualizar o select do orçamento
+saveClient() {
+    const name = document.getElementById('client-name')?.value.trim();
+    const email = document.getElementById('client-email')?.value.trim();
+    const phone = document.getElementById('client-phone')?.value;
+    const company = document.getElementById('client-company')?.value;
+    
+    if (!name || !email) {
+        Toast.error('Preencha nome e e-mail');
+        return;
+    }
+    
+    let clientId = null;
+    
+    if (this.editingClientId) {
+        const clientData = { name, email, phone, company };
+        Store.updateClient(this.editingClientId, clientData);
+        clientId = this.editingClientId;
+        Toast.success('Cliente atualizado com sucesso!');
+        this.editingClientId = null;
+    } else {
+        const clientData = { name, email, phone, company, id: Date.now() };
+        Store.addClient(clientData);
+        clientId = clientData.id;
+        Toast.success('Cliente adicionado com sucesso!');
+    }
+    
+    this.closeModal('client-modal');
+    this.renderClients();
+    
+    // Se veio do modal de orçamento, atualizar o select
+    if (window.creatingClientFromBudget) {
+        this.updateBudgetClientSelect(clientId);
+        window.creatingClientFromBudget = false;
+    }
+},
+
+// Função para atualizar o select de clientes no orçamento
+updateBudgetClientSelect(clientId) {
     const select = document.getElementById('budget-client');
     if (!select) return;
     
     const options = this.clients.map(c => 
-      `<option value="${c.id}" ${c.id === clientId ? 'selected' : ''}>${c.name}</option>`
+        `<option value="${c.id}" ${c.id === clientId ? 'selected' : ''}>${c.name}</option>`
     ).join('');
     
     select.innerHTML = `<option value="">Selecione um cliente</option>${options}`;
-  },
+    
+    // Selecionar o cliente recém-criado
+    if (clientId) {
+        select.value = clientId;
+    }
+    
+    // Atualizar também o valor do cliente no estado atual
+    const client = this.clients.find(c => c.id === clientId);
+    if (client && this.currentBudgetId) {
+        // Se estiver editando, atualizar
+        this.currentBudgetClientName = client.name;
+    }
+},
   
 // ============================================
 // MODAL HELPERS - VERSÃO DEFINITIVA CORRIGIDA
