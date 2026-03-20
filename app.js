@@ -1742,7 +1742,7 @@ initCharts() {
                             '#1a6b4d'  // Pago
                         ],
                         borderWidth: 0,
-                        cutout: isMobile ? '65%' : '60%', // Buraco maior no mobile
+                        cutout: isMobile ? '35%' : '30%', // Buraco maior no mobile
                         hoverOffset: 10,
                         spacing: 2
                     }]
