@@ -200,21 +200,123 @@
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
-    /* Forçar contraste em todos os textos cinza */
-[class*="text-gray"] {
-    color: inherit;
-}
 
-/* Mas manter os específicos com !important */
-.text-gray-400, .text-gray-500, .text-gray-600 {
-    color: #374151 !important;
-}
+    /* ========== ALTO CONTRASTE - ADICIONADO ========== */
+    
+    /* 1. Forçar contraste em todos os textos cinza */
+    .text-gray-400, 
+    .text-gray-500, 
+    .text-gray-600,
+    .text-gray-700 {
+        color: #1f2937 !important; /* gray-800 - mais escuro */
+        font-weight: 500 !important; /* peso médio para melhor legibilidade */
+    }
 
-.dark .text-gray-400,
-.dark .text-gray-500,
-.dark .text-gray-600 {
-    color: #e5e7eb !important;
-}
+    /* 2. Modo escuro - textos mais claros */
+    .dark .text-gray-400,
+    .dark .text-gray-500,
+    .dark .text-gray-600,
+    .dark .text-gray-700 {
+        color: #f3f4f6 !important; /* gray-100 - quase branco */
+        font-weight: 500 !important;
+    }
+
+    /* 3. Labels com contraste máximo */
+    label, 
+    .label,
+    .form-label {
+        color: #111827 !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .dark label,
+    .dark .label,
+    .dark .form-label {
+        color: #f9fafb !important;
+        font-weight: 600 !important;
+    }
+
+    /* 4. Placeholders com melhor contraste */
+    ::placeholder {
+        color: #6b7280 !important;
+        opacity: 1 !important;
+        font-weight: 400 !important;
+    }
+
+    .dark ::placeholder {
+        color: #9ca3af !important;
+    }
+
+    /* 5. Textos de descrição e ajuda */
+    .text-description,
+    .help-text,
+    .form-hint {
+        color: #4b5563 !important;
+        font-weight: 500 !important;
+    }
+
+    .dark .text-description,
+    .dark .help-text,
+    .dark .form-hint {
+        color: #d1d5db !important;
+    }
+
+    /* 6. Textos de cards e estatísticas */
+    .stat-label,
+    .card-subtitle {
+        color: #374151 !important;
+        font-weight: 500 !important;
+    }
+
+    .dark .stat-label,
+    .dark .card-subtitle {
+        color: #e5e7eb !important;
+    }
+
+    /* 7. Links e botões de texto */
+    a:not(.btn):not(.nav-btn),
+    .text-link {
+        color: var(--primary) !important;
+        font-weight: 500 !important;
+    }
+
+    a:hover:not(.btn):not(.nav-btn),
+    .text-link:hover {
+        color: var(--primary-dark) !important;
+        text-decoration: underline !important;
+    }
+
+    /* 8. Inputs e selects - texto interno */
+    input, 
+    select, 
+    textarea {
+        color: #111827 !important;
+        font-weight: 500 !important;
+    }
+
+    .dark input,
+    .dark select,
+    .dark textarea {
+        color: #f9fafb !important;
+    }
+
+    /* 9. Valores numéricos e destaques */
+    .stat-value,
+    .price-value,
+    .number-highlight {
+        color: var(--primary) !important;
+        font-weight: 700 !important;
+    }
+
+    /* 10. Ajuste para textos muito pequenos */
+    .text-xs {
+        font-weight: 500 !important;
+    }
+
+    .dark .text-xs {
+        font-weight: 500 !important;
+    }
 </style>
   
 
