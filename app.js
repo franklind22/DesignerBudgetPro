@@ -2970,6 +2970,42 @@ updateAboutStats() {
 }
 
 }; 
+// Atualizar contador de clientes
+updateClientsCount() {
+    const count = this.clients.length;
+    const countSpan = document.getElementById('clients-count');
+    const resultsSpan = document.getElementById('clients-results-count');
+    
+    if (countSpan) countSpan.textContent = count;
+    if (resultsSpan) resultsSpan.textContent = this.clientSearchFilter ? 
+        document.querySelectorAll('#clients-list .client-card').length : count;
+},
+
+// Modifique a função renderClients para chamar o contador
+renderClients() {
+    // ... código existente de filtro ...
+    
+    const list = document.getElementById('clients-list');
+    const emptyState = document.getElementById('clients-empty-state');
+    
+    if (filtered.length === 0) {
+        if (list) list.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+    } else {
+        if (emptyState) emptyState.classList.add('hidden');
+        // ... renderizar clientes ...
+    }
+    
+    // Atualizar contadores
+    this.updateClientsCount();
+},
+
+// Modifique a função filterClients para atualizar o contador
+filterClients() {
+    this.clientSearchFilter = document.getElementById('client-search')?.value || '';
+    this.renderClients();
+    this.updateClientsCount(); // Adicionar esta linha
+},
 
 // ============================================
 // EXPOSIÇÃO GLOBAL (FORA DO APP)
