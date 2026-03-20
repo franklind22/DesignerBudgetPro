@@ -416,16 +416,16 @@
             </div>
           </div>
 
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold mb-4">Tema do Aplicativo</h3>
+         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tema do Aplicativo</h3>
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-sm font-medium mb-1">Cor base</label>
-                <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border cursor-pointer">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cor base</label>
+                <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1">Modelo</label>
-                <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modelo</label>
+                <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                   <option value="monochromatic">Monocromática</option>
                   <option value="analogous">Analógica</option>
                   <option value="complementary">Complementar</option>
@@ -434,12 +434,12 @@
                 </select>
               </div>
             </div>
-            <button onclick="app.applyThemeFromSettings()" class="w-full px-4 py-2 bg-gray-100 rounded-lg">
+            <button onclick="app.applyThemeFromSettings()" class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-medium rounded-lg">
               Aplicar Tema
             </button>
           </div>
 
-          <button onclick="app.saveSettings()" class="w-full px-4 py-2.5 bg-primary text-white rounded-lg">
+          <button onclick="app.saveSettings()" class="w-full px-4 py-2.5 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg">
             <i class="fa-solid fa-floppy-disk mr-2"></i>Salvar Configurações
           </button>
         </div>
