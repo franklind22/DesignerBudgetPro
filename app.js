@@ -2905,26 +2905,26 @@ renderServicesList() {
     select.innerHTML = `<option value="">Selecione um cliente</option>${options}`;
   },
   
-  // Modal helpers
-  openModal(id) {
-    const modal = document.getElementById(id);
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-  },
-  
-  closeModal(id) {
-    const modal = document.getElementById(id);
-    if (modal) {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-  },
+// Modal helpers
+openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+},
+
+closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+},
+
 // ============================================
 // ATUALIZAR ESTATÍSTICAS DO SOBRE
 // ============================================
-
 updateAboutStats() {
   const totalServices = document.getElementById('about-total-services');
   const totalClients = document.getElementById('about-total-clients');
@@ -2942,7 +2942,8 @@ updateAboutStats() {
     totalBudgets.textContent = this.budgets?.length || 0;
   }
 }
-}; // <-- Este } fecha o objeto app
+
+}; 
 
 // ============================================
 // EXPOSIÇÃO GLOBAL (FORA DO APP)
