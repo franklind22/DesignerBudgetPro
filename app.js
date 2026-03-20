@@ -3006,7 +3006,6 @@ filterClients() {
     this.renderClients();
     this.updateClientsCount(); // Adicionar esta linha
 },
-
 // Busca rápida de serviços (para a view de serviços)
 filterServicesBySearch() {
     const searchTerm = document.getElementById('service-search-quick')?.value?.toLowerCase() || '';
