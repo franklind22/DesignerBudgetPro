@@ -316,45 +316,70 @@ const Store = {
     return false;
   },
   
-  // CRUD Clients
-  addClient(client) {
-    const newClient = { ...client, id: Date.now() };
-    this.state.clients.push(newClient);
+// ============================================
+// STORE - CRUD DE CLIENTES
+// ============================================
+
+// Adicionar cliente
+addClient(client) {
+  // Garantir que tem ID
+  const newClient = { 
+    ...client, 
+    id: client.id || Date.now() 
+  };
+  
+  this.state.clients.push(newClient);
+  this.save();
+  
+  this.addNotification({
+    type: 'success',
+    title: 'Cliente adicionado',
+    message: `${client.name} foi adicionado com sucesso`
+  });
+  
+  return newClient;
+},
+
+// Atualizar cliente
+updateClient(id, updates) {
+  const index = this.state.clients.findIndex(c => c.id === id);
+  
+  if (index !== -1) {
+    // Manter o mesmo ID, atualizar apenas os campos
+    this.state.clients[index] = { 
+      ...this.state.clients[index], 
+      ...updates,
+      id: id // Garantir que o ID não muda
+    };
+    
     this.save();
+    
     this.addNotification({
-      type: 'success',
-      title: 'Cliente adicionado',
-      message: `${client.name} foi adicionado com sucesso`
+      type: 'info',
+      title: 'Cliente atualizado',
+      message: `${updates.name || 'Cliente'} foi atualizado`
     });
-    return newClient;
-  },
+    
+    return true;
+  }
   
-  updateClient(id, updates) {
-    const index = this.state.clients.findIndex(c => c.id === id);
-    if (index !== -1) {
-      this.state.clients[index] = { ...this.state.clients[index], ...updates };
-      this.save();
-      this.addNotification({
-        type: 'info',
-        title: 'Cliente atualizado',
-        message: `${updates.name || 'Cliente'} foi atualizado`
-      });
-    }
-  },
+  return false;
+},
+
+// Remover cliente
+removeClient(id) {
+  const client = this.state.clients.find(c => c.id === id);
+  this.state.clients = this.state.clients.filter(c => c.id !== id);
+  this.save();
   
-  removeClient(id) {
-    const client = this.state.clients.find(c => c.id === id);
-    this.state.clients = this.state.clients.filter(c => c.id !== id);
-    this.save();
-    if (client) {
-      this.addNotification({
-        type: 'warning',
-        title: 'Cliente removido',
-        message: `${client.name} foi removido`
-      });
-    }
-  },
-  
+  if (client) {
+    this.addNotification({
+      type: 'warning',
+      title: 'Cliente removido',
+      message: `${client.name} foi removido`
+    });
+  }
+},
   // CRUD Services
   addService(service) {
     const newService = { ...service, id: Date.now() };
@@ -1821,132 +1846,154 @@ const app = {
     }
   },
   
-  // Clientes
-  showAddClientModal() {
-    const nameEl = document.getElementById('client-name');
-    const emailEl = document.getElementById('client-email');
-    const phoneEl = document.getElementById('client-phone');
-    const companyEl = document.getElementById('client-company');
-    
-    if (nameEl) nameEl.value = '';
-    if (emailEl) emailEl.value = '';
-    if (phoneEl) phoneEl.value = '';
-    if (companyEl) companyEl.value = '';
-    
-    this.openModal('client-modal');
-  },
+// ============================================
+// CLIENTES - VERSÃO CORRIGIDA (SEM DUPLICIDADE)
+// ============================================
+
+// Variável para controlar edição
+editingClientId: null,
+
+showAddClientModal() {
+  // Limpar formulário
+  document.getElementById('client-name').value = '';
+  document.getElementById('client-email').value = '';
+  document.getElementById('client-phone').value = '';
+  document.getElementById('client-company').value = '';
   
-  saveClient() {
-    const name = document.getElementById('client-name')?.value.trim();
-    const email = document.getElementById('client-email')?.value.trim();
-    
-    if (!name || !email) {
-      Toast.error('Preencha nome e e-mail');
-      return;
-    }
-    
-    const client = {
-      name, email,
-      phone: document.getElementById('client-phone')?.value,
-      company: document.getElementById('client-company')?.value
+  // Resetar ID de edição
+  this.editingClientId = null;
+  
+  this.openModal('client-modal');
+},
+
+editClient(id) {
+  console.log('Editando cliente ID:', id);
+  
+  const client = this.clients.find(c => c.id === id);
+  if (!client) {
+    Toast.error('Cliente não encontrado');
+    return;
+  }
+  
+  // Preencher formulário com dados do cliente
+  document.getElementById('client-name').value = client.name || '';
+  document.getElementById('client-email').value = client.email || '';
+  document.getElementById('client-phone').value = client.phone || '';
+  document.getElementById('client-company').value = client.company || '';
+  
+  // Guardar ID para saber que é edição
+  this.editingClientId = id;
+  
+  this.openModal('client-modal');
+},
+
+saveClient() {
+  const name = document.getElementById('client-name')?.value.trim();
+  const email = document.getElementById('client-email')?.value.trim();
+  const phone = document.getElementById('client-phone')?.value;
+  const company = document.getElementById('client-company')?.value;
+  
+  if (!name || !email) {
+    Toast.error('Preencha nome e e-mail');
+    return;
+  }
+  
+  // SE TEM editingClientId → É EDIÇÃO
+  if (this.editingClientId) {
+    // Atualizar cliente existente
+    const clientData = {
+      name, email, phone, company
     };
     
-    const newClient = Store.addClient(client);
-    this.closeModal('client-modal');
+    Store.updateClient(this.editingClientId, clientData);
+    Toast.success('Cliente atualizado com sucesso!');
+    
+    // Resetar ID de edição
+    this.editingClientId = null;
+    
+  } else {
+    // É NOVO CLIENTE
+    const clientData = {
+      name, email, phone, company,
+      id: Date.now() // ID único
+    };
+    
+    Store.addClient(clientData);
+    Toast.success('Cliente adicionado com sucesso!');
+  }
+  
+  this.closeModal('client-modal');
+  this.renderClients();
+},
+
+removeClient(id) {
+  if (confirm('Tem certeza que deseja remover este cliente?')) {
+    Store.removeClient(id);
     this.renderClients();
-    
-    if (window.creatingClientFromBudget) {
-      this.updateBudgetClientSelect(newClient.id);
-      window.creatingClientFromBudget = false;
-    }
-  },
+    Toast.success('Cliente removido!');
+  }
+},
+
+renderClients() {
+  let filtered = this.clients;
+  const searchTerm = this.clientSearchFilter?.toLowerCase() || '';
   
-  editClient(id) {
-    const client = this.clients.find(c => c.id === id);
-    if (!client) return;
-    
-    const nameEl = document.getElementById('client-name');
-    const emailEl = document.getElementById('client-email');
-    const phoneEl = document.getElementById('client-phone');
-    const companyEl = document.getElementById('client-company');
-    
-    if (nameEl) nameEl.value = client.name || '';
-    if (emailEl) emailEl.value = client.email || '';
-    if (phoneEl) phoneEl.value = client.phone || '';
-    if (companyEl) companyEl.value = client.company || '';
-    
-    this.openModal('client-modal');
-  },
+  if (searchTerm) {
+    filtered = filtered.filter(c => 
+      c.name?.toLowerCase().includes(searchTerm) ||
+      c.email?.toLowerCase().includes(searchTerm)
+    );
+  }
   
-  removeClient(id) {
-    if (confirm('Remover este cliente?')) {
-      Store.removeClient(id);
-      this.renderClients();
-    }
-  },
+  const list = document.getElementById('clients-list');
+  if (!list) return;
   
-  renderClients() {
-    let filtered = this.clients;
-    const searchTerm = this.clientSearchFilter.toLowerCase();
-    
-    if (searchTerm) {
-      filtered = filtered.filter(c => 
-        c.name.toLowerCase().includes(searchTerm) ||
-        c.email.toLowerCase().includes(searchTerm)
-      );
-    }
-    
-    const list = document.getElementById('clients-list');
-    if (!list) return;
-    
-    if (filtered.length === 0) {
-      list.innerHTML = `
-        <div class="text-center py-12 text-gray-500 dark:text-gray-400 animate-fade-in">
-          <i class="fa-solid fa-users text-4xl mb-3 opacity-50"></i>
-          <p>Nenhum cliente encontrado</p>
-        </div>
-      `;
-      return;
-    }
-    
-    list.innerHTML = filtered.map((c, index) => `
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 
-                  flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4
-                  hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 animate-fade-in"
-          style="animation-delay: ${index * 0.05}s">
-        <div class="flex-1">
-          <div class="flex items-center gap-2">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-              <i class="fa-solid fa-user text-primary"></i>
-            </div>
-            <div>
-              <h3 class="font-semibold">${c.name}</h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400">${c.email}</p>
-            </div>
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+        <i class="fa-solid fa-users text-4xl mb-3 opacity-50"></i>
+        <p>Nenhum cliente encontrado</p>
+      </div>
+    `;
+    return;
+  }
+  
+  list.innerHTML = filtered.map(client => `
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
+                flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div class="flex-1">
+        <div class="flex items-center gap-2">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <i class="fa-solid fa-user text-primary"></i>
           </div>
-          <div class="mt-2 flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-500">
-            ${c.phone ? `<span><i class="fa-solid fa-phone mr-1"></i>${c.phone}</span>` : ''}
-            ${c.company ? `<span><i class="fa-solid fa-building mr-1"></i>${c.company}</span>` : ''}
+          <div>
+            <h3 class="font-semibold">${client.name || 'Sem nome'}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">${client.email || 'Sem email'}</p>
           </div>
         </div>
-        <div class="flex gap-2 self-end sm:self-auto">
-          <button onclick="app.editClient(${c.id})" 
-                  class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg text-sm transition-all duration-200 transform hover:scale-105">
-            <i class="fa-solid fa-pen mr-1"></i> Editar
-          </button>
-          <button onclick="app.removeClient(${c.id})" 
-                  class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-lg text-sm transition-all duration-200 transform hover:scale-105">
-            <i class="fa-solid fa-trash mr-1"></i> Excluir
-          </button>
+        <div class="mt-2 flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-500">
+          ${client.phone ? `<span><i class="fa-solid fa-phone mr-1"></i>${client.phone}</span>` : ''}
+          ${client.company ? `<span><i class="fa-solid fa-building mr-1"></i>${client.company}</span>` : ''}
         </div>
       </div>
-    `).join('');
-  },
-  
-  filterClients() {
-    this.clientSearchFilter = document.getElementById('client-search')?.value || '';
-    this.renderClients();
-  },
+      <div class="flex gap-2 self-end sm:self-auto">
+        <button onclick="app.editClient(${client.id})" 
+                class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg text-sm">
+          <i class="fa-solid fa-pen mr-1"></i> Editar
+        </button>
+        <button onclick="app.removeClient(${client.id})" 
+                class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-lg text-sm">
+          <i class="fa-solid fa-trash mr-1"></i> Excluir
+        </button>
+      </div>
+    </div>
+  `).join('');
+},
+
+filterClients() {
+  this.clientSearchFilter = document.getElementById('client-search')?.value || '';
+  this.renderClients();
+},
   
   // Serviços
   showAddServiceModal(category = '') {
