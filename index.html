@@ -31,20 +31,34 @@
   
   <style>
  /* Variáveis CSS para temas dinâmicos */
-    :root {
-      --primary: #2d8a8a;
-      --primary-dark: #1e5f5f;
-      --primary-light: #e6f3f3;
-    }
-    
-    /* Classes dinâmicas que usam as variáveis */
-    .bg-primary { background-color: var(--primary) !important; }
-    .bg-primary-dark { background-color: var(--primary-dark) !important; }
-    .text-primary { color: var(--primary) !important; }
-    .border-primary { border-color: var(--primary) !important; }
-    .hover\:bg-primary-dark:hover { background-color: var(--primary-dark) !important; }
-    .from-primary { --tw-gradient-from: var(--primary) !important; }
-    .to-primary-dark { --tw-gradient-to: var(--primary-dark) !important; }
+:root {
+  --primary: #2d8a8a;
+  --primary-dark: #1e5f5f;
+  --primary-light: #e6f3f3;
+}
+
+/* Classes que usam as variáveis (para funcionar com Tailwind) */
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+.bg-primary-dark {
+  background-color: var(--primary-dark) !important;
+}
+.text-primary {
+  color: var(--primary) !important;
+}
+.border-primary {
+  border-color: var(--primary) !important;
+}
+.hover\:bg-primary-dark:hover {
+  background-color: var(--primary-dark) !important;
+}
+.from-primary {
+  --tw-gradient-from: var(--primary) !important;
+}
+.to-primary-dark {
+  --tw-gradient-to: var(--primary-dark) !important;
+}
     
     /* Accordion */
     .accordion-item.active .accordion-content { display: block !important; }
