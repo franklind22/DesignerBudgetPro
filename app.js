@@ -614,7 +614,7 @@ const pdfTemplate = {
                     <div style="background: ${primaryDark}10; padding: 6px 12px; font-weight: bold; color: ${primaryDark}; margin-bottom: 5px; border-radius: 4px;">${category}</div>
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr style="border-bottom: 2px solid #eee; font-size: 12px; color: #666;">
+                            <tr style="border-bottom: 2px solid #eee; font-size: 12px; color: #000;">
                                 <th style="text-align: left; padding: 10px;">DESCRIÇÃO</th>
                                 <th style="text-align: center; padding: 10px; width: 50px;">QTD</th>
                                 <th style="text-align: right; padding: 10px; width: 100px;">UNITÁRIO</th>
@@ -647,19 +647,19 @@ const pdfTemplate = {
                         ${budget.paymentTerms ? `
                             <div style="background: #f0f7ff; border-radius: 8px; padding: 15px; border: 1px solid #d0e3ff;">
                                 <strong style="color: #0056b3; font-size: 12px;">CONDIÇÕES DE PAGAMENTO</strong>
-                                <p style="margin: 5px 0 0; font-size: 13px; color: #333;">${budget.paymentTerms}</p>
+                                <p style="margin: 5px 0 0; font-size: 13px; color: #000;">${budget.paymentTerms}</p>
                             </div>
                         ` : ''}
                         <div style="margin-top: 15px; background: #fff9e6; border-radius: 8px; padding: 15px; border: 1px solid #ffeeba;">
                             <strong style="color: #856404; font-size: 12px;">OBSERVAÇÕES</strong>
-                            <p style="margin: 5px 0 0; font-size: 13px; color: #333;">${budget.notes || 'Sem observações.'}</p>
+                            <p style="margin: 5px 0 0; font-size: 13px; color: #000;">${budget.notes || 'Sem observações.'}</p>
                         </div>
                     </div>
                     
                     <div style="flex: 1; text-align: right;">
                         <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                            <div style="margin-bottom: 5px; color: #666;">Subtotal: R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
-                            ${budget.hoursWorked > 0 ? `<div style="margin-bottom: 5px; color: #666;">Horas (${budget.hoursWorked}h): R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>` : ''}
+                            <div style="margin-bottom: 5px; color: #000;">Subtotal: R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                            ${budget.hoursWorked > 0 ? `<div style="margin-bottom: 5px; color: #000;">Horas (${budget.hoursWorked}h): R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>` : ''}
                             <div style="border-top: 2px solid ${primaryColor}; margin-top: 10px; padding-top: 10px;">
                                 <span style="font-size: 14px; font-weight: bold;">TOTAL GERAL:</span><br>
                                 <span style="font-size: 24px; font-weight: 900; color: ${primaryColor};">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
@@ -1149,7 +1149,7 @@ toggleTheme() {
   setTimeout(() => {
     if (this.charts?.status) {
       this.charts.status.options.plugins.legend.labels.color = 
-        document.documentElement.classList.contains('dark') ? '#fff' : '#333';
+        document.documentElement.classList.contains('dark') ? '#fff' : '#000';
       this.charts.status.update();
     }
   }, 100);
@@ -1776,7 +1776,7 @@ initCharts() {
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#333',
+                                color: document.documentElement.classList.contains('dark') ? '#fff' : '#000',
                                 font: { 
                                     size: isMobile ? 10 : 11,
                                     weight: 'normal'
