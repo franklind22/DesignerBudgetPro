@@ -173,55 +173,61 @@
     </div>
 </header>
 
-<!-- NAVEGAÇÃO - VERSÃO OTIMIZADA -->
+<!-- NAVEGAÇÃO - COM TEXTO ABAIXO DOS ÍCONES -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 mb-6 shadow-sm">
-        <nav class="flex gap-1.5 sm:gap-2 flex-wrap justify-center sm:justify-start">
-            <button class="nav-btn px-3 sm:px-5 py-2 rounded-lg font-medium text-xs sm:text-sm 
-                           bg-primary text-white shadow-md hover:shadow-lg transition-all duration-200
-                           flex items-center gap-1.5 sm:gap-2" 
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 mb-6 shadow-sm">
+        <nav class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+            <!-- Dashboard -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200 group
+                           bg-primary text-white shadow-md hover:shadow-lg" 
                     data-view="dashboard" onclick="app.navigate('dashboard')">
-                <i class="fa-solid fa-chart-line"></i>
-                <span class="hidden xs:inline">Dashboard</span>
+                <i class="fa-solid fa-chart-line text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Dashboard</span>
             </button>
             
-            <button class="nav-btn px-3 sm:px-5 py-2 rounded-lg font-medium text-xs sm:text-sm 
+            <!-- Orçamentos -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200 group
                            bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 
-                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary
-                           transition-all duration-200 flex items-center gap-1.5 sm:gap-2" 
+                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary" 
                     data-view="budgets" onclick="app.navigate('budgets')">
-                <i class="fa-solid fa-clipboard-list"></i>
-                <span class="hidden xs:inline">Orçamentos</span>
+                <i class="fa-solid fa-clipboard-list text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Orçamentos</span>
             </button>
             
-            <button class="nav-btn px-3 sm:px-5 py-2 rounded-lg font-medium text-xs sm:text-sm 
+            <!-- Clientes -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200 group
                            bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 
-                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary
-                           transition-all duration-200 flex items-center gap-1.5 sm:gap-2" 
+                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary" 
                     data-view="clients" onclick="app.navigate('clients')">
-                <i class="fa-solid fa-users"></i>
-                <span class="hidden xs:inline">Clientes</span>
+                <i class="fa-solid fa-users text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Clientes</span>
             </button>
             
-            <button class="nav-btn px-3 sm:px-5 py-2 rounded-lg font-medium text-xs sm:text-sm 
+            <!-- Serviços -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200 group
                            bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 
-                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary
-                           transition-all duration-200 flex items-center gap-1.5 sm:gap-2" 
+                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary" 
                     data-view="services" onclick="app.navigate('services')">
-                <i class="fa-solid fa-bullseye"></i>
-                <span class="hidden xs:inline">Serviços</span>
+                <i class="fa-solid fa-bullseye text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Serviços</span>
             </button>
             
-            <button class="nav-btn px-3 sm:px-5 py-2 rounded-lg font-medium text-xs sm:text-sm 
+            <!-- Configurações -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200 group
                            bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 
-                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary
-                           transition-all duration-200 flex items-center gap-1.5 sm:gap-2" 
+                           hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-primary dark:hover:text-primary" 
                     data-view="settings" onclick="app.navigate('settings')">
-                <i class="fa-solid fa-gear"></i>
-                <span class="hidden xs:inline">Configurações</span>
+                <i class="fa-solid fa-gear text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Configurações</span>
             </button>
         </nav>
     </div>
+</div>
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
