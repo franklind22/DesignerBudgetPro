@@ -640,58 +640,62 @@ const pdfTemplate = {
             html += `</tbody></table></div>`;
         }
         
-        // TOTAIS E PAGAMENTO
+// TOTAIS, PAGAMENTO E OBSERVAÇÕES
         html += `
-    <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px;">
-        
-        <div style="display: flex; gap: 20px;">
-            <div style="flex: 1; border: 1px solid #000; border-radius: 8px; padding: 15px;">
-                <strong style="color: #000; font-size: 12px; display: block; margin-bottom: 5px;">💰 CONDIÇÕES DE PAGAMENTO</strong>
-                <p style="margin: 0; font-size: 13px; color: #000;">${budget.paymentTerms || 'A combinar'}</p>
-            </div>
-            
-            <div style="flex: 1; border: 1px solid #000; border-radius: 8px; padding: 15px;">
-                <strong style="color: #000; font-size: 12px; display: block; margin-bottom: 5px;">📝 OBSERVAÇÕES</strong>
-                <p style="margin: 0; font-size: 13px; color: #000;">${budget.notes || 'Nenhuma observação.'}</p>
-            </div>
-        </div>
-
-        <div style="display: flex; justify-content: flex-end;">
-            <div style="width: 300px; background: #f0f0f0; padding: 20px; border-radius: 12px; border: 2px solid #000; text-align: right;">
-                <div style="margin-bottom: 5px; color: #000; font-size: 14px;">Subtotal: R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+            <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px; color: #000;">
                 
-                ${budget.hoursWorked > 0 ? `
-                    <div style="margin-bottom: 5px; color: #000; font-size: 14px;">
-                        Horas (${budget.hoursWorked}h): R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1; border: 1.5px solid #000; border-radius: 8px; padding: 15px; background: #fff;">
+                        <strong style="font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 4px;">💰 CONDIÇÕES DE PAGAMENTO</strong>
+                        <p style="margin: 0; font-size: 13px; line-height: 1.4;">${budget.paymentTerms || 'A combinar'}</p>
                     </div>
-                ` : ''}
-
-                <div style="border-top: 2px solid #000; margin-top: 10px; padding-top: 10px;">
-                    <span style="font-size: 14px; font-weight: bold; color: #000;">TOTAL DA PROPOSTA:</span><br>
-                    <span style="font-size: 28px; font-weight: 900; color: #000;">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-`;
-
-                <div style="margin-top: 50px; display: flex; justify-content: space-between; gap: 50px; padding-bottom: 20px;">
-                    <div style="flex: 1; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">
-                        <span style="font-size: 12px; color: #000;">Aceite do Cliente</span>
-                    </div>
-                    <div style="flex: 1; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">
-                        <span style="font-size: 12px; color: #000;">${settings.name || 'Responsável'}</span>
+                    
+                    <div style="flex: 1; border: 1.5px solid #000; border-radius: 8px; padding: 15px; background: #fff;">
+                        <strong style="font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 4px;">📝 OBSERVAÇÕES</strong>
+                        <p style="margin: 0; font-size: 13px; line-height: 1.4;">${budget.notes || 'Sem observações adicionais.'}</p>
                     </div>
                 </div>
 
-                <div style="text-align: center; font-size: 10px; color: #000; margin-top: 20px; border-top: 1px solid #f5f5f5; padding-top: 15px;">
+                <div style="display: flex; justify-content: flex-end;">
+                    <div style="width: 320px; border: 2px solid #000; border-radius: 12px; padding: 20px; background: #f9f9f9;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                            <span>Subtotal:</span>
+                            <span style="font-weight: bold; white-space: nowrap;">R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                        </div>
+                        
+                        ${budget.hoursWorked > 0 ? `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                            <span>Horas (${budget.hoursWorked}h):</span>
+                            <span style="font-weight: bold; white-space: nowrap;">R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                        </div>
+                        ` : ''}
+
+                        <div style="border-top: 2px solid #000; margin-top: 10px; padding-top: 10px; text-align: right;">
+                            <span style="font-size: 12px; font-weight: bold; text-transform: uppercase;">Valor Total da Proposta</span><br>
+                            <span style="font-size: 28px; font-weight: 900; letter-spacing: -1px; white-space: nowrap;">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px; display: flex; justify-content: space-between; gap: 60px;">
+                    <div style="flex: 1; text-align: center; border-top: 1.5px solid #000; padding-top: 10px;">
+                        <strong style="font-size: 12px; display: block;">Aceite do Cliente</strong>
+                        <span style="font-size: 10px;">Data: ____/____/_______</span>
+                    </div>
+                    <div style="flex: 1; text-align: center; border-top: 1.5px solid #000; padding-top: 10px;">
+                        <strong style="font-size: 12px; display: block;">${settings.name || 'Responsável'}</strong>
+                        <span style="font-size: 10px;">Assinatura Digital</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center; font-size: 10px; border-top: 1px solid #eee; padding-top: 15px; color: #000;">
                     Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')} • Válido até ${validityDate.toLocaleDateString('pt-BR')}
                 </div>
             </div>
-        `;
-        
-        container.innerHTML = html;
-        document.body.appendChild(container);
+        </div> `;
+
+    container.innerHTML = html;
+    document.body.appendChild(container);
         
         // 6. Gerar o PDF
         setTimeout(() => {
