@@ -79,6 +79,35 @@
       background: rgba(255, 255, 255, 0.05) !important;
       backdrop-filter: blur(10px);
     }
+
+     /* Estilos para o accordion de serviços */
+  .accordion-item.active .accordion-content {
+    display: block !important;
+  }
+  
+  .accordion-item.active .accordion-chevron {
+    transform: rotate(180deg);
+  }
+  
+  .accordion-content {
+    display: none;
+  }
+
+  /* Animações */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
   </style>
   
   <!-- Font Awesome -->
