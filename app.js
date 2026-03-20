@@ -642,31 +642,38 @@ const pdfTemplate = {
         
         // TOTAIS E PAGAMENTO
         html += `
-                <div style="display: flex; justify-content: space-between; margin-top: 30px; gap: 20px;">
-                    <div style="flex: 1.5;">
-                        ${budget.paymentTerms ? `
-                            <div style="background: #f0f7ff; border-radius: 8px; padding: 15px; border: 1px solid #d0e3ff;">
-                                <strong style="color: #0056b3; font-size: 12px;">CONDIÇÕES DE PAGAMENTO</strong>
-                                <p style="margin: 5px 0 0; font-size: 13px; color: #000;">${budget.paymentTerms}</p>
-                            </div>
-                        ` : ''}
-                        <div style="margin-top: 15px; background: #fff9e6; border-radius: 8px; padding: 15px; border: 1px solid #ffeeba;">
-                            <strong style="color: #856404; font-size: 12px;">OBSERVAÇÕES</strong>
-                            <p style="margin: 5px 0 0; font-size: 13px; color: #000;">${budget.notes || 'Sem observações.'}</p>
-                        </div>
+    <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px;">
+        
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1; border: 1px solid #000; border-radius: 8px; padding: 15px;">
+                <strong style="color: #000; font-size: 12px; display: block; margin-bottom: 5px;">💰 CONDIÇÕES DE PAGAMENTO</strong>
+                <p style="margin: 0; font-size: 13px; color: #000;">${budget.paymentTerms || 'A combinar'}</p>
+            </div>
+            
+            <div style="flex: 1; border: 1px solid #000; border-radius: 8px; padding: 15px;">
+                <strong style="color: #000; font-size: 12px; display: block; margin-bottom: 5px;">📝 OBSERVAÇÕES</strong>
+                <p style="margin: 0; font-size: 13px; color: #000;">${budget.notes || 'Nenhuma observação.'}</p>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+            <div style="width: 300px; background: #f0f0f0; padding: 20px; border-radius: 12px; border: 2px solid #000; text-align: right;">
+                <div style="margin-bottom: 5px; color: #000; font-size: 14px;">Subtotal: R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                
+                ${budget.hoursWorked > 0 ? `
+                    <div style="margin-bottom: 5px; color: #000; font-size: 14px;">
+                        Horas (${budget.hoursWorked}h): R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
                     </div>
-                    
-                    <div style="flex: 1; text-align: right;">
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
-                            <div style="margin-bottom: 5px; color: #000;">Subtotal: R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
-                            ${budget.hoursWorked > 0 ? `<div style="margin-bottom: 5px; color: #000;">Horas (${budget.hoursWorked}h): R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>` : ''}
-                            <div style="border-top: 2px solid ${primaryColor}; margin-top: 10px; padding-top: 10px;">
-                                <span style="font-size: 14px; font-weight: bold;">TOTAL GERAL:</span><br>
-                                <span style="font-size: 24px; font-weight: 900; color: ${primaryColor};">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
-                            </div>
-                        </div>
-                    </div>
+                ` : ''}
+
+                <div style="border-top: 2px solid #000; margin-top: 10px; padding-top: 10px;">
+                    <span style="font-size: 14px; font-weight: bold; color: #000;">TOTAL DA PROPOSTA:</span><br>
+                    <span style="font-size: 28px; font-weight: 900; color: #000;">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
                 </div>
+            </div>
+        </div>
+    </div>
+`;
 
                 <div style="margin-top: 50px; display: flex; justify-content: space-between; gap: 50px; padding-bottom: 20px;">
                     <div style="flex: 1; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">
