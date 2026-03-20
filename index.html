@@ -791,7 +791,7 @@ textarea:focus {
             </div>
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold">Clientes</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gerencie sua base de clientes</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Gerencie sua base de clientes</p>
             </div>
         </div>
         <button onclick="app.showAddClientModal()" 
@@ -808,21 +808,21 @@ textarea:focus {
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <!-- Busca -->
             <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
-                <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
                     <i class="fa-solid fa-magnifying-glass text-primary text-sm"></i>
                 </div>
                 <div class="relative flex-1">
                     <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                     <input type="text" id="client-search" placeholder="Buscar por nome ou e-mail..." 
-                           onkeyup="app.filterClients()"
+                           onkeyup="app.filterClients()" 
                            class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 
-                                  bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                                   focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
                 </div>
             </div>
             
             <!-- Estatísticas rápidas -->
-            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+            <div class="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">
                 <div class="flex items-center gap-1">
                     <i class="fa-regular fa-user text-primary"></i>
                     <span id="clients-count" class="font-semibold text-primary">0</span>
@@ -851,12 +851,12 @@ textarea:focus {
         </button>
     </div>
 
-    <!-- Lista de Clientes -->
+    <!-- Lista de Clientes - GRID CORRIGIDA -->
     <div id="clients-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Os clientes serão preenchidos pelo JavaScript -->
+        <!-- Os cards serão preenchidos pelo JavaScript -->
     </div>
 
-    <!-- Estado Vazio (quando não há clientes) -->
+    <!-- Estado Vazio -->
     <div id="clients-empty-state" class="hidden text-center py-12">
         <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
             <i class="fa-solid fa-users text-3xl text-gray-400"></i>
