@@ -30,7 +30,23 @@
   </script>
   
   <style>
-    /* Estilos para o accordion */
+ /* Variáveis CSS para temas dinâmicos */
+    :root {
+      --primary: #2d8a8a;
+      --primary-dark: #1e5f5f;
+      --primary-light: #e6f3f3;
+    }
+    
+    /* Classes dinâmicas que usam as variáveis */
+    .bg-primary { background-color: var(--primary) !important; }
+    .bg-primary-dark { background-color: var(--primary-dark) !important; }
+    .text-primary { color: var(--primary) !important; }
+    .border-primary { border-color: var(--primary) !important; }
+    .hover\:bg-primary-dark:hover { background-color: var(--primary-dark) !important; }
+    .from-primary { --tw-gradient-from: var(--primary) !important; }
+    .to-primary-dark { --tw-gradient-to: var(--primary-dark) !important; }
+    
+    /* Accordion */
     .accordion-item.active .accordion-content { display: block !important; }
     .accordion-item.active .accordion-chevron { transform: rotate(180deg); }
     .accordion-content { display: none; }
@@ -40,8 +56,13 @@
     
     /* Focus mode */
     .focus-mode { background: #000 !important; }
-    .focus-mode .bg-white, .focus-mode .dark\:bg-gray-800 { background: rgba(255,255,255,0.05) !important; }
+    .focus-mode .bg-white, .focus-mode .dark\:bg-gray-800 { background: rgba(255,255,255,0.05) !important; backdrop-filter: blur(10px); }
     
+    /* Toast */
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+    .animate-slide-in { animation: slideIn 0.3s ease-out; }
+    .animate-slide-out { animation: slideOut 0.3s ease-out; }
     /* Cores mais escuras para melhor legibilidade */
     .text-default { color: #111827; } /* gray-900 */
     .dark .text-default { color: #f9fafb; } /* gray-50 */
