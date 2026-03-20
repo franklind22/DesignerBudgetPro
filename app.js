@@ -2952,24 +2952,27 @@ closeModal(id) {
 // ATUALIZAR ESTATÍSTICAS DO SOBRE
 // ============================================
 updateAboutStats() {
-  const totalServices = document.getElementById('about-total-services');
-  const totalClients = document.getElementById('about-total-clients');
-  const totalBudgets = document.getElementById('about-total-budgets');
-  
-  if (totalServices) {
-    totalServices.textContent = this.services?.length || 51;
-  }
-  
-  if (totalClients) {
-    totalClients.textContent = this.clients?.length || 0;
-  }
-  
-  if (totalBudgets) {
-    totalBudgets.textContent = this.budgets?.length || 0;
-  }
-}
+    const totalServices = document.getElementById('about-total-services');
+    const totalClients = document.getElementById('about-total-clients');
+    const totalBudgets = document.getElementById('about-total-budgets');
+    
+    if (totalServices) {
+        totalServices.textContent = this.services?.length || 51;
+    }
+    
+    if (totalClients) {
+        totalClients.textContent = this.clients?.length || 0;
+    }
+    
+    if (totalBudgets) {
+        totalBudgets.textContent = this.budgets?.length || 0;
+    }
+}, // ← VÍRGULA (porque vai adicionar mais funções)
 
-}; 
+// ============================================
+// CLIENTES - FUNÇÕES ADICIONAIS
+// ============================================
+
 // Atualizar contador de clientes
 updateClientsCount() {
     const count = this.clients.length;
@@ -2977,36 +2980,82 @@ updateClientsCount() {
     const resultsSpan = document.getElementById('clients-results-count');
     
     if (countSpan) countSpan.textContent = count;
-    if (resultsSpan) resultsSpan.textContent = this.clientSearchFilter ? 
-        document.querySelectorAll('#clients-list .client-card').length : count;
-},
+    if (resultsSpan) {
+        const searchTerm = this.clientSearchFilter?.toLowerCase() || '';
+        if (searchTerm) {
+            const visibleCount = document.querySelectorAll('#clients-list .bg-white').length;
+            resultsSpan.textContent = visibleCount;
+        } else {
+            resultsSpan.textContent = count;
+        }
+    }
+}, // ← VÍRGULA
 
 // Modifique a função renderClients para chamar o contador
 renderClients() {
-    // ... código existente de filtro ...
+    let filtered = this.clients;
+    const searchTerm = this.clientSearchFilter?.toLowerCase() || '';
+    
+    if (searchTerm) {
+        filtered = filtered.filter(c => 
+            c.name?.toLowerCase().includes(searchTerm) ||
+            c.email?.toLowerCase().includes(searchTerm)
+        );
+    }
     
     const list = document.getElementById('clients-list');
     const emptyState = document.getElementById('clients-empty-state');
     
+    if (!list) return;
+    
     if (filtered.length === 0) {
         if (list) list.innerHTML = '';
-        if (emptyState) emptyState.classList.remove('hidden');
+        if (emptyState) emptyState?.classList.remove('hidden');
     } else {
-        if (emptyState) emptyState.classList.add('hidden');
-        // ... renderizar clientes ...
+        if (emptyState) emptyState?.classList.add('hidden');
+        list.innerHTML = filtered.map(client => `
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <i class="fa-solid fa-user text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold">${this.escapeHtml(client.name || 'Sem nome')}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">${this.escapeHtml(client.email || 'Sem email')}</p>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex flex-wrap gap-2 text-sm text-gray-500">
+                        ${client.phone ? `<span><i class="fa-solid fa-phone mr-1"></i>${this.escapeHtml(client.phone)}</span>` : ''}
+                        ${client.company ? `<span><i class="fa-solid fa-building mr-1"></i>${this.escapeHtml(client.company)}</span>` : ''}
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="app.editClient(${client.id})" class="px-3 py-1.5 bg-gray-100 rounded-lg text-sm">✏️ Editar</button>
+                    <button onclick="app.removeClient(${client.id})" class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm">🗑️ Excluir</button>
+                </div>
+            </div>
+        `).join('');
     }
     
-    // Atualizar contadores
     this.updateClientsCount();
-},
+}, // ← VÍRGULA
 
 // Modifique a função filterClients para atualizar o contador
 filterClients() {
     this.clientSearchFilter = document.getElementById('client-search')?.value || '';
     this.renderClients();
-    this.updateClientsCount(); // Adicionar esta linha
-},
-};
+}, // ← VÍRGULA (se tiver mais funções depois)
+
+// Função auxiliar para escapar HTML
+escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+} // ← SEM VÍRGULA (última função)
+
+}; // ← FECHAMENTO ÚNICO DO OBJETO APP AQUI!
 // ============================================
 // EXPOSIÇÃO GLOBAL (FORA DO APP)
 // ============================================
