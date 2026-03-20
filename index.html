@@ -1,0 +1,488 @@
+  <!-- Modal de Orçamento -->
+  <div id="budget-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl m-4">
+      <!-- Header -->
+      <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold" id="budget-modal-title">
+          <i class="fa-solid fa-clipboard-list text-primary mr-2"></i>
+          Criar Novo Orçamento
+        </h2>
+        <button onclick="app.closeModal('budget-modal')" 
+                class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <!-- Body -->
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Data do Orçamento
+          </label>
+          <input type="date" id="budget-date" required
+                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Nome do Projeto
+          </label>
+          <input type="text" id="budget-project-name" placeholder="Ex: Identidade Visual da Loja"
+                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Cliente
+          </label>
+          <div class="flex gap-2">
+            <select id="budget-client" required
+                    class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="">Selecione um cliente</option>
+            </select>
+            <button onclick="app.openNewClientFromBudget()" 
+                    class="px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Valor da Hora (R$)
+            </label>
+            <input type="number" id="budget-hourly" value="150" onchange="app.updateBudgetTotal()"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Horas Trabalhadas
+            </label>
+            <input type="number" id="budget-hours-worked" value="0" step="0.5" onchange="app.updateBudgetTotal()"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+        </div>
+        
+        <h3 class="font-semibold text-lg mt-4 flex items-center gap-2">
+          <i class="fa-solid fa-bullseye text-primary"></i>
+          Serviços
+        </h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="service-search" placeholder="Buscar serviço..." onkeyup="app.searchServices()"
+                   class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          
+          <select id="service-category-filter" onchange="app.filterServicesByCategory()"
+                  class="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <option value="">Todas as categorias</option>
+          </select>
+        </div>
+        
+        <div id="services-list-container" class="max-h-60 overflow-y-auto space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50"></div>
+        
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+          <strong class="mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-primary"></i>
+            Serviços Selecionados:
+          </strong>
+          <div id="selected-services-summary" class="text-sm text-gray-600 dark:text-gray-400 space-y-1"></div>
+        </div>
+        
+        <!-- Paleta de Cores -->
+        <h3 class="font-semibold text-lg mt-4 flex items-center gap-2">
+          <i class="fa-solid fa-palette text-primary"></i>
+          Paleta de Cores
+        </h3>
+        
+        <div class="flex gap-2">
+          <button type="button" onclick="app.switchPaletteMode('generator')" 
+                  class="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium"
+                  id="btn-palette-generator">
+            <i class="fa-solid fa-wand-magic mr-2"></i>
+            Gerador
+          </button>
+          <button type="button" onclick="app.switchPaletteMode('custom')" 
+                  class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg font-medium"
+                  id="btn-palette-custom">
+            <i class="fa-solid fa-paint-brush mr-2"></i>
+            Personalizada
+          </button>
+        </div>
+        
+        <!-- Modo Gerador -->
+        <div id="autoPaletteMode">
+          <div class="flex gap-2">
+            <input type="color" id="paletteColor" value="#2d8a8a" onchange="app.generatePaletteModels()"
+                   class="flex-1 h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+            <button onclick="app.generatePaletteModels()" 
+                    class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
+              Gerar
+            </button>
+            <button onclick="app.randomizeBaseColor()" 
+                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg">
+              <i class="fa-solid fa-shuffle"></i>
+            </button>
+          </div>
+          
+          <select id="paletteModel" onchange="app.updatePaletteDisplay()"
+                  class="w-full mt-2 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <option value="monochromatic">Monocromática</option>
+            <option value="analogous">Analógica</option>
+            <option value="complementary">Complementar</option>
+            <option value="triadic">Triádica</option>
+            <option value="tetradic">Tetrádica</option>
+          </select>
+          
+          <div id="generatedPalette" class="grid grid-cols-5 gap-2 mt-3"></div>
+        </div>
+        
+        <!-- Modo Personalizado -->
+        <div id="customPaletteMode" class="hidden">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <input type="color" id="customColor1" value="#2d8a8a" onchange="app.updateCustomPalette()"
+                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+              <input type="text" id="customColor1Name" value="Primária" onchange="app.updateCustomPalette()"
+                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+            </div>
+            <div>
+              <input type="color" id="customColor2" value="#FFFFFF" onchange="app.updateCustomPalette()"
+                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+              <input type="text" id="customColor2Name" value="Secundária" onchange="app.updateCustomPalette()"
+                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+            </div>
+            <div>
+              <input type="color" id="customColor3" value="#667eea" onchange="app.updateCustomPalette()"
+                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+              <input type="text" id="customColor3Name" value="Destaque" onchange="app.updateCustomPalette()"
+                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+            </div>
+            <div>
+              <input type="color" id="customColor4" value="#f8f9fa" onchange="app.updateCustomPalette()"
+                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+              <input type="text" id="customColor4Name" value="Fundo" onchange="app.updateCustomPalette()"
+                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
+                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+            </div>
+          </div>
+          <div id="customPalette" class="grid grid-cols-4 gap-2 mt-3"></div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Observações
+          </label>
+          <textarea id="budget-notes" rows="3" placeholder="Prazos, revisões, direitos de uso..."
+                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"></textarea>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Status
+            </label>
+            <select id="budget-status"
+                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="em_processo">Em Processo</option>
+              <option value="aprovado">Aprovado</option>
+              <option value="nao_aprovado">Não Aprovado</option>
+              <option value="alterado">Alterado</option>
+              <option value="concluido">Concluído</option>
+              <option value="pago">Pago</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Prazo (dias)
+            </label>
+            <input type="number" id="budget-deadline" value="7"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Condições de Pagamento
+          </label>
+          <input type="text" id="budget-payment-terms" placeholder="Ex: 50% adiantado, 50% na entrega"
+                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Validade (dias)
+          </label>
+          <input type="number" id="budget-validity" value="30"
+                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+        </div>
+        
+        <!-- Resumo -->
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Subtotal (Serviços):</span>
+            <span id="budget-subtotal" class="font-semibold">R$ 0,00</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Horas Trabalhadas:</span>
+            <span id="budget-hours-display" class="font-semibold">0h</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600 dark:text-gray-400">Valor (Horas × Taxa):</span>
+            <span id="budget-hours-cost" class="font-semibold">R$ 0,00</span>
+          </div>
+          <div class="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-gray-600">
+            <span class="text-primary">Total:</span>
+            <span id="budget-total" class="text-primary">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <button onclick="app.closeModal('budget-modal')" 
+                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
+          Cancelar
+        </button>
+        <button onclick="app.saveBudget()" id="budget-save-btn"
+                class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg flex items-center gap-2">
+          <i class="fa-solid fa-circle-check"></i>
+          Gerar Orçamento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Cliente -->
+  <div id="client-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl m-4">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-primary"></i>
+          Novo Cliente
+        </h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Nome
+            </label>
+            <input type="text" id="client-name" required
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              E-mail
+            </label>
+            <input type="email" id="client-email" required
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Telefone
+            </label>
+            <input type="tel" id="client-phone"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Empresa
+            </label>
+            <input type="text" id="client-company"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button onclick="app.closeModal('client-modal')" 
+                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
+            Cancelar
+          </button>
+          <button onclick="app.saveClient()" 
+                  class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
+            Salvar Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Serviço -->
+  <div id="service-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl m-4">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold mb-4" id="service-modal-title">
+          <i class="fa-solid fa-bullseye text-primary mr-2"></i>
+          Adicionar Serviço
+        </h3>
+        <input type="hidden" id="service-id">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Categoria
+            </label>
+            <input type="text" id="service-category" placeholder="Ex: Redes Sociais" required
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Nome do Serviço
+            </label>
+            <input type="text" id="service-name" placeholder="Ex: Post Instagram" required
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Preço (R$)
+            </label>
+            <input type="number" id="service-price" min="0" step="10" required
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Tipo
+            </label>
+            <select id="service-type" required
+                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+              <option value="fixed">Preço Fixo</option>
+              <option value="hourly">Por Hora</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+          <button onclick="app.closeModal('service-modal')" 
+                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
+            Cancelar
+          </button>
+          <button onclick="app.saveService()" 
+                  class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
+            Salvar Serviço
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Metas -->
+  <div id="goals-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl m-4">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-bullseye text-primary"></i>
+          Editar Metas
+        </h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Meta Mensal (R$)
+            </label>
+            <input type="number" id="goal-monthly" value="50000" min="0" step="1000"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Meta Anual (R$)
+            </label>
+            <input type="number" id="goal-yearly" value="600000" min="0" step="10000"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Projetos por Mês
+            </label>
+            <input type="number" id="goal-projects" value="10" min="1" step="1"
+                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 mt-6">
+          <button onclick="app.closeModal('goals-modal')" 
+                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
+            Cancelar
+          </button>
+          <button onclick="app.saveGoals()" 
+                  class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
+            Salvar Metas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Backup -->
+  <div id="backup-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl shadow-2xl m-4">
+      <div class="p-6">
+        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+          Histórico de Backups
+        </h3>
+        
+        <div id="backup-history-list" class="max-h-96 overflow-y-auto space-y-2 mb-4">
+          <!-- Backups serão inseridos aqui -->
+        </div>
+        
+        <div class="flex justify-end">
+          <button onclick="app.closeModal('backup-modal')" 
+                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
