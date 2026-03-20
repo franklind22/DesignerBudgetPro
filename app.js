@@ -547,38 +547,12 @@ removeClient(id) {
   }
 };
 
-// PDF Template - VERSÃO ESTÁVEL E COMPLETA (CORRIGIDA)
+// PDF Template - VERSÃO SIMPLES E FUNCIONAL
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     // Calcular datas
     const validityDate = new Date(budget.date);
     validityDate.setDate(validityDate.getDate() + (budget.validity || 30));
-    
-    // Pegar cores do tema
-    const primaryColor = '#2d8a8a';
-    const primaryDark = '#1e5f5f';
-    
-    // Calcular quantidade total de serviços
-    const totalItems = budget.services?.length || 0;
-    
-    // Ajuste dinâmico de fonte
-    let baseFontSize = 12;
-    let headerFontSize = 24;
-    let tableFontSize = 11;
-    
-    if (totalItems > 20) {
-      baseFontSize = 9;
-      headerFontSize = 20;
-      tableFontSize = 8;
-    } else if (totalItems > 15) {
-      baseFontSize = 10;
-      headerFontSize = 22;
-      tableFontSize = 9;
-    } else if (totalItems > 10) {
-      baseFontSize = 11;
-      headerFontSize = 23;
-      tableFontSize = 10;
-    }
     
     // Agrupar serviços por categoria
     const servicesByCategory = {};
@@ -589,21 +563,58 @@ const pdfTemplate = {
       servicesByCategory[s.category].push(s);
     });
     
-    // Construir tabela de serviços
-    let servicesHTML = '';
+    // Criar elemento para o PDF
+    const element = document.createElement('div');
+    element.style.padding = '20px';
+    element.style.fontFamily = 'Arial, sans-serif';
+    element.style.backgroundColor = 'white';
+    element.style.color = 'black';
     
+    // Construir HTML
+    let html = `
+      <div style="max-width: 100%; margin: 0 auto;">
+        <!-- CABEÇALHO -->
+        <div style="background: #2d8a8a; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+          <h1 style="margin: 0; font-size: 24px;">PROPOSTA COMERCIAL</h1>
+          <p style="margin: 8px 0 0;">${settings.name || 'Designer Profissional'}</p>
+          ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px;">${settings.email}</p>` : ''}
+          <div style="margin-top: 10px; font-size: 14px;">Nº: ${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
+        </div>
+        
+        <!-- INFORMAÇÕES -->
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; padding: 20px; background: #f5f5f5; border-bottom: 1px solid #ddd;">
+          <div style="flex: 1; min-width: 150px;">
+            <strong>CLIENTE:</strong><br>${budget.clientName}
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <strong>DATA:</strong><br>${new Date(budget.date).toLocaleDateString('pt-BR')}
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <strong>VALIDADE:</strong><br>${validityDate.toLocaleDateString('pt-BR')}
+          </div>
+          <div style="flex: 1; min-width: 150px;">
+            <strong>PROJETO:</strong><br>${budget.projectName || 'Não especificado'}
+          </div>
+        </div>
+        
+        <!-- SERVIÇOS -->
+        <div style="padding: 20px;">
+          <h2 style="color: #2d8a8a; border-bottom: 2px solid #2d8a8a; padding-bottom: 8px;">SERVIÇOS</h2>
+    `;
+    
+    // Adicionar serviços por categoria
     for (const [category, items] of Object.entries(servicesByCategory)) {
-      servicesHTML += `
-        <div style="margin-bottom: 25px; page-break-inside: avoid;">
-          <div style="background: #e8f0f0; padding: 10px 12px; margin-bottom: 10px; font-weight: bold; font-size: 14px; color: ${primaryDark};">${category}</div>
-          <table style="width: 100%; border-collapse: collapse;">
+      html += `
+        <div style="margin-top: 20px;">
+          <div style="background: #e8f0f0; padding: 8px 12px; font-weight: bold;">${category}</div>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
             <thead>
-              <tr style="border-bottom: 1px solid #dee2e6;">
-                <th style="text-align: left; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px;">Serviço</th>
-                <th style="text-align: center; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 70px;">Qtd</th>
-                <th style="text-align: right; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 110px;">Valor Unit.</th>
-                <th style="text-align: right; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 110px;">Total</th>
-                </tr>
+              <tr style="background: #f0f0f0; border-bottom: 1px solid #ddd;">
+                <th style="text-align: left; padding: 8px;">Serviço</th>
+                <th style="text-align: center; padding: 8px; width: 60px;">Qtd</th>
+                <th style="text-align: right; padding: 8px; width: 100px;">Valor Unit.</th>
+                <th style="text-align: right; padding: 8px; width: 100px;">Total</th>
+              </tr>
             </thead>
             <tbody>
       `;
@@ -611,408 +622,85 @@ const pdfTemplate = {
       for (const s of items) {
         const price = s.customPrice || s.price;
         const total = price * s.qty;
-        servicesHTML += `
-          <tr style="border-bottom: 1px solid #f0f0f0;">
-            <td style="padding: 10px 8px; font-size: ${tableFontSize}px;">${s.name}</td>
-            <td style="text-align: center; padding: 10px 8px; font-size: ${tableFontSize}px;">${s.qty}</td>
-            <td style="text-align: right; padding: 10px 8px; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
-            <td style="text-align: right; padding: 10px 8px; font-size: ${tableFontSize}px; font-weight: 500;">R$ ${total.toFixed(2).replace('.', ',')}</td>
+        html += `
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 8px;">${s.name}</td>
+            <td style="text-align: center; padding: 8px;">${s.qty}</td>
+            <td style="text-align: right; padding: 8px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
+            <td style="text-align: right; padding: 8px;">R$ ${total.toFixed(2).replace('.', ',')}</td>
           </tr>
         `;
       }
       
-      servicesHTML += `
+      html += `
             </tbody>
           </table>
         </div>
       `;
     }
     
-    // Montar HTML completo
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Orçamento ${budget.docNumber}</title>
-        <style>
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-          body {
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: white;
-            color: #000000;
-            font-size: ${baseFontSize}px;
-            line-height: 1.4;
-          }
-          .page {
-            width: 210mm;
-            margin: 0 auto;
-            background: white;
-            position: relative;
-          }
-          
-          /* CABEÇALHO - aparece em todas as páginas */
-          .header {
-            background: ${primaryColor};
-            color: white;
-            padding: 25px 30px;
-            position: relative;
-            overflow: hidden;
-          }
-          .header-bg {
-            position: absolute;
-            top: -40px;
-            right: -40px;
-            width: 180px;
-            height: 180px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-          }
-          .header-bg2 {
-            position: absolute;
-            bottom: -30px;
-            left: -30px;
-            width: 120px;
-            height: 120px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-          }
-          .header-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-          }
-          .header-title {
-            font-size: ${headerFontSize}px;
-            font-weight: 700;
-            margin: 0;
-            color: white;
-          }
-          .header-subtitle {
-            margin-top: 8px;
-            opacity: 0.85;
-            font-size: ${baseFontSize + 1}px;
-            color: white;
-          }
-          .header-email {
-            margin-top: 4px;
-            opacity: 0.7;
-            font-size: ${baseFontSize - 1}px;
-            color: white;
-          }
-          .header-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 18px;
-            border-radius: 40px;
-            text-align: center;
-          }
-          .header-badge-label {
-            font-size: 11px;
-            opacity: 0.8;
-            color: white;
-          }
-          .header-badge-number {
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-          }
-          
-          /* INFORMAÇÕES - TODOS TEXTOS PRETOS */
-          .info-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            background: #f8f9fa;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e9ecef;
-          }
-          .info-label {
-            color: #000000;
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 4px;
-          }
-          .info-value {
-            font-weight: 600;
-            font-size: 14px;
-            color: #000000;
-          }
-          
-          /* SERVIÇOS */
-          .services-section {
-            padding: 20px 30px;
-          }
-          .section-title {
-            color: ${primaryColor};
-            font-size: 20px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid ${primaryColor};
-            padding-bottom: 8px;
-          }
-          
-          /* CONDIÇÕES DE PAGAMENTO */
-          .payment-terms {
-            margin: 0 30px 20px;
-          }
-          .payment-box {
-            background: #e8f0fe;
-            border-left: 4px solid ${primaryColor};
-            padding: 12px 15px;
-            border-radius: 8px;
-          }
-          .payment-box strong {
-            color: ${primaryColor};
-            font-size: 12px;
-          }
-          .payment-box p {
-            margin-top: 8px;
-            color: #000000;
-            font-size: 12px;
-          }
-          
-          /* TOTAL */
-          .total-box {
-            background: #f8f9fa;
-            padding: 15px 20px;
-            border-radius: 8px;
-            max-width: 320px;
-            margin: 0 30px 20px;
-            margin-left: auto;
-          }
-          .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            color: #000000;
-            font-size: 13px;
-          }
-          .total-grand {
-            border-top: 2px solid ${primaryColor};
-            margin-top: 5px;
-            padding-top: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            color: ${primaryColor};
-          }
-          
-          /* OBSERVAÇÕES */
-          .notes {
-            background: #fff9e6;
-            border-left: 4px solid #fbbf24;
-            padding: 12px 15px;
-            margin: 0 30px 20px;
-            border-radius: 8px;
-          }
-          .notes strong {
-            color: #b45309;
-            font-size: 12px;
-            display: block;
-            margin-bottom: 6px;
-          }
-          .notes p {
-            margin: 0;
-            color: #000000;
-            font-size: 12px;
-          }
-          
-          /* ASSINATURAS */
-          .signatures {
-            display: flex;
-            justify-content: space-between;
-            gap: 40px;
-            margin: 20px 30px 30px;
-          }
-          .signature {
-            flex: 1;
-            text-align: center;
-            border-top: 1px solid #cbd5e1;
-            padding-top: 12px;
-          }
-          .signature strong {
-            color: #000000;
-            font-size: 12px;
-          }
-          .signature-date {
-            font-size: 10px;
-            color: #6c757d;
-            margin-top: 8px;
-          }
-          
-          /* RODAPÉ */
-          .footer {
-            background: #f1f3f5;
-            text-align: center;
-            padding: 12px 30px;
-            margin-top: 20px;
-          }
-          .footer p {
-            margin: 5px 0;
-            font-size: 9px;
-            color: #000000;
-          }
-          .footer-brand {
-            color: ${primaryColor} !important;
-          }
-          
-          /* CONTROLE DE QUEBRA DE PÁGINA */
-          .page-break {
-            page-break-before: always;
-            break-before: page;
-            height: 0;
-            margin: 0;
-            padding: 0;
-          }
-          
-          table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          th, td {
-            padding: 10px 8px;
-          }
-          th {
-            color: #000000;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="page">
-          <!-- CABEÇALHO -->
-          <div class="header">
-            <div class="header-bg"></div>
-            <div class="header-bg2"></div>
-            <div class="header-content">
-              <div>
-                <h1 class="header-title">PROPOSTA COMERCIAL</h1>
-                <div class="header-subtitle">${settings.name || 'Designer Profissional'}</div>
-                ${settings.email ? `<div class="header-email">${settings.email}</div>` : ''}
-              </div>
-              <div class="header-badge">
-                <div class="header-badge-label">Nº</div>
-                <div class="header-badge-number">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
-              </div>
+    // Adicionar condições de pagamento
+    if (budget.paymentTerms) {
+      html += `
+        <div style="margin-top: 20px; background: #e8f0fe; padding: 12px; border-left: 4px solid #2d8a8a;">
+          <strong>💰 CONDIÇÕES DE PAGAMENTO</strong>
+          <p style="margin: 8px 0 0;">${budget.paymentTerms}</p>
+        </div>
+      `;
+    }
+    
+    // Adicionar total
+    html += `
+        <div style="margin-top: 20px; text-align: right;">
+          <div style="background: #f5f5f5; display: inline-block; padding: 15px 25px; border-radius: 8px;">
+            <div style="margin-bottom: 8px;"><strong>Subtotal:</strong> R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</div>
+            ${budget.hoursWorked > 0 ? `<div style="margin-bottom: 8px;"><strong>Horas (${budget.hoursWorked}h):</strong> R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</div>` : ''}
+            <div style="border-top: 2px solid #2d8a8a; margin-top: 8px; padding-top: 8px; font-size: 18px; font-weight: bold; color: #2d8a8a;">
+              <strong>TOTAL:</strong> R$ ${budget.total.toFixed(2).replace('.', ',')}
             </div>
-          </div>
-          
-          <!-- INFORMAÇÕES -->
-          <div class="info-grid">
-            <div>
-              <div class="info-label">CLIENTE</div>
-              <div class="info-value">${budget.clientName}</div>
-            </div>
-            <div>
-              <div class="info-label">DATA</div>
-              <div class="info-value">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
-            </div>
-            <div>
-              <div class="info-label">VALIDADE</div>
-              <div class="info-value">${validityDate.toLocaleDateString('pt-BR')}</div>
-            </div>
-            <div>
-              <div class="info-label">PROJETO</div>
-              <div class="info-value">${budget.projectName || 'Não especificado'}</div>
-            </div>
-          </div>
-          
-          <!-- SERVIÇOS -->
-          <div class="services-section">
-            <h2 class="section-title">SERVIÇOS</h2>
-            ${servicesHTML}
-          </div>
-          
-          <!-- QUEBRA DE PÁGINA CONTROLADA (sempre antes das condições) -->
-          <div class="page-break"></div>
-          
-          <!-- CONDIÇÕES DE PAGAMENTO (começa em nova página) -->
-          ${budget.paymentTerms ? `
-          <div class="payment-terms">
-            <div class="payment-box">
-              <strong>💰 CONDIÇÕES DE PAGAMENTO</strong>
-              <p>${budget.paymentTerms}</p>
-            </div>
-          </div>
-          ` : ''}
-          
-          <!-- TOTAL -->
-          <div class="total-box">
-            <div class="total-row">
-              <span>Subtotal:</span>
-              <span>R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
-            </div>
-            ${budget.hoursWorked > 0 ? `
-            <div class="total-row">
-              <span>Horas (${budget.hoursWorked}h):</span>
-              <span>R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</span>
-            </div>
-            ` : ''}
-            <div class="total-row total-grand">
-              <span>TOTAL:</span>
-              <span>R$ ${budget.total.toFixed(2).replace('.', ',')}</span>
-            </div>
-          </div>
-          
-          <!-- OBSERVAÇÕES -->
-          <div class="notes">
-            <strong>📝 OBSERVAÇÕES</strong>
-            <p>${budget.notes || 'Nenhuma observação adicional.'}</p>
-          </div>
-          
-          <!-- ASSINATURAS -->
-          <div class="signatures">
-            <div class="signature">
-              <strong>Cliente</strong>
-              <div class="signature-date">Data: ___/___/______</div>
-            </div>
-            <div class="signature">
-              <strong>${settings.name || 'Designer'}</strong>
-              <div class="signature-date">Data: ___/___/______</div>
-            </div>
-          </div>
-          
-          <!-- RODAPÉ -->
-          <div class="footer">
-            <p>Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}</p>
-            <p>Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
-            <p class="footer-brand">Designer Budget Pro • Sistema Profissional de Orçamentos</p>
           </div>
         </div>
-      </body>
-      </html>
+        
+        <!-- OBSERVAÇÕES -->
+        <div style="margin-top: 20px; background: #fff9e6; padding: 12px; border-left: 4px solid #fbbf24;">
+          <strong>📝 OBSERVAÇÕES</strong>
+          <p style="margin: 8px 0 0;">${budget.notes || 'Nenhuma observação adicional.'}</p>
+        </div>
+        
+        <!-- ASSINATURAS -->
+        <div style="margin-top: 30px; display: flex; justify-content: space-between; gap: 40px;">
+          <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 12px;">
+            <strong>Cliente</strong>
+            <div style="font-size: 11px; margin-top: 5px;">Data: ___/___/______</div>
+          </div>
+          <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 12px;">
+            <strong>${settings.name || 'Designer'}</strong>
+            <div style="font-size: 11px; margin-top: 5px;">Data: ___/___/______</div>
+          </div>
+        </div>
+        
+        <!-- RODAPÉ -->
+        <div style="margin-top: 30px; text-align: center; padding: 12px; background: #f5f5f5; font-size: 10px;">
+          <p>Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}</p>
+          <p>Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
+          <p style="color: #2d8a8a;">Designer Budget Pro • Sistema Profissional de Orçamentos</p>
+        </div>
+      </div>
     `;
+    
+    element.innerHTML = html;
+    document.body.appendChild(element);
     
     // Configurações do PDF
     const opt = {
-      margin: [10, 10, 10, 10],
+      margin: [1, 1, 1, 1],
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2,
-        letterRendering: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait'
-      }
+      html2canvas: { scale: 2, letterRendering: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     
-    // Criar elemento e gerar PDF
-    const element = document.createElement('div');
-    element.innerHTML = htmlContent;
-    element.style.position = 'absolute';
-    element.style.left = '-9999px';
-    element.style.top = '-9999px';
-    document.body.appendChild(element);
-    
+    // Gerar PDF
     html2pdf().set(opt).from(element).save().then(() => {
       document.body.removeChild(element);
     }).catch(err => {
