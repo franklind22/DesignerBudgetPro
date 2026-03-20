@@ -955,7 +955,7 @@ const app = {
     }
   },
   
- // ============================================
+// ============================================
 // TEMAS - VERSÃO CORRIGIDA
 // ============================================
 
@@ -1125,7 +1125,6 @@ toggleTheme() {
   
   Toast.success(`Modo ${isDark ? 'escuro' : 'claro'} ativado`);
 },
-  
   // Modo Foco
   toggleFocusMode() {
     this.focusMode = !this.focusMode;
