@@ -317,6 +317,59 @@
     .dark .text-xs {
         font-weight: 500 !important;
     }
+    /* ========== MÁXIMO CONTRASTE PARA INPUTS ========== */
+
+/* Fundo branco puro, texto preto */
+input, 
+select, 
+textarea {
+    color: #000000 !important; /* PRETO PURO */
+    font-weight: 500 !important;
+    background-color: #ffffff !important; /* BRANCO PURO */
+    border: 1px solid #9ca3af !important; /* borda mais escura */
+}
+
+/* Modo escuro - fundo escuro, texto branco puro */
+.dark input,
+.dark select,
+.dark textarea {
+    color: #ffffff !important; /* BRANCO PURO */
+    background-color: #000000 !important; /* PRETO PURO */
+    border: 1px solid #4b5563 !important;
+}
+
+/* Placeholders - ainda visíveis */
+input::placeholder,
+textarea::placeholder {
+    color: #6b7280 !important;
+    font-weight: 400 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+/* Select options */
+select option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+}
+
+.dark select option {
+    color: #ffffff !important;
+    background-color: #000000 !important;
+}
+
+/* Foco com destaque forte */
+input:focus, 
+select:focus, 
+textarea:focus {
+    border-color: var(--primary) !important;
+    outline: 2px solid var(--primary) !important;
+    outline-offset: 1px !important;
+    box-shadow: none !important;
+}
 </style>
   
 
