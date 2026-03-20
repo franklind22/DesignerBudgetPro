@@ -1684,8 +1684,6 @@ syncCalculatorWithSettings() {
   // GRÁFICOS - CORRIGIDO (sem loop infinito)
   // ============================================
   
-  initCharts() {
-    // Evitar múltiplas inicializações
 initCharts() {
     if (this._initChartsTimeout) {
         clearTimeout(this._initChartsTimeout);
