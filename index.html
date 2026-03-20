@@ -23,11 +23,63 @@
             danger: '#c91530',
             success: '#218040',
             warning: '#a84d2f',
+            status: {
+              'em-processo': '#FFA500',
+              'aprovado': '#218040',
+              'nao-aprovado': '#c91530',
+              'alterado': '#a84d2f',
+              'concluido': '#2d8a8a',
+              'pago': '#1a6b4d',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'slide-in': 'slideIn 0.3s ease-out',
+            'slide-out': 'slideOut 0.3s ease-out',
+            'fade-in': 'fadeIn 0.2s ease-out',
+            'scale-in': 'scaleIn 0.2s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'bounce-slow': 'bounce 2s infinite',
           }
         }
       }
     }
   </script>
+  
+  <!-- Estilos personalizados mínimos (só para animações que não estão no Tailwind) -->
+  <style>
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .focus-mode {
+      background: #000 !important;
+    }
+    
+    .focus-mode .bg-white,
+    .focus-mode .dark\:bg-gray-800 {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(10px);
+    }
+  </style>
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -77,7 +129,7 @@
             </button>
             <div id="notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 
                                                    rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden
-                                                   max-h-96 overflow-y-auto">
+                                                   max-h-96 overflow-y-auto z-50">
               <div id="notifications-list" class="p-2"></div>
             </div>
           </div>
@@ -143,7 +195,9 @@
       </div>
     </div>
 
+    <!-- ======================================== -->
     <!-- LOGIN VIEW -->
+    <!-- ======================================== -->
     <main id="login-view" class="hidden">
       <div class="min-h-[60vh] flex items-center justify-center">
         <div class="w-full max-w-md">
@@ -191,8 +245,11 @@
       </div>
     </main>
 
+    <!-- ======================================== -->
     <!-- DASHBOARD VIEW -->
+    <!-- ======================================== -->
     <main id="dashboard-view" class="active space-y-6">
+      <!-- Header -->
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg">
           <i class="fa-solid fa-chart-line text-xl"></i>
@@ -251,7 +308,8 @@
 
       <!-- Cards de Resumo -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <!-- Total Orçamentos -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
               <i class="fa-solid fa-file-invoice text-primary text-xl"></i>
@@ -262,7 +320,8 @@
           <div class="text-sm text-gray-600 dark:text-gray-400">Orçamentos criados</div>
         </div>
         
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <!-- Receita Total -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
               <i class="fa-solid fa-coins text-green-600 dark:text-green-400 text-xl"></i>
@@ -273,7 +332,8 @@
           <div class="text-sm text-gray-600 dark:text-gray-400">Valor total dos orçamentos</div>
         </div>
         
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <!-- Orçamentos Pagos -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
               <i class="fa-solid fa-circle-check text-blue-600 dark:text-blue-400 text-xl"></i>
@@ -290,6 +350,7 @@
 
       <!-- Gráficos -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Gráfico de Status -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
             <i class="fa-solid fa-chart-pie text-primary"></i>
@@ -298,6 +359,7 @@
           <canvas id="statusChart" width="400" height="200"></canvas>
         </div>
         
+        <!-- Gráfico de Receita Mensal -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
             <i class="fa-solid fa-chart-line text-primary"></i>
@@ -309,6 +371,7 @@
 
       <!-- Status Cards -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Em Processo -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
                     border-l-4 border-[#FFA500] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('em_processo')">
@@ -319,6 +382,7 @@
           </div>
         </div>
         
+        <!-- Aprovado -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
                     border-l-4 border-[#218040] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('aprovado')">
@@ -329,6 +393,7 @@
           </div>
         </div>
         
+        <!-- Não Aprovado -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
                     border-l-4 border-[#c91530] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('nao_aprovado')">
@@ -339,6 +404,7 @@
           </div>
         </div>
         
+        <!-- Alterado -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
                     border-l-4 border-[#a84d2f] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('alterado')">
@@ -349,6 +415,7 @@
           </div>
         </div>
         
+        <!-- Concluído -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
                     border-l-4 border-[#2d8a8a] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('concluido')">
@@ -359,6 +426,7 @@
           </div>
         </div>
         
+        <!-- Pago -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
                     border-l-4 border-[#1a6b4d] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('pago')">
@@ -397,7 +465,9 @@
       </div>
     </main>
 
+    <!-- ======================================== -->
     <!-- BUDGETS VIEW -->
+    <!-- ======================================== -->
     <main id="budgets-view" class="hidden space-y-6">
       <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Orçamentos</h1>
@@ -409,6 +479,7 @@
         </button>
       </div>
 
+      <!-- Filtro por Status -->
       <div class="max-w-xs">
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Filtrar por Status
@@ -427,10 +498,13 @@
         </select>
       </div>
 
+      <!-- Lista de Orçamentos -->
       <div id="budgets-list" class="space-y-4"></div>
     </main>
 
+    <!-- ======================================== -->
     <!-- CLIENTS VIEW -->
+    <!-- ======================================== -->
     <main id="clients-view" class="hidden space-y-6">
       <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Clientes</h1>
@@ -442,6 +516,7 @@
         </button>
       </div>
 
+      <!-- Busca -->
       <div class="max-w-md">
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -452,10 +527,13 @@
         </div>
       </div>
 
+      <!-- Lista de Clientes -->
       <div id="clients-list" class="space-y-4"></div>
     </main>
 
+    <!-- ======================================== -->
     <!-- SERVICES VIEW -->
+    <!-- ======================================== -->
     <main id="services-view" class="hidden space-y-6">
       <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Serviços</h1>
@@ -467,15 +545,20 @@
         </button>
       </div>
 
+      <!-- Accordion de Serviços -->
       <div id="services-accordion" class="space-y-3"></div>
     </main>
 
+    <!-- ======================================== -->
     <!-- SETTINGS VIEW -->
+    <!-- ======================================== -->
     <main id="settings-view" class="hidden space-y-6">
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Configurações</h1>
       
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Coluna Esquerda -->
         <div class="space-y-6">
+          <!-- Perfil -->
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <i class="fa-solid fa-user text-primary"></i>
@@ -525,6 +608,7 @@
             </div>
           </div>
 
+          <!-- Tema Personalizado -->
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <i class="fa-solid fa-palette text-primary"></i>
@@ -570,13 +654,16 @@
           </button>
         </div>
 
+        <!-- Coluna Direita -->
         <div class="space-y-6">
+          <!-- Calculadora -->
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <i class="fa-solid fa-calculator text-primary"></i>
               Calculadora de Hora
             </h3>
             
+            <!-- Tabs -->
             <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4">
               <button id="tab-hourly" onclick="app.switchCalcTab('hourly')" 
                       class="flex-1 py-2 text-sm font-medium border-b-2 border-primary text-primary">
@@ -590,6 +677,7 @@
               </button>
             </div>
 
+            <!-- Tab Valor/Hora -->
             <div id="calc-tab-hourly" class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -648,6 +736,7 @@
               </div>
             </div>
 
+            <!-- Tab Preço Projeto -->
             <div id="calc-tab-project" class="hidden space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -694,8 +783,10 @@
             </div>
           </div>
 
+          <!-- Backup e Exportação -->
           <div id="backup-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"></div>
 
+          <!-- Sobre -->
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
               <i class="fa-solid fa-circle-info text-primary"></i>
@@ -744,6 +835,13 @@
       </div>
     </main>
   </div>
+
+  <!-- Modo Foco Button -->
+  <button onclick="app.toggleFocusMode()" 
+          class="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-xl z-40">
+    <i class="fa-regular fa-eye"></i>
+  </button>
+
 
   <!-- Modo Foco Button -->
   <button onclick="app.toggleFocusMode()" 
