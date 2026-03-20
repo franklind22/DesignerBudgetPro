@@ -531,23 +531,25 @@
       <div id="clients-list" class="space-y-4"></div>
     </main>
 
-    <!-- ======================================== -->
-    <!-- SERVICES VIEW -->
-    <!-- ======================================== -->
-    <main id="services-view" class="hidden space-y-6">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Serviços</h1>
-        <button onclick="app.showAddServiceModal()" 
-                class="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                       transition-colors inline-flex items-center gap-2">
-          <i class="fa-solid fa-plus"></i>
-          Novo Serviço
-        </button>
-      </div>
+<!-- ======================================== -->
+<!-- SERVICES VIEW - CORRIGIDO -->
+<!-- ======================================== -->
+<main id="services-view" class="hidden space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Serviços</h1>
+    <button onclick="app.showAddServiceModal()" 
+            class="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
+                   transition-colors inline-flex items-center gap-2">
+      <i class="fa-solid fa-plus"></i>
+      Novo Serviço
+    </button>
+  </div>
 
-      <!-- Accordion de Serviços -->
-      <div id="services-accordion" class="space-y-3"></div>
-    </main>
+  <!-- Accordion de Serviços -->
+  <div id="services-accordion" class="space-y-3">
+    <!-- Os serviços serão inseridos aqui pelo JavaScript -->
+  </div>
+</main>
 
     <!-- ======================================== -->
     <!-- SETTINGS VIEW -->
