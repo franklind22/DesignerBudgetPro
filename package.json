@@ -1,0 +1,23 @@
+{
+  "name": "designerbudgetpro",
+  "version": "1.0.0",
+  "description": "App de Orçamentos e Gestão para Designers",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franklind22/DesignerBudgetPro.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franklind22/DesignerBudgetPro/issues"
+  },
+  "homepage": "https://github.com/franklind22/DesignerBudgetPro#readme",
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0"
+  }
+}
