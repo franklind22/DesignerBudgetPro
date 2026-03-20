@@ -3007,6 +3007,88 @@ filterClients() {
     this.updateClientsCount(); // Adicionar esta linha
 },
 
+// Busca rápida de serviços (para a view de serviços)
+filterServicesBySearch() {
+    const searchTerm = document.getElementById('service-search-quick')?.value?.toLowerCase() || '';
+    const accordion = document.getElementById('services-accordion');
+    
+    if (!accordion) return;
+    
+    // Para cada categoria, mostra/esconde os serviços que não correspondem
+    const categoryItems = accordion.querySelectorAll('.accordion-item');
+    
+    categoryItems.forEach(item => {
+        const serviceItems = item.querySelectorAll('.service-item');
+        let hasMatch = false;
+        
+        serviceItems.forEach(service => {
+            const serviceName = service.querySelector('.service-name')?.textContent?.toLowerCase() || '';
+            if (searchTerm === '' || serviceName.includes(searchTerm)) {
+                service.style.display = '';
+                hasMatch = true;
+            } else {
+                service.style.display = 'none';
+            }
+        });
+        
+        // Mostra/esconde a categoria inteira se não tiver serviços visíveis
+        if (searchTerm !== '' && !hasMatch) {
+            item.style.display = 'none';
+        } else {
+            item.style.display = '';
+        }
+        
+        // Atualiza o contador de resultados
+        if (searchTerm !== '') {
+            const visibleCount = Array.from(serviceItems).filter(s => s.style.display !== 'none').length;
+            const resultsSpan = document.getElementById('services-results-count');
+            if (resultsSpan) resultsSpan.textContent = visibleCount;
+        } else {
+            const totalServices = this.services?.length || 0;
+            const resultsSpan = document.getElementById('services-results-count');
+            if (resultsSpan) resultsSpan.textContent = totalServices;
+        }
+    });
+    
+    // Se não tiver busca, mostra o total
+    if (searchTerm === '') {
+        const resultsSpan = document.getElementById('services-results-count');
+        if (resultsSpan) resultsSpan.textContent = this.services?.length || 0;
+    }
+},
+
+// Atualizar estatísticas dos serviços
+updateServicesStats() {
+    const categories = [...new Set(this.services.map(s => s.category))];
+    const categoriesCount = document.getElementById('services-categories-count');
+    const totalCount = document.getElementById('services-total-count');
+    const resultsSpan = document.getElementById('services-results-count');
+    
+    if (categoriesCount) categoriesCount.textContent = categories.length;
+    if (totalCount) totalCount.textContent = this.services?.length || 0;
+    if (resultsSpan) resultsSpan.textContent = this.services?.length || 0;
+},
+
+// Modificar renderServicesList para atualizar estatísticas
+renderServicesList() {
+    // ... código existente ...
+    
+    // Após renderizar, atualizar estatísticas
+    this.updateServicesStats();
+    
+    // Verificar estado vazio
+    const emptyState = document.getElementById('services-empty-state');
+    const accordion = document.getElementById('services-accordion');
+    
+    if (Object.keys(grouped).length === 0) {
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (accordion) accordion.classList.add('hidden');
+    } else {
+        if (emptyState) emptyState.classList.add('hidden');
+        if (accordion) accordion.classList.remove('hidden');
+    }
+},
+
 // ============================================
 // EXPOSIÇÃO GLOBAL (FORA DO APP)
 // ============================================
