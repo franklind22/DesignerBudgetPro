@@ -951,10 +951,74 @@
                 </div>
             </div>
 
-            <!-- Backup -->
-            <div id="backup-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <!-- Conteúdo preenchido pelo renderBackupSection() -->
+           <!-- Backup - Versão Padronizada -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+        <h3 class="text-lg font-semibold flex items-center gap-2">
+            <i class="fa-solid fa-database text-primary"></i>
+            Backup e Restauração
+        </h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Proteja seus dados com backup automático</p>
+    </div>
+    <div class="p-6">
+        <!-- Status do Backup -->
+        <div class="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check-circle text-green-500 text-sm"></i>
+                <span class="text-xs text-green-700 dark:text-green-400">Backup automático ativo</span>
             </div>
+            <div class="flex items-center gap-1 text-xs text-gray-500">
+                <i class="fa-regular fa-clock"></i>
+                <span>A cada 5 minutos</span>
+            </div>
+        </div>
+        
+        <!-- Botões de Ação -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <button onclick="app.exportData()" 
+                    class="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                <i class="fa-solid fa-download text-sm"></i>
+                <span class="text-sm font-medium">Exportar Dados</span>
+            </button>
+            
+            <label class="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md">
+                <i class="fa-solid fa-upload text-sm"></i>
+                <span class="text-sm font-medium">Importar Dados</span>
+                <input type="file" accept=".json" onchange="app.importData(this.files[0])" class="hidden">
+            </label>
+        </div>
+        
+        <!-- Informações Adicionais -->
+        <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fa-solid fa-circle-info text-primary text-xs"></i>
+                <span class="text-xs font-medium text-gray-700 dark:text-gray-300">Informações:</span>
+            </div>
+            <div class="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+                <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-file-code w-4"></i>
+                    <span>Exporta todos os dados: clientes, serviços, orçamentos e configurações</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-clock w-4"></i>
+                    <span>Backups automáticos mantêm histórico das últimas 20 versões</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-folder-open w-4"></i>
+                    <span>Arquivo exportado no formato JSON compatível com o sistema</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Link para Histórico -->
+        <button onclick="app.showBackupHistory()" 
+                class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary-dark font-medium transition-colors border-t border-gray-200 dark:border-gray-700 pt-4">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Ver histórico de backups automáticos</span>
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+    </div>
+</div>
 
             <!-- Sobre -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
