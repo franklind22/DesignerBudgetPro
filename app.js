@@ -547,220 +547,175 @@ removeClient(id) {
   }
 };
 
-// PDF Template - VERSÃO ESTÁVEL COM QUEBRA CONTROLADA
+// PDF Template - VERSÃO PÁGINA ÚNICA DINÂMICA
 const pdfTemplate = {
-  gerarOrcamentoPDF(budget, settings) {
-    // Pegar cores do tema
-    const rootStyles = getComputedStyle(document.documentElement);
-    const primaryColor = rootStyles.getPropertyValue('--primary').trim() || '#2d8a8a';
-    const primaryDark = rootStyles.getPropertyValue('--primary-dark').trim() || '#1e5f5f';
-    
-    // Calcular datas
-    const validityDate = new Date(budget.date);
-    validityDate.setDate(validityDate.getDate() + (budget.validity || 30));
-    
-    // Agrupar serviços por categoria
-    const servicesByCategory = {};
-    budget.services?.forEach(s => {
-      if (!servicesByCategory[s.category]) {
-        servicesByCategory[s.category] = [];
-      }
-      servicesByCategory[s.category].push(s);
-    });
-    
-    // Criar container principal
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.style.top = '-9999px';
-    container.style.width = '800px';
-    container.style.backgroundColor = 'white';
-    container.style.fontFamily = "'Inter', 'Segoe UI', Arial, sans-serif";
-    container.style.padding = '0';
-    container.style.margin = '0';
-    
-    // Construir HTML
-    let html = `
-      <div style="padding: 20px; background: white;">
+    gerarOrcamentoPDF(budget, settings) {
+        // 1. Pegar cores do tema ou usar fallbacks
+        const rootStyles = getComputedStyle(document.documentElement);
+        const primaryColor = rootStyles.getPropertyValue('--primary').trim() || '#2d8a8a';
+        const primaryDark = rootStyles.getPropertyValue('--primary-dark').trim() || '#1e5f5f';
         
-        <!-- CABEÇALHO -->
-        <div style="background: ${primaryColor}; color: white; padding: 30px; border-radius: 12px 12px 0 0;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-            <div>
-              <h1 style="margin: 0; font-size: 24px;">PROPOSTA COMERCIAL</h1>
-              <p style="margin: 8px 0 0;">${settings.name || 'Designer Profissional'}</p>
-              ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px;">${settings.email}</p>` : ''}
-            </div>
-            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 30px;">
-              <div style="font-size: 10px;">Nº</div>
-              <div style="font-size: 16px; font-weight: bold;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
-            </div>
-          </div>
-        </div>
+        // 2. Calcular datas
+        const validityDate = new Date(budget.date);
+        validityDate.setDate(validityDate.getDate() + (budget.validity || 30));
         
-        <!-- INFORMAÇÕES -->
-        <div style="display: flex; flex-wrap: wrap; gap: 15px; padding: 20px; background: #f8f9fa; border-bottom: 1px solid #ddd;">
-          <div style="flex: 1;">
-            <div style="font-size: 11px; color: #666;">CLIENTE</div>
-            <div style="font-weight: bold;">${budget.clientName}</div>
-          </div>
-          <div style="flex: 1;">
-            <div style="font-size: 11px; color: #666;">DATA</div>
-            <div style="font-weight: bold;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
-          </div>
-          <div style="flex: 1;">
-            <div style="font-size: 11px; color: #666;">VALIDADE</div>
-            <div style="font-weight: bold;">${validityDate.toLocaleDateString('pt-BR')}</div>
-          </div>
-          <div style="flex: 1;">
-            <div style="font-size: 11px; color: #666;">PROJETO</div>
-            <div style="font-weight: bold;">${budget.projectName || 'Não especificado'}</div>
-          </div>
-        </div>
-        
-        <!-- SERVIÇOS -->
-        <div style="padding: 20px;">
-          <h2 style="color: ${primaryColor}; font-size: 20px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 8px; margin-bottom: 20px;">SERVIÇOS</h2>
-    `;
-    
-    // Adicionar serviços
-    for (const [category, items] of Object.entries(servicesByCategory)) {
-      html += `
-        <div style="margin-bottom: 25px;">
-          <div style="background: ${primaryDark}15; padding: 8px 12px; font-weight: bold; margin-bottom: 10px;">${category}</div>
-          <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-              <tr style="border-bottom: 1px solid #ddd;">
-                <th style="text-align: left; padding: 8px;">Serviço</th>
-                <th style="text-align: center; padding: 8px; width: 60px;">Qtd</th>
-                <th style="text-align: right; padding: 8px; width: 100px;">Valor Unit.</th>
-                <th style="text-align: right; padding: 8px; width: 100px;">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-      `;
-      
-      for (const s of items) {
-        const price = s.customPrice || s.price;
-        const total = price * s.qty;
-        html += `
-          <tr style="border-bottom: 1px solid #f0f0f0;">
-            <td style="padding: 8px;">${s.name}</td>
-            <td style="text-align: center; padding: 8px;">${s.qty}</td>
-            <td style="text-align: right; padding: 8px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
-            <td style="text-align: right; padding: 8px;">R$ ${total.toFixed(2).replace('.', ',')}</td>
-          </tr>
-        `;
-      }
-      
-      html += `
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-    
-    // Condições de Pagamento
-    if (budget.paymentTerms) {
-      html += `
-        <div style="margin: 20px 0; background: #e8f0fe; border-left: 4px solid ${primaryColor}; padding: 12px;">
-          <strong>💰 CONDIÇÕES DE PAGAMENTO</strong>
-          <p style="margin: 8px 0 0;">${budget.paymentTerms}</p>
-        </div>
-      `;
-    }
-    
-    // Total
-    html += `
-        <div style="margin: 20px 0; text-align: right;">
-          <div style="background: #f8f9fa; display: inline-block; padding: 15px 25px; border-radius: 8px;">
-            <div><strong>Subtotal:</strong> R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</div>
-            ${budget.hoursWorked > 0 ? `<div style="margin-top: 8px;"><strong>Horas (${budget.hoursWorked}h):</strong> R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</div>` : ''}
-            <div style="border-top: 2px solid ${primaryColor}; margin-top: 10px; padding-top: 10px; font-size: 16px; font-weight: bold; color: ${primaryColor};">
-              <strong>TOTAL:</strong> R$ ${budget.total.toFixed(2).replace('.', ',')}
-            </div>
-          </div>
-        </div>
-        
-        <!-- OBSERVAÇÕES -->
-        <div style="margin: 20px 0; background: #fff9e6; border-left: 4px solid #fbbf24; padding: 12px;">
-          <strong>📝 OBSERVAÇÕES</strong>
-          <p style="margin: 8px 0 0;">${budget.notes || 'Nenhuma observação adicional.'}</p>
-        </div>
-        
-        <!-- ASSINATURAS -->
-        <div style="margin: 30px 0 20px; display: flex; justify-content: space-between; gap: 40px;">
-          <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 12px;">
-            <strong>Cliente</strong>
-            <div style="font-size: 11px;">Data: ___/___/______</div>
-          </div>
-          <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 12px;">
-            <strong>${settings.name || 'Designer'}</strong>
-            <div style="font-size: 11px;">Data: ___/___/______</div>
-          </div>
-        </div>
-        
-        <!-- RODAPÉ -->
-        <div style="margin-top: 20px; text-align: center; padding: 12px; background: #f1f3f5; font-size: 10px;">
-          <p>Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}</p>
-          <p>Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
-          <p style="color: ${primaryColor};">Designer Budget Pro</p>
-        </div>
-      </div>
-    `;
-    
-    container.innerHTML = html;
-    document.body.appendChild(container);
-    
-    // Aguardar renderização
-    setTimeout(() => {
-      // Usar html2canvas para capturar todo o conteúdo
-      html2canvas(container, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        logging: false,
-        useCORS: false
-      }).then(canvas => {
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        const { jsPDF } = window.jspdf;
-        
-        // Configurações do PDF
-        const imgWidth = 190; // mm (largura A4 - margens)
-        const pageHeight = 277; // mm (altura A4 - margens)
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
-        let heightLeft = imgHeight;
-        let position = 0;
-        let page = 1;
-        
-        // Criar PDF
-        const pdf = new jsPDF({
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait'
+        // 3. Agrupar serviços por categoria
+        const servicesByCategory = {};
+        budget.services?.forEach(s => {
+            if (!servicesByCategory[s.category]) {
+                servicesByCategory[s.category] = [];
+            }
+            servicesByCategory[s.category].push(s);
         });
         
-        // Adicionar primeira página
-        pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        // 4. Criar container invisível para renderização
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.top = '-9999px';
+        container.style.width = '800px'; // Largura fixa para garantir consistência no canvas
+        container.style.backgroundColor = 'white';
+        container.style.fontFamily = "'Inter', 'Segoe UI', Arial, sans-serif";
+        container.style.padding = '0';
+        container.style.margin = '0';
         
-        // Adicionar páginas extras se necessário
-        while (heightLeft > 0) {
-          position = position - pageHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-          page++;
+        // 5. Construir o HTML do PDF
+        let html = `
+            <div style="padding: 25px; background: white;">
+                
+                <div style="background: ${primaryColor}; color: white; padding: 30px; border-radius: 12px 12px 0 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1 style="margin: 0; font-size: 26px; letter-spacing: 1px;">PROPOSTA COMERCIAL</h1>
+                            <p style="margin: 8px 0 0; font-size: 16px;">${settings.name || 'Profissional'}</p>
+                            ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px; opacity: 0.9;">${settings.email}</p>` : ''}
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 10px; text-transform: uppercase;">Nº Documento</div>
+                            <div style="font-size: 18px; font-weight: bold;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; padding: 20px; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                    <div style="flex: 1;"><small style="color: #000; font-size: 10px;">CLIENTE</small><br><strong>${budget.clientName}</strong></div>
+                    <div style="flex: 1;"><small style="color: #000; font-size: 10px;">DATA EMISSÃO</small><br><strong>${new Date(budget.date).toLocaleDateString('pt-BR')}</strong></div>
+                    <div style="flex: 1;"><small style="color: #000; font-size: 10px;">VALIDADE</small><br><strong>${validityDate.toLocaleDateString('pt-BR')}</strong></div>
+                    <div style="flex: 2;"><small style="color: #000; font-size: 10px;">PROJETO</small><br><strong>${budget.projectName || 'Geral'}</strong></div>
+                </div>
+                
+                <div style="padding: 20px;">
+                    <h2 style="color: ${primaryColor}; font-size: 18px; border-left: 4px solid ${primaryColor}; padding-left: 10px; margin-bottom: 20px;">DETALHAMENTO DOS SERVIÇOS</h2>
+        `;
+
+        for (const [category, items] of Object.entries(servicesByCategory)) {
+            html += `
+                <div style="margin-bottom: 25px;">
+                    <div style="background: ${primaryDark}10; padding: 6px 12px; font-weight: bold; color: ${primaryDark}; margin-bottom: 5px; border-radius: 4px;">${category}</div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #eee; font-size: 12px; color: #666;">
+                                <th style="text-align: left; padding: 10px;">DESCRIÇÃO</th>
+                                <th style="text-align: center; padding: 10px; width: 50px;">QTD</th>
+                                <th style="text-align: right; padding: 10px; width: 100px;">UNITÁRIO</th>
+                                <th style="text-align: right; padding: 10px; width: 100px;">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            items.forEach(s => {
+                const price = s.customPrice || s.price;
+                const total = price * s.qty;
+                html += `
+                    <tr style="border-bottom: 1px solid #f5f5f5; font-size: 13px;">
+                        <td style="padding: 10px;">${s.name}</td>
+                        <td style="text-align: center; padding: 10px;">${s.qty}</td>
+                        <td style="text-align: right; padding: 10px;">R$ ${price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                        <td style="text-align: right; padding: 10px; font-weight: 500;">R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table></div>`;
         }
         
-        pdf.save(`orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`);
-        document.body.removeChild(container);
-      }).catch(err => {
-        console.error('Erro ao gerar imagem:', err);
-        document.body.removeChild(container);
-      });
-    }, 500);
-  }
+        // TOTAIS E PAGAMENTO
+        html += `
+                <div style="display: flex; justify-content: space-between; margin-top: 30px; gap: 20px;">
+                    <div style="flex: 1.5;">
+                        ${budget.paymentTerms ? `
+                            <div style="background: #f0f7ff; border-radius: 8px; padding: 15px; border: 1px solid #d0e3ff;">
+                                <strong style="color: #0056b3; font-size: 12px;">CONDIÇÕES DE PAGAMENTO</strong>
+                                <p style="margin: 5px 0 0; font-size: 13px; color: #333;">${budget.paymentTerms}</p>
+                            </div>
+                        ` : ''}
+                        <div style="margin-top: 15px; background: #fff9e6; border-radius: 8px; padding: 15px; border: 1px solid #ffeeba;">
+                            <strong style="color: #856404; font-size: 12px;">OBSERVAÇÕES</strong>
+                            <p style="margin: 5px 0 0; font-size: 13px; color: #333;">${budget.notes || 'Sem observações.'}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1; text-align: right;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee;">
+                            <div style="margin-bottom: 5px; color: #666;">Subtotal: R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                            ${budget.hoursWorked > 0 ? `<div style="margin-bottom: 5px; color: #666;">Horas (${budget.hoursWorked}h): R$ ${budget.hoursCost.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>` : ''}
+                            <div style="border-top: 2px solid ${primaryColor}; margin-top: 10px; padding-top: 10px;">
+                                <span style="font-size: 14px; font-weight: bold;">TOTAL GERAL:</span><br>
+                                <span style="font-size: 24px; font-weight: 900; color: ${primaryColor};">R$ ${budget.total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px; display: flex; justify-content: space-between; gap: 50px; padding-bottom: 20px;">
+                    <div style="flex: 1; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">
+                        <span style="font-size: 12px; color: #000;">Aceite do Cliente</span>
+                    </div>
+                    <div style="flex: 1; text-align: center; border-top: 1px solid #ddd; padding-top: 10px;">
+                        <span style="font-size: 12px; color: #000;">${settings.name || 'Responsável'}</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; font-size: 10px; color: #000; margin-top: 20px; border-top: 1px solid #f5f5f5; padding-top: 15px;">
+                    Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')} • Válido até ${validityDate.toLocaleDateString('pt-BR')}
+                </div>
+            </div>
+        `;
+        
+        container.innerHTML = html;
+        document.body.appendChild(container);
+        
+        // 6. Gerar o PDF
+        setTimeout(() => {
+            html2canvas(container, {
+                scale: 2, // Alta qualidade
+                backgroundColor: '#ffffff',
+                useCORS: true
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const { jsPDF } = window.jspdf;
+                
+                // CÁLCULO DE PÁGINA ÚNICA DINÂMICA
+                const pdfWidth = 210; // Largura A4 padrão em mm
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width; // Altura proporcional ao conteúdo
+                
+                const pdf = new jsPDF({
+                    unit: 'mm',
+                    format: [pdfWidth, pdfHeight], // PDF assume o tamanho do conteúdo
+                    orientation: 'portrait'
+                });
+                
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`orcamento_${budget.clientName.replace(/\s+/g, '_')}.pdf`);
+                
+                document.body.removeChild(container);
+            }).catch(err => {
+                console.error('Erro na geração:', err);
+                document.body.removeChild(container);
+            });
+        }, 600);
+    }
 };
 // ============================================
 // APLICAÇÃO PRINCIPAL - VERSÃO CORRIGIDA
