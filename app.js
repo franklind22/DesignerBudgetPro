@@ -547,32 +547,34 @@ removeClient(id) {
   }
 };
 
-// PDF Template Moderno - VERSÃO CONTÍNUA (altura variável)
+// PDF Template - VERSÃO COMPLETA COM TODAS AS FUNCIONALIDADES
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
-    const element = document.createElement('div');
-    element.className = 'pdf-container';
-    
     // Calcular datas
-    const today = new Date();
     const validityDate = new Date(budget.date);
     validityDate.setDate(validityDate.getDate() + (budget.validity || 30));
     
-    // Pegar cores do tema ou usar padrão
+    // Pegar cores do tema
     const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2d8a8a';
     const primaryDark = getComputedStyle(document.documentElement).getPropertyValue('--primary-dark').trim() || '#1e5f5f';
     
     // Calcular quantidade total de serviços
     const totalItems = budget.services?.length || 0;
     
-    // Definir tamanhos de fonte baseado na quantidade de serviços
+    // AJUSTE DINÂMICO DE FONTE (restaurado)
     let baseFontSize = 12;
     let titleFontSize = 20;
     let headerFontSize = 28;
     let tableFontSize = 11;
     let paddingSize = 30;
     
-    if (totalItems > 15) {
+    if (totalItems > 20) {
+      baseFontSize = 8;
+      titleFontSize = 14;
+      headerFontSize = 20;
+      tableFontSize = 7;
+      paddingSize = 18;
+    } else if (totalItems > 15) {
       baseFontSize = 9;
       titleFontSize = 16;
       headerFontSize = 22;
@@ -601,170 +603,418 @@ const pdfTemplate = {
       servicesByCategory[s.category].push(s);
     });
     
-    element.innerHTML = `
-      <div style="font-family: 'Inter', 'Segoe UI', sans-serif; width: 210mm; background: white; color: #000000; box-sizing: border-box; font-size: ${baseFontSize}px; margin: 0 auto;">
-        
-        <!-- Cabeçalho com estilo abstrato -->
-        <div style="background: ${primaryColor}; color: white; padding: ${paddingSize}px ${paddingSize}px; position: relative; overflow: hidden;">
-          <!-- Elementos abstratos de fundo -->
-          <div style="position: absolute; top: -50px; right: -30px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-          <div style="position: absolute; bottom: -40px; left: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-          <div style="position: absolute; top: 50%; left: 20%; width: 80px; height: 80px; background: rgba(255,255,255,0.03); border-radius: 50%; transform: translateY(-50%);"></div>
-          <div style="position: absolute; bottom: 10px; right: 15%; width: 60px; height: 60px; background: rgba(255,255,255,0.03); border-radius: 50%;"></div>
+    // Construir HTML dos serviços
+    let servicesHTML = '';
+    
+    for (const [category, items] of Object.entries(servicesByCategory)) {
+      servicesHTML += `
+        <div style="margin-bottom: 20px; page-break-inside: avoid; break-inside: avoid;">
+          <h3 style="background: #f0f4f4; padding: 8px 12px; margin: 0 0 10px 0; font-size: ${baseFontSize + 2}px; color: ${primaryDark};">${category}</h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+                <th style="text-align: left; padding: 8px; font-size: ${tableFontSize}px;">Serviço</th>
+                <th style="text-align: center; padding: 8px; width: 60px; font-size: ${tableFontSize}px;">Qtd</th>
+                <th style="text-align: right; padding: 8px; width: 100px; font-size: ${tableFontSize}px;">Valor Unit.</th>
+                <th style="text-align: right; padding: 8px; width: 100px; font-size: ${tableFontSize}px;">Total</th>
+               </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      for (const s of items) {
+        const price = s.customPrice || s.price;
+        const total = price * s.qty;
+        servicesHTML += `
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 8px; font-size: ${tableFontSize}px;">${s.name}</td>
+            <td style="text-align: center; padding: 8px; font-size: ${tableFontSize}px;">${s.qty}</td>
+            <td style="text-align: right; padding: 8px; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
+            <td style="text-align: right; padding: 8px; font-size: ${tableFontSize}px; font-weight: 500;">R$ ${total.toFixed(2).replace('.', ',')}</td>
+           </tr>
+        `;
+      }
+      
+      servicesHTML += `
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    // Montar HTML completo
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Orçamento ${budget.docNumber}</title>
+        <style>
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: white;
+            color: #000;
+          }
+          .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+          }
           
-          <!-- Conteúdo do cabeçalho -->
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; position: relative; z-index: 2;">
+          /* Cabeçalho com elementos abstratos */
+          .header {
+            background: ${primaryColor};
+            color: white;
+            padding: ${paddingSize}px;
+            position: relative;
+            overflow: hidden;
+          }
+          .header-bg-1 {
+            position: absolute;
+            top: -50px;
+            right: -30px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+          }
+          .header-bg-2 {
+            position: absolute;
+            bottom: -40px;
+            left: -20px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+          }
+          .header-bg-3 {
+            position: absolute;
+            top: 50%;
+            left: 20%;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            transform: translateY(-50%);
+          }
+          .header-bg-4 {
+            position: absolute;
+            bottom: 10px;
+            right: 15%;
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+          }
+          .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+          }
+          .header-title {
+            font-size: ${headerFontSize}px;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+          }
+          .header-subtitle {
+            margin: 8px 0 0;
+            opacity: 0.85;
+            font-size: ${baseFontSize + 2}px;
+          }
+          .header-email {
+            margin: 4px 0 0;
+            opacity: 0.7;
+            font-size: ${baseFontSize - 1}px;
+          }
+          .header-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 18px;
+            border-radius: 40px;
+            text-align: center;
+          }
+          .header-badge-label {
+            font-size: ${baseFontSize - 2}px;
+            opacity: 0.8;
+          }
+          .header-badge-number {
+            font-size: ${baseFontSize + 4}px;
+            font-weight: bold;
+          }
+          
+          /* Informações */
+          .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            background: #f8f9fa;
+            padding: ${paddingSize - 10}px ${paddingSize}px;
+            border-bottom: 1px solid #e9ecef;
+          }
+          .info-label {
+            color: #6c757d;
+            font-size: ${baseFontSize - 2}px;
+            margin-bottom: 4px;
+          }
+          .info-value {
+            font-weight: 600;
+            font-size: ${baseFontSize}px;
+          }
+          
+          /* Serviços */
+          .services-section {
+            padding: ${paddingSize - 10}px ${paddingSize}px;
+          }
+          .section-title {
+            color: ${primaryColor};
+            font-size: ${titleFontSize}px;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid ${primaryColor};
+            padding-bottom: 8px;
+          }
+          
+          /* Condições de Pagamento */
+          .payment-terms {
+            margin: 0 ${paddingSize}px 15px;
+          }
+          .payment-box {
+            background: #e8f0fe;
+            border-left: 4px solid ${primaryColor};
+            padding: 12px 15px;
+            border-radius: 8px;
+          }
+          
+          /* Total */
+          .total-box {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            max-width: 320px;
+            margin: 0 ${paddingSize}px 20px;
+            margin-left: auto;
+          }
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: ${baseFontSize - 1}px;
+          }
+          .total-grand {
+            border-top: 2px solid ${primaryColor};
+            margin-top: 5px;
+            padding-top: 10px;
+            font-size: ${baseFontSize + 4}px;
+            font-weight: bold;
+            color: ${primaryColor};
+          }
+          
+          /* Observações */
+          .notes {
+            background: #fff9e6;
+            border-left: 4px solid #fbbf24;
+            padding: 12px 15px;
+            margin: 0 ${paddingSize}px 20px;
+            border-radius: 8px;
+          }
+          .notes strong {
+            color: #b45309;
+            font-size: ${baseFontSize - 1}px;
+            display: block;
+            margin-bottom: 6px;
+          }
+          .notes p {
+            margin: 0;
+            font-size: ${baseFontSize - 1}px;
+            line-height: 1.4;
+          }
+          
+          /* Assinaturas */
+          .signatures {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin: 10px ${paddingSize}px 25px;
+          }
+          .signature {
+            flex: 1;
+            text-align: center;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 12px;
+          }
+          .signature strong {
+            font-size: ${baseFontSize - 1}px;
+          }
+          .signature-date {
+            font-size: ${baseFontSize - 3}px;
+            color: #6c757d;
+            margin-top: 8px;
+          }
+          
+          /* Rodapé */
+          .footer {
+            background: #f1f3f5;
+            text-align: center;
+            padding: 12px ${paddingSize}px;
+            margin-top: 10px;
+          }
+          .footer p {
+            margin: 5px 0;
+            font-size: ${baseFontSize - 3}px;
+            color: #495057;
+          }
+          .footer-brand {
+            color: ${primaryColor} !important;
+          }
+          .page-number {
+            margin-top: 8px;
+            font-size: ${baseFontSize - 4}px;
+            color: #6c757d;
+          }
+          
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          th, td {
+            padding: 8px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <!-- Cabeçalho com elementos abstratos -->
+          <div class="header">
+            <div class="header-bg-1"></div>
+            <div class="header-bg-2"></div>
+            <div class="header-bg-3"></div>
+            <div class="header-bg-4"></div>
+            <div class="header-content">
+              <div>
+                <h1 class="header-title">PROPOSTA COMERCIAL</h1>
+                <p class="header-subtitle">${settings.name || 'Designer Profissional'}</p>
+                ${settings.email ? `<p class="header-email">${settings.email}</p>` : ''}
+              </div>
+              <div class="header-badge">
+                <div class="header-badge-label">Nº</div>
+                <div class="header-badge-number">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Informações -->
+          <div class="info-grid">
             <div>
-              <h1 style="font-size: ${headerFontSize}px; margin: 0; font-weight: 700; color: white; letter-spacing: -0.5px;">PROPOSTA COMERCIAL</h1>
-              <p style="margin: 8px 0 0; opacity: 0.85; font-size: ${baseFontSize + 2}px; color: white;">${settings.name || 'Designer Profissional'}</p>
-              ${settings.email ? `<p style="margin: 4px 0 0; opacity: 0.7; font-size: ${baseFontSize - 1}px; color: white;">${settings.email}</p>` : ''}
+              <div class="info-label">CLIENTE</div>
+              <div class="info-value">${budget.clientName}</div>
             </div>
-            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(4px); padding: 8px 18px; border-radius: 40px; text-align: center;">
-              <div style="font-size: ${baseFontSize - 2}px; color: white; opacity: 0.8;">Nº</div>
-              <div style="font-size: ${baseFontSize + 4}px; font-weight: bold; color: white;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
+            <div>
+              <div class="info-label">DATA</div>
+              <div class="info-value">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
+            </div>
+            <div>
+              <div class="info-label">VALIDADE</div>
+              <div class="info-value">${validityDate.toLocaleDateString('pt-BR')}</div>
+            </div>
+            <div>
+              <div class="info-label">PROJETO</div>
+              <div class="info-value">${budget.projectName || 'Não especificado'}</div>
             </div>
           </div>
-        </div>
-        
-        <!-- Informações do orçamento -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: ${paddingSize - 10}px ${paddingSize}px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
-          <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">CLIENTE</div>
-            <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${budget.clientName}</div>
-          </div>
-          <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">DATA</div>
-            <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
-          </div>
-          <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">VALIDADE</div>
-            <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${validityDate.toLocaleDateString('pt-BR')}</div>
-          </div>
-          <div>
-            <div style="font-size: ${baseFontSize - 2}px; color: #6c757d; margin-bottom: 4px;">PROJETO</div>
-            <div style="font-size: ${baseFontSize}px; font-weight: 600; color: #000000;">${budget.projectName || 'Não especificado'}</div>
-          </div>
-        </div>
-        
-        <!-- Tabela de serviços -->
-        <div style="padding: ${paddingSize - 10}px ${paddingSize}px;">
-          <h2 style="color: ${primaryColor}; margin: 0 0 15px 0; font-size: ${titleFontSize}px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 8px;">SERVIÇOS</h2>
           
-          ${Object.entries(servicesByCategory).map(([category, items]) => `
-            <div style="margin-bottom: 20px;">
-              <h3 style="color: ${primaryDark}; margin: 0 0 10px 0; font-size: ${baseFontSize + 2}px; background: #f0f4f4; padding: 6px 12px; border-radius: 4px;">${category}</h3>
-              <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                  <tr style="border-bottom: 1px solid #dee2e6;">
-                    <th style="text-align: left; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 50%;">Serviço</th>
-                    <th style="text-align: center; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 15%;">Qtd</th>
-                    <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Valor Unit.</th>
-                    <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${items.map(s => {
-                    const price = s.customPrice || s.price;
-                    const total = price * s.qty;
-                    return `
-                      <tr style="border-bottom: 1px solid #f1f3f5;">
-                        <td style="text-align: left; padding: 8px 8px; color: #000000; font-size: ${tableFontSize}px;">${s.name}</td>
-                        <td style="text-align: center; padding: 8px 8px; color: #000000; font-size: ${tableFontSize}px;">${s.qty}</td>
-                        <td style="text-align: right; padding: 8px 8px; color: #000000; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
-                        <td style="text-align: right; padding: 8px 8px; font-weight: 500; color: #000000; font-size: ${tableFontSize}px;">R$ ${total.toFixed(2).replace('.', ',')}</td>
-                      </tr>
-                    `;
-                  }).join('')}
-                </tbody>
-              </table>
-            </div>
-          `).join('')}
-        </div>
-        
-        <!-- Condições de Pagamento -->
-        ${budget.paymentTerms ? `
-        <div style="padding: 0 ${paddingSize}px 15px;">
-          <div style="background: #e8f0fe; border-left: 4px solid ${primaryColor}; padding: 12px 15px; border-radius: 8px;">
-            <strong style="color: ${primaryColor}; font-size: ${baseFontSize - 1}px; display: block; margin-bottom: 6px;">💰 CONDIÇÕES DE PAGAMENTO:</strong>
-            <p style="margin: 0; color: #000000; font-size: ${baseFontSize - 1}px; line-height: 1.4;">${budget.paymentTerms}</p>
+          <!-- Serviços -->
+          <div class="services-section">
+            <h2 class="section-title">SERVIÇOS</h2>
+            ${servicesHTML}
           </div>
-        </div>
-        ` : ''}
-        
-        <!-- Resumo financeiro -->
-        <div style="padding: 0 ${paddingSize}px 20px;">
-          <div style="background: #f8f9fa; border-radius: 10px; padding: 15px 20px; max-width: 320px; margin-left: auto;">
-            <div style="display: flex; justify-content: space-between; padding: 6px 0;">
-              <span style="color: #495057; font-size: ${baseFontSize - 1}px;">Subtotal:</span>
-              <span style="font-weight: 600; color: #000000; font-size: ${baseFontSize - 1}px;">R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
+          
+          <!-- Condições de Pagamento -->
+          ${budget.paymentTerms ? `
+          <div class="payment-terms">
+            <div class="payment-box">
+              <strong style="color: ${primaryColor};">💰 CONDIÇÕES DE PAGAMENTO:</strong>
+              <p style="margin: 8px 0 0; font-size: ${baseFontSize - 1}px;">${budget.paymentTerms}</p>
+            </div>
+          </div>
+          ` : ''}
+          
+          <!-- Total -->
+          <div class="total-box">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span>R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
             </div>
             ${budget.hoursWorked > 0 ? `
-            <div style="display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid #e9ecef;">
-              <span style="color: #495057; font-size: ${baseFontSize - 1}px;">Horas (${budget.hoursWorked}h):</span>
-              <span style="font-weight: 600; color: #000000; font-size: ${baseFontSize - 1}px;">R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</span>
+            <div class="total-row">
+              <span>Horas (${budget.hoursWorked}h):</span>
+              <span>R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</span>
             </div>
             ` : ''}
-            <div style="display: flex; justify-content: space-between; padding: 10px 0 5px; border-top: 2px solid ${primaryColor}; margin-top: 5px;">
-              <span style="font-size: ${baseFontSize + 4}px; font-weight: 700; color: ${primaryColor};">TOTAL:</span>
-              <span style="font-size: ${baseFontSize + 4}px; font-weight: 700; color: ${primaryColor};">R$ ${budget.total.toFixed(2).replace('.', ',')}</span>
+            <div class="total-row total-grand">
+              <span>TOTAL:</span>
+              <span>R$ ${budget.total.toFixed(2).replace('.', ',')}</span>
+            </div>
+          </div>
+          
+          <!-- Observações -->
+          <div class="notes">
+            <strong>📝 OBSERVAÇÕES:</strong>
+            <p>${budget.notes || 'Nenhuma observação adicional.'}</p>
+          </div>
+          
+          <!-- Assinaturas -->
+          <div class="signatures">
+            <div class="signature">
+              <strong>Cliente</strong>
+              <div class="signature-date">Data: ___/___/______</div>
+            </div>
+            <div class="signature">
+              <strong>${settings.name || 'Designer'}</strong>
+              <div class="signature-date">Data: ___/___/______</div>
+            </div>
+          </div>
+          
+          <!-- Rodapé com número de página -->
+          <div class="footer">
+            <p>Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}</p>
+            <p>Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
+            <p class="footer-brand">Designer Budget Pro • Sistema Profissional de Orçamentos</p>
+            <div class="page-number">
+              <span class="pageNumber"></span> de <span class="totalPages"></span>
             </div>
           </div>
         </div>
         
-        <!-- Observações -->
-        <div style="padding: 0 ${paddingSize}px 20px;">
-          <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 12px 15px; border-radius: 8px;">
-            <strong style="color: #b45309; font-size: ${baseFontSize - 1}px; display: block; margin-bottom: 6px;">📝 OBSERVAÇÕES:</strong>
-            <p style="margin: 0; color: #000000; font-size: ${baseFontSize - 1}px; line-height: 1.4;">${budget.notes || 'Nenhuma observação adicional.'}</p>
-          </div>
-        </div>
-        
-        <!-- Assinaturas -->
-        <div style="padding: 10px ${paddingSize}px 25px;">
-          <div style="display: flex; justify-content: space-between; gap: 40px; margin-top: 10px;">
-            <div style="flex: 1; text-align: center;">
-              <div style="border-top: 1px solid #cbd5e1; padding-top: 12px;">
-                <strong style="color: #000000; font-size: ${baseFontSize - 1}px;">Cliente</strong>
-              </div>
-              <p style="margin: 8px 0 0; font-size: ${baseFontSize - 2}px; color: #6c757d;">Data: ___/___/______</p>
-            </div>
-            <div style="flex: 1; text-align: center;">
-              <div style="border-top: 1px solid #cbd5e1; padding-top: 12px;">
-                <strong style="color: #000000; font-size: ${baseFontSize - 1}px;">${settings.name || 'Designer'}</strong>
-              </div>
-              <p style="margin: 8px 0 0; font-size: ${baseFontSize - 2}px; color: #6c757d;">Data: ___/___/______</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- RODAPÉ (sem quebra de página) -->
-        <div style="padding: 12px ${paddingSize}px; text-align: center; background: #f1f3f5;">
-          <p style="margin: 0; font-size: ${baseFontSize - 3}px; color: #495057;">
-            Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
-          </p>
-          <p style="margin: 5px 0 0; font-size: ${baseFontSize - 4}px; color: #6c757d;">
-            Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
-          </p>
-          <p style="margin: 5px 0 0; font-size: ${baseFontSize - 2}px; color: ${primaryColor};">
-            Designer Budget Pro • Sistema Profissional de Orçamentos
-          </p>
-        </div>
-      </div>
+        <!-- Script para número de páginas -->
+        <script>
+          // Aguarda o PDF ser gerado para atualizar os números de página
+          setTimeout(() => {
+            const pages = document.querySelectorAll('.pageNumber');
+            const totals = document.querySelectorAll('.totalPages');
+            // O html2pdf.js atualiza automaticamente estes elementos
+          }, 100);
+        </script>
+      </body>
+      </html>
     `;
     
-    // Configurações do PDF - MODO CONTÍNUO (altura automática)
+    // Configurações do PDF
     const opt = {
-      margin: [0, 0, 0, 0], // Sem margens para o conteúdo contínuo
+      margin: [5, 5, 5, 5],
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2,
         letterRendering: true,
-        useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff',
-        scrollY: 0,
-        windowWidth: element.scrollWidth
+        backgroundColor: '#ffffff'
       },
       jsPDF: { 
         unit: 'mm', 
@@ -773,8 +1023,17 @@ const pdfTemplate = {
       }
     };
     
-    // Gerar PDF
-    html2pdf().set(opt).from(element).save();
+    // Criar elemento temporário e gerar PDF
+    const element = document.createElement('div');
+    element.innerHTML = htmlContent;
+    document.body.appendChild(element);
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+      document.body.removeChild(element);
+    }).catch(err => {
+      console.error('Erro ao gerar PDF:', err);
+      document.body.removeChild(element);
+    });
   }
 };
 // ============================================
