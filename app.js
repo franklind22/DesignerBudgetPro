@@ -281,40 +281,46 @@ const Store = {
     }
   },
   
-  // Backup automático
-  autoBackup() {
-    setInterval(() => {
-      const backup = {
-        timestamp: new Date().toISOString(),
-        data: JSON.parse(JSON.stringify(this.state))
-      };
-      
-      const backups = JSON.parse(localStorage.getItem('dbp_backups') || '[]');
-      backups.push(backup);
-      
-      // Manter apenas últimos 20 backups
-      if (backups.length > 20) backups.shift();
-      
-      localStorage.setItem('dbp_backups', JSON.stringify(backups));
-      console.log('✅ Backup automático realizado:', new Date().toLocaleString());
-    }, 300000); // 5 minutos
-  },
-  
-  getBackups() {
-    return JSON.parse(localStorage.getItem('dbp_backups') || '[]');
-  },
-  
-  restoreBackup(timestamp) {
-    const backups = this.getBackups();
-    const backup = backups.find(b => b.timestamp === timestamp);
+// ============================================
+// STORE - BACKUP AUTOMÁTICO
+// ============================================
+
+// Backup automático (roda a cada 5 minutos)
+autoBackup() {
+  setInterval(() => {
+    const backup = {
+      timestamp: new Date().toISOString(),
+      data: JSON.parse(JSON.stringify(this.state))
+    };
     
-    if (backup) {
-      this.state = backup.data;
-      this.save();
-      return true;
-    }
-    return false;
-  },
+    const backups = JSON.parse(localStorage.getItem('dbp_backups') || '[]');
+    backups.push(backup);
+    
+    // Manter apenas últimos 20 backups
+    if (backups.length > 20) backups.shift();
+    
+    localStorage.setItem('dbp_backups', JSON.stringify(backups));
+    console.log('✅ Backup automático realizado:', new Date().toLocaleString());
+  }, 300000); // 5 minutos
+},
+
+// Pegar lista de backups
+getBackups() {
+  return JSON.parse(localStorage.getItem('dbp_backups') || '[]');
+},
+
+// Restaurar backup específico
+restoreBackup(timestamp) {
+  const backups = this.getBackups();
+  const backup = backups.find(b => b.timestamp === timestamp);
+  
+  if (backup) {
+    this.state = backup.data;
+    this.save();
+    return true;
+  }
+  return false;
+},
   
 // ============================================
 // STORE - CRUD DE CLIENTES
@@ -1352,106 +1358,120 @@ toggleTheme() {
     `;
   },
   
-  exportData() {
-    const data = {
-      version: '3.0',
-      exportDate: new Date().toISOString(),
-      settings: this.settings,
-      clients: this.clients,
-      services: this.services,
-      budgets: this.budgets
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `designer_budget_backup_${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-    
-    Toast.success('Dados exportados com sucesso!');
-  },
+// ============================================
+// BACKUP - FUNÇÕES COMPLETAS
+// ============================================
+
+// Exportar dados
+exportData() {
+  const data = {
+    version: '3.0',
+    exportDate: new Date().toISOString(),
+    settings: this.settings,
+    clients: this.clients,
+    services: this.services,
+    budgets: this.budgets
+  };
   
-  importData(file) {
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `designer_budget_backup_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  
+  Toast.success('Dados exportados com sucesso!');
+},
+
+// Importar dados
+importData(file) {
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      
+      if (data.version && data.exportDate) {
+        Store.state.settings = { ...Store.state.settings, ...data.settings };
+        Store.state.clients = data.clients || [];
+        Store.state.services = data.services || initialServices;
+        Store.state.budgets = data.budgets || [];
+        Store.save();
         
-        if (data.version && data.exportDate) {
-          Store.state.settings = { ...Store.state.settings, ...data.settings };
-          Store.state.clients = data.clients || [];
-          Store.state.services = data.services || initialServices;
-          Store.state.budgets = data.budgets || [];
-          Store.save();
-          
-          Toast.success('Dados importados com sucesso!');
-          this.renderClients();
-          this.renderServicesList();
-          this.renderBudgetsList();
-          this.updateDashboard();
-          this.renderGoals();
-        } else {
-          Toast.error('Arquivo inválido');
-        }
-      } catch (error) {
-        Toast.error('Erro ao importar arquivo');
-      }
-    };
-    reader.readAsText(file);
-  },
-  
-  showBackupHistory() {
-    const backups = Store.getBackups();
-    const list = document.getElementById('backup-history-list');
-    
-    if (!list) return;
-    
-    if (backups.length === 0) {
-      list.innerHTML = `
-        <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-          <i class="fa-solid fa-database text-3xl mb-2 opacity-50"></i>
-          <p>Nenhum backup automático encontrado</p>
-        </div>
-      `;
-    } else {
-      list.innerHTML = backups.slice().reverse().map(b => `
-        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-          <div>
-            <p class="text-sm font-medium">Backup de ${new Date(b.timestamp).toLocaleDateString('pt-BR')}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-              ${new Date(b.timestamp).toLocaleTimeString('pt-BR')}
-            </p>
-          </div>
-          <button onclick="app.restoreBackup('${b.timestamp}')" 
-                  class="px-3 py-1 bg-primary hover:bg-primary-hover text-white text-sm rounded-lg transition-colors">
-            Restaurar
-          </button>
-        </div>
-      `).join('');
-    }
-    
-    this.openModal('backup-modal');
-  },
-  
-  restoreBackup(timestamp) {
-    if (confirm('Restaurar este backup? Os dados atuais serão substituídos.')) {
-      if (Store.restoreBackup(timestamp)) {
-        Toast.success('Backup restaurado com sucesso!');
-        this.updateUIFromStore();
+        Toast.success('Dados importados com sucesso!');
         this.renderClients();
         this.renderServicesList();
         this.renderBudgetsList();
         this.updateDashboard();
         this.renderGoals();
-        this.closeModal('backup-modal');
       } else {
-        Toast.error('Erro ao restaurar backup');
+        Toast.error('Arquivo inválido');
       }
+    } catch (error) {
+      Toast.error('Erro ao importar arquivo');
     }
-  },
+  };
+  reader.readAsText(file);
+},
+
+// Mostrar histórico de backups
+showBackupHistory() {
+  const backups = Store.getBackups();
+  const list = document.getElementById('backup-history-list');
+  
+  if (!list) return;
+  
+  if (backups.length === 0) {
+    list.innerHTML = `
+      <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+        <i class="fa-solid fa-database text-3xl mb-2 opacity-50"></i>
+        <p>Nenhum backup automático encontrado</p>
+        <p class="text-sm mt-2">Os backups são criados automaticamente a cada 5 minutos</p>
+      </div>
+    `;
+  } else {
+    list.innerHTML = backups.slice().reverse().map(b => `
+      <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+        <div>
+          <p class="text-sm font-medium">Backup de ${new Date(b.timestamp).toLocaleDateString('pt-BR')}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            ${new Date(b.timestamp).toLocaleTimeString('pt-BR')}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            ${Object.keys(b.data).length} coleções • 
+            ${b.data.clients?.length || 0} clientes • 
+            ${b.data.budgets?.length || 0} orçamentos
+          </p>
+        </div>
+        <button onclick="app.restoreBackup('${b.timestamp}')" 
+                class="px-3 py-1 bg-primary hover:bg-primary-dark text-white text-sm rounded-lg transition-colors">
+          Restaurar
+        </button>
+      </div>
+    `).join('');
+  }
+  
+  this.openModal('backup-modal');
+},
+
+// Restaurar backup
+restoreBackup(timestamp) {
+  if (confirm('Restaurar este backup? Os dados atuais serão substituídos.')) {
+    if (Store.restoreBackup(timestamp)) {
+      Toast.success('Backup restaurado com sucesso!');
+      this.updateUIFromStore();
+      this.renderClients();
+      this.renderServicesList();
+      this.renderBudgetsList();
+      this.updateDashboard();
+      this.renderGoals();
+      this.closeModal('backup-modal');
+    } else {
+      Toast.error('Erro ao restaurar backup');
+    }
+  }
+},
   
 // ============================================
 // CALCULADORA - VERSÃO CORRIGIDA
