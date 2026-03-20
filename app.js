@@ -742,7 +742,8 @@ const app = {
       this.renderGoals();
       this.renderBackupSection();
       this.updateDashboard();
-      this.applySavedThemeIfAny(); 
+      this.applySavedThemeIfAny();
+      this.syncCalculatorWithSettings();
     }
   }, 500);
 },
@@ -1452,71 +1453,130 @@ toggleTheme() {
     }
   },
   
-  // Calculadora
-  switchCalcTab(tab) {
-    const hourlyTab = document.getElementById('calc-tab-hourly');
-    const projectTab = document.getElementById('calc-tab-project');
-    const btnHourly = document.getElementById('tab-hourly');
-    const btnProject = document.getElementById('tab-project');
-    
-    if (!hourlyTab || !projectTab || !btnHourly || !btnProject) return;
-    
-    if (tab === 'hourly') {
-      hourlyTab.classList.remove('hidden');
-      projectTab.classList.add('hidden');
-      btnHourly.classList.add('border-primary', 'text-primary');
-      btnHourly.classList.remove('border-transparent', 'text-gray-500');
-      btnProject.classList.remove('border-primary', 'text-primary');
-      btnProject.classList.add('border-transparent', 'text-gray-500');
-    } else {
-      hourlyTab.classList.add('hidden');
-      projectTab.classList.remove('hidden');
-      btnProject.classList.add('border-primary', 'text-primary');
-      btnProject.classList.remove('border-transparent', 'text-gray-500');
-      btnHourly.classList.remove('border-primary', 'text-primary');
-      btnHourly.classList.add('border-transparent', 'text-gray-500');
-    }
-  },
+// ============================================
+// CALCULADORA - VERSÃO CORRIGIDA
+// ============================================
+
+// Alternar entre abas
+switchCalcTab(tab) {
+  const hourlyTab = document.getElementById('calc-tab-hourly');
+  const projectTab = document.getElementById('calc-tab-project');
+  const btnHourly = document.getElementById('tab-hourly');
+  const btnProject = document.getElementById('tab-project');
   
-  calcHourlyRate() {
-    const monthlyIncome = parseInt(document.getElementById('calc-monthly-income')?.value) || 10000;
-    const hoursPerDay = parseFloat(document.getElementById('calc-hours-per-day')?.value) || 8;
-    const daysPerWeek = parseInt(document.getElementById('calc-days-per-week')?.value) || 5;
-    const vacationWeeks = parseInt(document.getElementById('calc-vacation-weeks')?.value) || 4;
-    
-    const weeksPerYear = 52 - vacationWeeks;
-    const hoursPerYear = weeksPerYear * daysPerWeek * hoursPerDay;
-    const annualIncome = monthlyIncome * 12;
-    const hourlyRate = annualIncome / hoursPerYear;
-    
-    const weeksEl = document.getElementById('calc-weeks-year');
-    const hoursEl = document.getElementById('calc-hours-year');
-    const incomeEl = document.getElementById('calc-annual-income');
-    const rateEl = document.getElementById('calc-hourly-rate');
-    
-    if (weeksEl) weeksEl.textContent = weeksPerYear;
-    if (hoursEl) hoursEl.textContent = hoursPerYear.toLocaleString('pt-BR') + 'h';
-    if (incomeEl) incomeEl.textContent = 'R$ ' + annualIncome.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-    if (rateEl) rateEl.textContent = 'R$ ' + hourlyRate.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-  },
+  if (!hourlyTab || !projectTab || !btnHourly || !btnProject) return;
   
-  calcProjectPrice() {
-    const hourlyRate = parseFloat(document.getElementById('calc-project-hourly')?.value) || 150;
-    const hoursPerDay = parseFloat(document.getElementById('calc-project-hours-day')?.value) || 8;
-    const projectDays = parseInt(document.getElementById('calc-project-days')?.value) || 5;
-    
-    const totalHours = hoursPerDay * projectDays;
-    const totalPrice = totalHours * hourlyRate;
-    
-    const hoursEl = document.getElementById('calc-project-total-hours');
-    const rateEl = document.getElementById('calc-project-hourly-display');
-    const totalEl = document.getElementById('calc-project-total');
-    
-    if (hoursEl) hoursEl.textContent = totalHours.toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'h';
-    if (rateEl) rateEl.textContent = 'R$ ' + hourlyRate.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-    if (totalEl) totalEl.textContent = 'R$ ' + totalPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-  },
+  if (tab === 'hourly') {
+    hourlyTab.classList.remove('hidden');
+    projectTab.classList.add('hidden');
+    btnHourly.classList.add('border-primary', 'text-primary');
+    btnHourly.classList.remove('border-transparent', 'text-gray-500');
+    btnProject.classList.remove('border-primary', 'text-primary');
+    btnProject.classList.add('border-transparent', 'text-gray-500');
+  } else {
+    hourlyTab.classList.add('hidden');
+    projectTab.classList.remove('hidden');
+    btnProject.classList.add('border-primary', 'text-primary');
+    btnProject.classList.remove('border-transparent', 'text-gray-500');
+    btnHourly.classList.remove('border-primary', 'text-primary');
+    btnHourly.classList.add('border-transparent', 'text-gray-500');
+  }
+},
+
+// Calcular valor por hora
+calcHourlyRate() {
+  // Pegar valores dos inputs
+  const monthlyIncome = parseFloat(document.getElementById('calc-monthly-income')?.value) || 5000;
+  const hoursPerDay = parseFloat(document.getElementById('calc-hours-per-day')?.value) || 8;
+  const daysPerWeek = parseInt(document.getElementById('calc-days-per-week')?.value) || 5;
+  const vacationWeeks = parseInt(document.getElementById('calc-vacation-weeks')?.value) || 4;
   
+  // Calcular
+  const weeksPerYear = 52 - vacationWeeks;
+  const hoursPerYear = weeksPerYear * daysPerWeek * hoursPerDay;
+  const annualIncome = monthlyIncome * 12;
+  const hourlyRate = annualIncome / hoursPerYear;
+  
+  // Atualizar display
+  document.getElementById('calc-weeks-year').textContent = weeksPerYear;
+  document.getElementById('calc-hours-year').textContent = hoursPerYear.toFixed(0) + 'h';
+  document.getElementById('calc-annual-income').textContent = 
+    'R$ ' + annualIncome.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  document.getElementById('calc-hourly-rate').textContent = 
+    'R$ ' + hourlyRate.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  
+  // Guardar para possível aplicação
+  this.lastCalculatedRate = hourlyRate;
+  
+  Toast.success('Valor/hora calculado: R$ ' + hourlyRate.toFixed(2));
+  
+  return hourlyRate;
+},
+
+// Aplicar valor calculado nos orçamentos
+applyCalculatedHourlyRate() {
+  // Se não tiver valor calculado, calcular primeiro
+  if (!this.lastCalculatedRate) {
+    this.lastCalculatedRate = this.calcHourlyRate();
+  }
+  
+  const rate = this.lastCalculatedRate;
+  
+  // Atualizar configurações
+  this.settings.hourlyRate = Math.round(rate);
+  
+  // Atualizar input nas configurações
+  const settingInput = document.getElementById('settingHourlyRate');
+  if (settingInput) {
+    settingInput.value = Math.round(rate);
+  }
+  
+  // Salvar na store
+  Store.save();
+  
+  Toast.success('Valor/hora aplicado: R$ ' + rate.toFixed(2));
+  
+  // Se estiver no modal de orçamento, atualizar também
+  const budgetHourly = document.getElementById('budget-hourly');
+  if (budgetHourly) {
+    budgetHourly.value = Math.round(rate);
+    this.updateBudgetTotal();
+  }
+},
+
+// Calcular preço do projeto
+calcProjectPrice() {
+  const hourlyRate = parseFloat(document.getElementById('calc-project-hourly')?.value) || 150;
+  const hoursPerDay = parseFloat(document.getElementById('calc-project-hours-day')?.value) || 8;
+  const projectDays = parseInt(document.getElementById('calc-project-days')?.value) || 5;
+  
+  const totalHours = hoursPerDay * projectDays;
+  const totalPrice = totalHours * hourlyRate;
+  
+  document.getElementById('calc-project-total-hours').textContent = totalHours.toFixed(1) + 'h';
+  document.getElementById('calc-project-hourly-display').textContent = 
+    'R$ ' + hourlyRate.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  document.getElementById('calc-project-total').textContent = 
+    'R$ ' + totalPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  
+  Toast.success('Preço do projeto: R$ ' + totalPrice.toFixed(2));
+  
+  return totalPrice;
+},
+
+// Sincronizar valor da calculadora com configurações
+syncCalculatorWithSettings() {
+  const settingRate = this.settings.hourlyRate || 150;
+  
+  // Atualizar input da calculadora de projeto
+  const projectInput = document.getElementById('calc-project-hourly');
+  if (projectInput) {
+    projectInput.value = settingRate;
+  }
+  
+  // Recalcular se necessário
+  this.calcProjectPrice();
+},
   // Dashboard
   updateDashboard() {
     console.log('Atualizando dashboard...');
