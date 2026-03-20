@@ -441,44 +441,43 @@
 
     <!-- Cards de Status por Etapa - 6 colunas em telas grandes -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#FFA500] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('em_processo')">
-            <div class="text-2xl font-bold mb-1" id="stat-em-processo">0</div>
-            <div class="text-xs text-gray-600 flex items-center gap-1">
-                <i class="fa-solid fa-file-pen text-[#FFA500]"></i> Em Processo
-            </div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#218040] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('aprovado')">
-            <div class="text-2xl font-bold mb-1" id="stat-aprovado">0</div>
-            <div class="text-xs text-gray-600 flex items-center gap-1">
-                <i class="fa-solid fa-circle-check text-[#218040]"></i> Aprovado
-            </div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#c91530] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('nao_aprovado')">
-            <div class="text-2xl font-bold mb-1" id="stat-nao-aprovado">0</div>
-            <div class="text-xs text-gray-600 flex items-center gap-1">
-                <i class="fa-solid fa-circle-xmark text-[#c91530]"></i> Não Aprovado
-            </div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#a84d2f] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('alterado')">
-            <div class="text-2xl font-bold mb-1" id="stat-alterado">0</div>
-            <div class="text-xs text-gray-600 flex items-center gap-1">
-                <i class="fa-solid fa-arrows-rotate text-[#a84d2f]"></i> Alterado
-            </div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#2d8a8a] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('concluido')">
-            <div class="text-2xl font-bold mb-1" id="stat-concluido">0</div>
-            <div class="text-xs text-gray-600 flex items-center gap-1">
-                <i class="fa-solid fa-check text-[#2d8a8a]"></i> Concluído
-            </div>
-        </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#1a6b4d] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('pago')">
-            <div class="text-2xl font-bold mb-1" id="stat-pago">0</div>
-            <div class="text-xs text-gray-600 flex items-center gap-1">
-                <i class="fa-solid fa-coins text-[#1a6b4d]"></i> Pago
-            </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#FFA500] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('em_processo')">
+        <div class="text-2xl font-bold mb-1" id="stat-em-processo">0</div>
+        <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-file-pen text-[#FFA500]"></i> Em Processo
         </div>
     </div>
-
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#218040] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('aprovado')">
+        <div class="text-2xl font-bold mb-1" id="stat-aprovado">0</div>
+        <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-circle-check text-[#218040]"></i> Aprovado
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#c91530] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('nao_aprovado')">
+        <div class="text-2xl font-bold mb-1" id="stat-nao-aprovado">0</div>
+        <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-circle-xmark text-[#c91530]"></i> Não Aprovado
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#a84d2f] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('alterado')">
+        <div class="text-2xl font-bold mb-1" id="stat-alterado">0</div>
+        <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-arrows-rotate text-[#a84d2f]"></i> Alterado
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#2d8a8a] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('concluido')">
+        <div class="text-2xl font-bold mb-1" id="stat-concluido">0</div>
+        <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-check text-[#2d8a8a]"></i> Concluído
+        </div>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#1a6b4d] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('pago')">
+        <div class="text-2xl font-bold mb-1" id="stat-pago">0</div>
+        <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-coins text-[#1a6b4d]"></i> Pago
+        </div>
+    </div>
+</div>
     <!-- Metas -->
     <div id="goals-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6 mb-8"></div>
 
