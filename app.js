@@ -1529,7 +1529,7 @@ calcHourlyRate() {
     'R$ ' + hourlyRate.toLocaleString('pt-BR', {minimumFractionDigits: 2});
   
   // Guardar para possível aplicação
-  this.lastCalculatedRate = hourlyRate;
+  //this.lastCalculatedRate = hourlyRate;
   
   Toast.success('Valor/hora calculado: R$ ' + hourlyRate.toFixed(2));
   
@@ -1582,7 +1582,7 @@ calcProjectPrice() {
   document.getElementById('calc-project-total').textContent = 
     'R$ ' + totalPrice.toLocaleString('pt-BR', {minimumFractionDigits: 2});
   
-  Toast.success('Preço do projeto: R$ ' + totalPrice.toFixed(2));
+  //Toast.success('Preço do projeto: R$ ' + totalPrice.toFixed(2));
   
   return totalPrice;
 },
