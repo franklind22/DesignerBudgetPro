@@ -597,7 +597,7 @@ const pdfTemplate = {
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 10px; padding: 20px; background: #ffffff; border-bottom: 1px solid #000;">
+                <div style="display: flex; gap: 10px; padding: 20px; background: #000000; border-bottom: 1px solid #000;">
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">CLIENTE</small><br><strong>${budget.clientName}</strong></div>
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">DATA EMISSÃO</small><br><strong>${new Date(budget.date).toLocaleDateString('pt-BR')}</strong></div>
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">VALIDADE</small><br><strong>${validityDate.toLocaleDateString('pt-BR')}</strong></div>
@@ -628,7 +628,7 @@ const pdfTemplate = {
                 const price = s.customPrice || s.price;
                 const total = price * s.qty;
                 html += `
-                    <tr style="border-bottom: 1px solid #f5f5f5; font-size: 13px;">
+                    <tr style="border-bottom: 1px solid #000000; font-size: 13px;">
                         <td style="padding: 10px;">${s.name}</td>
                         <td style="text-align: center; padding: 10px;">${s.qty}</td>
                         <td style="text-align: right; padding: 10px;">R$ ${price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
@@ -688,7 +688,7 @@ const pdfTemplate = {
                     </div>
                 </div>
 
-                <div style="margin-top: 30px; text-align: center; font-size: 10px; border-top: 1px solid #eee; padding-top: 15px; color: #000;">
+                <div style="margin-top: 30px; text-align: center; font-size: 10px; border-top: 1px solid #000 padding-top: 15px; color: #000;">
                     Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')} • Válido até ${validityDate.toLocaleDateString('pt-BR')}
                 </div>
             </div>
