@@ -446,35 +446,46 @@
             </div>
           </div>
 
-         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tema do Aplicativo</h3>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cor base</label>
-                <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modelo</label>
-                <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-                  <option value="monochromatic">Monocromática</option>
-                  <option value="analogous">Analógica</option>
-                  <option value="complementary">Complementar</option>
-                  <option value="triadic">Triádica</option>
-                  <option value="tetradic">Tetrádica</option>
-                </select>
-              </div>
-            </div>
-            <button onclick="app.applyThemeFromSettings()" class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-medium rounded-lg">
-              Aplicar Tema
-            </button>
-          </div>
-
-          <button onclick="app.saveSettings()" class="w-full px-4 py-2.5 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg">
-            <i class="fa-solid fa-floppy-disk mr-2"></i>Salvar Configurações
-          </button>
-        </div>
-
-        <div class="space-y-6">
+<!-- Dentro da view de configurações, na parte de Tema do Aplicativo -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tema do Aplicativo</h3>
+  
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cor base</label>
+      <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modelo</label>
+      <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+        <option value="monochromatic">Monocromática</option>
+        <option value="analogous">Analógica</option>
+        <option value="complementary">Complementar</option>
+        <option value="triadic">Triádica</option>
+        <option value="tetradic">Tetrádica</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="flex gap-2 mb-4">
+    <button onclick="app.applyThemeFromSettings()" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg">
+      Aplicar Tema
+    </button>
+    <button onclick="app.resetTheme()" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-medium rounded-lg">
+      Resetar
+    </button>
+  </div>
+  
+  <!-- Preview do tema (opcional) -->
+  <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
+    <div class="flex gap-2">
+      <div class="w-8 h-8 rounded-full bg-primary"></div>
+      <div class="w-8 h-8 rounded-full bg-primary-dark"></div>
+      <div class="w-8 h-8 rounded-full bg-primary-light" style="background-color: var(--primary-light, '#e6f3f3')"></div>
+    </div>
+  </div>
+</div>
           <!-- CALCULADORA - COMPLETA com todos os IDs -->
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
             <h3 class="text-lg font-semibold mb-4">Calculadora de Hora</h3>
