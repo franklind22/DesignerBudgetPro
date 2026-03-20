@@ -200,6 +200,21 @@
         transform: translateY(-2px);
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
     }
+    /* Forçar contraste em todos os textos cinza */
+[class*="text-gray"] {
+    color: inherit;
+}
+
+/* Mas manter os específicos com !important */
+.text-gray-400, .text-gray-500, .text-gray-600 {
+    color: #374151 !important;
+}
+
+.dark .text-gray-400,
+.dark .text-gray-500,
+.dark .text-gray-600 {
+    color: #e5e7eb !important;
+}
 </style>
   
 
