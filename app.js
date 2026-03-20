@@ -284,26 +284,32 @@ const Store = {
 // ============================================
 // STORE - BACKUP AUTOMÁTICO
 // ============================================
-
-// Backup automático (roda a cada 5 minutos)
+// Backup automático (roda a cada 5 minutos) - Versão configurável
 autoBackup() {
+  const MAX_BACKUPS = 5; // Altere aqui para o número desejado (5, 10, 20, etc.)
+  
   setInterval(() => {
-    const backup = {
-      timestamp: new Date().toISOString(),
-      data: JSON.parse(JSON.stringify(this.state))
-    };
-    
-    const backups = JSON.parse(localStorage.getItem('dbp_backups') || '[]');
-    backups.push(backup);
-    
-    // Manter apenas últimos 20 backups
-    if (backups.length > 20) backups.shift();
-    
-    localStorage.setItem('dbp_backups', JSON.stringify(backups));
-    console.log('✅ Backup automático realizado:', new Date().toLocaleString());
+    try {
+      const backup = {
+        timestamp: new Date().toISOString(),
+        data: JSON.parse(JSON.stringify(this.state))
+      };
+      
+      const backups = JSON.parse(localStorage.getItem('dbp_backups') || '[]');
+      backups.push(backup);
+      
+      // Manter apenas os últimos MAX_BACKUPS backups
+      while (backups.length > MAX_BACKUPS) {
+        backups.shift(); // Remove o backup mais antigo
+      }
+      
+      localStorage.setItem('dbp_backups', JSON.stringify(backups));
+      console.log(`✅ Backup automático realizado (${backups.length}/${MAX_BACKUPS}):`, new Date().toLocaleString());
+    } catch (error) {
+      console.warn('❌ Erro no backup automático:', error);
+    }
   }, 300000); // 5 minutos
 },
-
 // Pegar lista de backups
 getBackups() {
   return JSON.parse(localStorage.getItem('dbp_backups') || '[]');
@@ -1327,153 +1333,92 @@ toggleTheme() {
   },
   
   // Backup
-  renderBackupSection() {
+ renderBackupSection() {
     const container = document.getElementById('backup-container');
     if (!container) return;
     
-    container.innerHTML = `
-      <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-database text-primary"></i>
-        Backup e Restauração
-      </h3>
-      
-      <div class="flex flex-wrap gap-3">
-        <button onclick="app.exportData()" 
-                class="flex-1 px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-          <i class="fa-solid fa-download"></i>
-          Exportar Dados
-        </button>
-        
-        <label class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer text-center flex items-center justify-center gap-2">
-          <i class="fa-solid fa-upload"></i>
-          Importar Dados
-          <input type="file" accept=".json" onchange="app.importData(this.files[0])" class="hidden">
-        </label>
-      </div>
-      
-      <div class="mt-4">
-        <button onclick="app.showBackupHistory()" 
-                class="text-sm text-primary hover:underline flex items-center gap-1">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          Ver histórico de backups automáticos
-        </button>
-      </div>
-    `;
-  },
-  
-// ============================================
-// BACKUP - FUNÇÕES COMPLETAS
-// ============================================
-
-// Exportar dados
-exportData() {
-  const data = {
-    version: '3.0',
-    exportDate: new Date().toISOString(),
-    settings: this.settings,
-    clients: this.clients,
-    services: this.services,
-    budgets: this.budgets
-  };
-  
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `designer_budget_backup_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  
-  Toast.success('Dados exportados com sucesso!');
-},
-
-// Importar dados
-importData(file) {
-  if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const data = JSON.parse(e.target.result);
-      
-      if (data.version && data.exportDate) {
-        Store.state.settings = { ...Store.state.settings, ...data.settings };
-        Store.state.clients = data.clients || [];
-        Store.state.services = data.services || initialServices;
-        Store.state.budgets = data.budgets || [];
-        Store.save();
-        
-        Toast.success('Dados importados com sucesso!');
-        this.renderClients();
-        this.renderServicesList();
-        this.renderBudgetsList();
-        this.updateDashboard();
-        this.renderGoals();
-      } else {
-        Toast.error('Arquivo inválido');
-      }
-    } catch (error) {
-      Toast.error('Erro ao importar arquivo');
-    }
-  };
-  reader.readAsText(file);
-},
-
-// Mostrar histórico de backups
-showBackupHistory() {
-  const backups = Store.getBackups();
-  const list = document.getElementById('backup-history-list');
-  
-  if (!list) return;
-  
-  if (backups.length === 0) {
-    list.innerHTML = `
-      <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-        <i class="fa-solid fa-database text-3xl mb-2 opacity-50"></i>
-        <p>Nenhum backup automático encontrado</p>
-        <p class="text-sm mt-2">Os backups são criados automaticamente a cada 5 minutos</p>
-      </div>
-    `;
-  } else {
-    list.innerHTML = backups.slice().reverse().map(b => `
-      <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-        <div>
-          <p class="text-sm font-medium">Backup de ${new Date(b.timestamp).toLocaleDateString('pt-BR')}</p>
-          <p class="text-xs text-gray-500 dark:text-gray-400">
-            ${new Date(b.timestamp).toLocaleTimeString('pt-BR')}
-          </p>
-          <p class="text-xs text-gray-500 mt-1">
-            ${Object.keys(b.data).length} coleções • 
-            ${b.data.clients?.length || 0} clientes • 
-            ${b.data.budgets?.length || 0} orçamentos
-          </p>
+    // Buscar último backup para mostrar informação
+    const backups = Store.getBackups();
+    const lastBackup = backups[backups.length - 1];
+    const lastBackupInfo = lastBackup ? `
+        <div class="flex items-center gap-2 text-xs text-gray-500">
+            <i class="fa-regular fa-clock"></i>
+            <span>Último backup: ${new Date(lastBackup.timestamp).toLocaleDateString('pt-BR')} às ${new Date(lastBackup.timestamp).toLocaleTimeString('pt-BR')}</span>
         </div>
-        <button onclick="app.restoreBackup('${b.timestamp}')" 
-                class="px-3 py-1 bg-primary hover:bg-primary-dark text-white text-sm rounded-lg transition-colors">
-          Restaurar
-        </button>
-      </div>
-    `).join('');
-  }
-  
-  this.openModal('backup-modal');
-},
-
-// Restaurar backup
-restoreBackup(timestamp) {
-  if (confirm('Restaurar este backup? Os dados atuais serão substituídos.')) {
-    if (Store.restoreBackup(timestamp)) {
-      Toast.success('Backup restaurado com sucesso!');
-      this.updateUIFromStore();
-      this.renderClients();
-      this.renderServicesList();
-      this.renderBudgetsList();
-      this.updateDashboard();
-      this.renderGoals();
-      this.closeModal('backup-modal');
-    } else {
-      Toast.error('Erro ao restaurar backup');
-    }
-  }
+    ` : '';
+    
+    container.innerHTML = `
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-database text-primary"></i>
+                        Backup e Restauração
+                    </h3>
+                    ${lastBackupInfo}
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Proteja seus dados com backup automático</p>
+            </div>
+            <div class="p-6">
+                <!-- Status do Backup Automático -->
+                <div class="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-500 text-sm"></i>
+                        <span class="text-xs text-green-700 dark:text-green-400">Backup automático ativo</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-xs text-gray-500">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>A cada 5 minutos</span>
+                    </div>
+                </div>
+                
+                <!-- Botões de Ação -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <button onclick="app.exportData()" 
+                            class="flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span class="text-sm font-medium">Exportar Dados</span>
+                    </button>
+                    
+                    <label class="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md">
+                        <i class="fa-solid fa-upload text-sm"></i>
+                        <span class="text-sm font-medium">Importar Dados</span>
+                        <input type="file" accept=".json" onchange="app.importData(this.files[0])" class="hidden">
+                    </label>
+                </div>
+                
+                <!-- Informações Adicionais -->
+                <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-circle-info text-primary text-xs"></i>
+                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300">Informações:</span>
+                    </div>
+                    <div class="space-y-1 text-xs text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-file-code w-4"></i>
+                            <span>Exporta todos os dados: clientes, serviços, orçamentos e configurações</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-clock w-4"></i>
+                            <span>Backups automáticos mantêm histórico das últimas 20 versões</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-regular fa-folder-open w-4"></i>
+                            <span>Arquivo exportado no formato JSON compatível com o sistema</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Link para Histórico -->
+                <button onclick="app.showBackupHistory()" 
+                        class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm text-primary hover:text-primary-dark font-medium transition-colors border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Ver histórico de backups automáticos</span>
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+    `;
 },
   
 // ============================================
