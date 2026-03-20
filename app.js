@@ -734,17 +734,18 @@ const app = {
     // Verificar orçamentos a cada hora
     setInterval(() => Store.checkBudgets(), 3600000);
     
-    // Inicializar calculadoras
-    setTimeout(() => {
-      this.calcHourlyRate();
-      this.calcProjectPrice();
-      if (this.isLoggedIn) {
-        this.renderGoals();
-        this.renderBackupSection();
-        this.updateDashboard();
-      }
-    }, 500);
-  },
+  // Inicializar calculadoras e carregar dados
+  setTimeout(() => {
+    this.calcHourlyRate();
+    this.calcProjectPrice();
+    if (this.isLoggedIn) {
+      this.renderGoals();
+      this.renderBackupSection();
+      this.updateDashboard();
+      this.applySavedThemeIfAny(); 
+    }
+  }, 500);
+},
   
   setupEventListeners() {
     // Escutar atualizações da store
@@ -946,63 +947,176 @@ const app = {
     }
   },
   
-  // Temas
-  applySavedThemeIfAny() {
-    const preset = this.settings.themePreset;
-    if (preset && preset.colors) {
-      document.documentElement.style.setProperty('--primary', preset.colors.primary);
-      document.documentElement.style.setProperty('--primary-hover', colorUtils.adjustBrightness(preset.colors.primary, -20));
-    }
-  },
+ // ============================================
+// TEMAS - VERSÃO CORRIGIDA
+// ============================================
+
+// Aplicar tema salvo (se houver)
+applySavedThemeIfAny() {
+  const preset = this.settings.themePreset;
+  if (preset && preset.colors) {
+    this.applyThemeColors(preset.colors);
+    console.log('✅ Tema salvo aplicado:', preset);
+  }
+},
+
+// Aplicar cores ao tema
+applyThemeColors(colors) {
+  const root = document.documentElement;
   
-  applyThemeFromSettings() {
-    const baseEl = document.getElementById('settings-theme-base');
-    const modelEl = document.getElementById('settings-theme-model');
-    const base = (baseEl && baseEl.value) || '#2d8a8a';
-    
-    const map = { 
-      monochromatic: 'monocromatica', 
-      analogous: 'analogica', 
-      complementary: 'complementar', 
-      triadic: 'triadica', 
-      tetradic: 'tetradica' 
-    };
-    
-    const key = modelEl ? (map[modelEl.value] || 'monocromatica') : 'monocromatica';
-    const models = colorUtils.generatePaletteModels(base);
-    const arr = models[key] || [];
-    
-    const p = arr[0] || base;
-    const s = arr[1] || '#FFFFFF';
-    const w = arr[2] || '#667eea';
-    const bg = arr[3] || '#f9faf9';
-    
-    document.documentElement.style.setProperty('--primary', p);
-    document.documentElement.style.setProperty('--primary-hover', colorUtils.adjustBrightness(p, -20));
-    
-    this.settings.themePreset = { 
-      base, 
-      model: key, 
-      colors: { primary: p, secondary: s, warning: w, bg } 
-    };
-    
-    Store.save();
-    Toast.success('Tema aplicado com sucesso!');
-  },
+  // Cores principais
+  if (colors.primary) {
+    root.style.setProperty('--primary', colors.primary);
+    root.style.setProperty('--primary-dark', this.adjustBrightness(colors.primary, -20));
+    root.style.setProperty('--primary-light', this.adjustBrightness(colors.primary, 20));
+  }
   
-  toggleTheme() {
-    const darkMode = document.getElementById('settingDarkMode');
-    if (darkMode) {
-      const isDark = darkMode.checked;
-      if (isDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      this.settings.theme = isDark ? 'dark' : 'light';
-      Store.save();
+  // Cores secundárias (opcional)
+  if (colors.secondary) {
+    root.style.setProperty('--secondary', colors.secondary);
+  }
+  
+  if (colors.bg) {
+    root.style.setProperty('--bg', colors.bg);
+  }
+  
+  // Atualizar também as classes Tailwind
+  this.updateTailwindColors(colors);
+},
+
+// Atualizar cores no Tailwind (via variáveis CSS)
+updateTailwindColors(colors) {
+  // O Tailwind usa variáveis CSS, então já está atualizado
+  // Mas precisamos forçar atualização dos elementos
+  document.querySelectorAll('[class*="bg-primary"]').forEach(el => {
+    // Forçar re-render (opcional)
+    el.style.transition = 'background-color 0.3s ease';
+  });
+},
+
+// Ajustar brilho de cor (auxiliar)
+adjustBrightness(hex, percent) {
+  // Se não for hexadecimal, retorna original
+  if (!hex || !hex.startsWith('#')) return hex;
+  
+  try {
+    let R = parseInt(hex.substring(1,3), 16);
+    let G = parseInt(hex.substring(3,5), 16);
+    let B = parseInt(hex.substring(5,7), 16);
+    
+    R = Math.max(0, Math.min(255, R + percent));
+    G = Math.max(0, Math.min(255, G + percent));
+    B = Math.max(0, Math.min(255, B + percent));
+    
+    return '#' + ((1 << 24) + (R << 16) + (G << 8) + B).toString(16).slice(1);
+  } catch (e) {
+    console.warn('Erro ao ajustar brilho:', e);
+    return hex;
+  }
+},
+
+// Aplicar tema a partir das configurações
+applyThemeFromSettings() {
+  const baseEl = document.getElementById('settings-theme-base');
+  const modelEl = document.getElementById('settings-theme-model');
+  
+  if (!baseEl || !modelEl) {
+    Toast.error('Elementos de tema não encontrados');
+    return;
+  }
+  
+  const base = baseEl.value || '#2d8a8a';
+  const model = modelEl.value;
+  
+  console.log('Aplicando tema:', { base, model });
+  
+  // Mapear modelo para o nome usado no gerador
+  const map = { 
+    monochromatic: 'monocromatica', 
+    analogous: 'analogica', 
+    complementary: 'complementar', 
+    triadic: 'triadica', 
+    tetradic: 'tetradica' 
+  };
+  
+  const key = map[model] || 'monocromatica';
+  
+  // Gerar paleta
+  const models = colorUtils.generatePaletteModels(base);
+  const palette = models[key] || [];
+  
+  console.log('Paleta gerada:', palette);
+  
+  // Definir cores (com fallbacks)
+  const colors = {
+    primary: palette[0] || base,
+    secondary: palette[1] || '#FFFFFF',
+    warning: palette[2] || '#667eea',
+    bg: palette[3] || '#f9faf9'
+  };
+  
+  // Aplicar cores
+  this.applyThemeColors(colors);
+  
+  // Salvar nas configurações
+  this.settings.themePreset = { 
+    base, 
+    model: key, 
+    colors 
+  };
+  
+  // Salvar no localStorage
+  Store.save();
+  
+  Toast.success('Tema aplicado com sucesso!');
+  
+  // Forçar atualização visual
+  setTimeout(() => {
+    this.forceThemeUpdate();
+  }, 100);
+},
+
+// Forçar atualização de elementos com cores do tema
+forceThemeUpdate() {
+  // Disparar evento para componentes que precisam atualizar
+  document.dispatchEvent(new CustomEvent('themeUpdated'));
+  
+  // Atualizar gráficos se existirem
+  if (this.charts?.status) {
+    this.charts.status.update();
+  }
+  if (this.charts?.revenue) {
+    this.charts.revenue.update();
+  }
+},
+
+// Toggle tema escuro/claro
+toggleTheme() {
+  const darkMode = document.getElementById('settingDarkMode');
+  if (!darkMode) return;
+  
+  const isDark = darkMode.checked;
+  
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  
+  this.settings.theme = isDark ? 'dark' : 'light';
+  Store.save();
+  
+  // Atualizar gráficos para o novo tema
+  setTimeout(() => {
+    if (this.charts?.status) {
+      this.charts.status.options.plugins.legend.labels.color = 
+        document.documentElement.classList.contains('dark') ? '#fff' : '#333';
+      this.charts.status.update();
     }
-  },
+  }, 100);
+  
+  Toast.success(`Modo ${isDark ? 'escuro' : 'claro'} ativado`);
+},
   
   // Modo Foco
   toggleFocusMode() {
