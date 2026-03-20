@@ -2944,12 +2944,18 @@ updateAboutStats() {
     totalBudgets.textContent = this.budgets?.length || 0;
   }
 }
-// Expor globalmente
+}; // <-- Este } fecha o objeto app
+
+// ============================================
+// EXPOSIÇÃO GLOBAL (FORA DO APP)
+// ============================================
 window.app = app;
 window.colorUtils = colorUtils;
 window.Toast = Toast;
 
-// Inicializar quando o DOM estiver pronto
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => app.init());
 } else {
