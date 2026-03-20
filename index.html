@@ -613,17 +613,105 @@
     </div>
 </main>
 
-    <!-- SERVICES VIEW -->
-    <main id="services-view" class="hidden space-y-6">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Serviços</h1>
-        <button onclick="app.showAddServiceModal()" class="px-4 py-2 bg-primary text-white rounded-lg">
-          <i class="fa-solid fa-plus mr-2"></i>Novo Serviço
+<!-- SERVICES VIEW - VERSÃO OTIMIZADA -->
+<main id="services-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Cabeçalho -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <i class="fa-solid fa-cubes text-primary text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold">Serviços</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Catálogo de serviços disponíveis</p>
+            </div>
+        </div>
+        <button onclick="app.showAddServiceModal()" 
+                class="px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg 
+                       transition-all duration-200 shadow-md hover:shadow-lg 
+                       flex items-center gap-2 font-medium">
+            <i class="fa-solid fa-plus-circle text-sm"></i>
+            <span>Novo Serviço</span>
         </button>
-      </div>
+    </div>
 
-      <div id="services-accordion" class="space-y-3"></div>
-    </main>
+    <!-- Estatísticas e Busca Rápida -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <i class="fa-solid fa-tag text-primary text-sm"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span id="services-categories-count" class="font-bold text-primary">0</span> categorias
+                    </span>
+                </div>
+                <div class="w-px h-6 bg-gray-200 dark:bg-gray-600"></div>
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-primary text-sm"></i>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span id="services-total-count" class="font-bold text-primary">0</span> serviços
+                    </span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                <i class="fa-regular fa-clock"></i>
+                <span>última atualização: agora</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ações Rápidas e Busca -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-folder-open text-primary text-sm"></i>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Categorias de serviços</span>
+        </div>
+        <div class="relative w-full sm:w-72">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+            <input type="text" id="service-search-quick" placeholder="Buscar serviço..." 
+                   onkeyup="app.filterServicesBySearch()"
+                   class="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-600 
+                          bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                          focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+        </div>
+    </div>
+
+    <!-- Contador de Resultados (opcional) -->
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-list-ul text-primary text-sm"></i>
+            <span class="text-sm text-gray-600 dark:text-gray-400">
+                <span id="services-results-count" class="font-semibold text-primary">0</span> serviços encontrados
+            </span>
+        </div>
+        <button onclick="app.showAddServiceModal()" 
+                class="text-sm text-primary hover:underline flex items-center gap-1">
+            <i class="fa-solid fa-plus"></i>
+            <span>Novo Serviço</span>
+        </button>
+    </div>
+
+    <!-- Lista de Serviços em Accordion -->
+    <div id="services-accordion" class="space-y-3">
+        <!-- Os serviços serão preenchidos pelo JavaScript -->
+    </div>
+
+    <!-- Estado Vazio (quando não há serviços) -->
+    <div id="services-empty-state" class="hidden text-center py-12">
+        <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+            <i class="fa-solid fa-cubes text-3xl text-gray-400"></i>
+        </div>
+        <p class="text-gray-500 dark:text-gray-400 mb-3">Nenhum serviço cadastrado ainda</p>
+        <button onclick="app.showAddServiceModal()" 
+                class="px-4 py-2 bg-primary text-white rounded-lg inline-flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i>
+            Adicionar primeiro serviço
+        </button>
+    </div>
+</main>
 
 <!-- SETTINGS VIEW -->
 <main id="settings-view" class="hidden space-y-6">
