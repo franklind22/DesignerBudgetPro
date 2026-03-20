@@ -547,7 +547,7 @@ removeClient(id) {
   }
 };
 
-// PDF Template - VERSÃO COM jsPDF (CONTÍNUO E ESTÁVEL)
+// PDF Template - VERSÃO ESTÁVEL COM QUEBRA CONTROLADA
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     // Pegar cores do tema
@@ -568,28 +568,30 @@ const pdfTemplate = {
       servicesByCategory[s.category].push(s);
     });
     
-    // Criar um elemento temporário para renderizar o HTML
+    // Criar container principal
     const container = document.createElement('div');
     container.style.position = 'absolute';
     container.style.left = '-9999px';
     container.style.top = '-9999px';
     container.style.width = '800px';
     container.style.backgroundColor = 'white';
-    container.style.padding = '20px';
     container.style.fontFamily = "'Inter', 'Segoe UI', Arial, sans-serif";
+    container.style.padding = '0';
+    container.style.margin = '0';
     
     // Construir HTML
     let html = `
-      <div style="max-width: 100%; margin: 0 auto;">
+      <div style="padding: 20px; background: white;">
+        
         <!-- CABEÇALHO -->
         <div style="background: ${primaryColor}; color: white; padding: 30px; border-radius: 12px 12px 0 0;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div>
               <h1 style="margin: 0; font-size: 24px;">PROPOSTA COMERCIAL</h1>
               <p style="margin: 8px 0 0;">${settings.name || 'Designer Profissional'}</p>
               ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px;">${settings.email}</p>` : ''}
             </div>
-            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 30px; text-align: center;">
+            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 30px;">
               <div style="font-size: 10px;">Nº</div>
               <div style="font-size: 16px; font-weight: bold;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
             </div>
@@ -598,19 +600,19 @@ const pdfTemplate = {
         
         <!-- INFORMAÇÕES -->
         <div style="display: flex; flex-wrap: wrap; gap: 15px; padding: 20px; background: #f8f9fa; border-bottom: 1px solid #ddd;">
-          <div style="flex: 1; min-width: 150px;">
+          <div style="flex: 1;">
             <div style="font-size: 11px; color: #666;">CLIENTE</div>
             <div style="font-weight: bold;">${budget.clientName}</div>
           </div>
-          <div style="flex: 1; min-width: 150px;">
+          <div style="flex: 1;">
             <div style="font-size: 11px; color: #666;">DATA</div>
             <div style="font-weight: bold;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
           </div>
-          <div style="flex: 1; min-width: 150px;">
+          <div style="flex: 1;">
             <div style="font-size: 11px; color: #666;">VALIDADE</div>
             <div style="font-weight: bold;">${validityDate.toLocaleDateString('pt-BR')}</div>
           </div>
-          <div style="flex: 1; min-width: 150px;">
+          <div style="flex: 1;">
             <div style="font-size: 11px; color: #666;">PROJETO</div>
             <div style="font-weight: bold;">${budget.projectName || 'Não especificado'}</div>
           </div>
@@ -621,9 +623,10 @@ const pdfTemplate = {
           <h2 style="color: ${primaryColor}; font-size: 20px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 8px; margin-bottom: 20px;">SERVIÇOS</h2>
     `;
     
+    // Adicionar serviços
     for (const [category, items] of Object.entries(servicesByCategory)) {
       html += `
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 25px;">
           <div style="background: ${primaryDark}15; padding: 8px 12px; font-weight: bold; margin-bottom: 10px;">${category}</div>
           <table style="width: 100%; border-collapse: collapse;">
             <thead>
@@ -632,7 +635,7 @@ const pdfTemplate = {
                 <th style="text-align: center; padding: 8px; width: 60px;">Qtd</th>
                 <th style="text-align: right; padding: 8px; width: 100px;">Valor Unit.</th>
                 <th style="text-align: right; padding: 8px; width: 100px;">Total</th>
-               </tr>
+              </tr>
             </thead>
             <tbody>
       `;
@@ -671,9 +674,9 @@ const pdfTemplate = {
     html += `
         <div style="margin: 20px 0; text-align: right;">
           <div style="background: #f8f9fa; display: inline-block; padding: 15px 25px; border-radius: 8px;">
-            <div style="margin-bottom: 8px;"><strong>Subtotal:</strong> R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</div>
-            ${budget.hoursWorked > 0 ? `<div style="margin-bottom: 8px;"><strong>Horas (${budget.hoursWorked}h):</strong> R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</div>` : ''}
-            <div style="border-top: 2px solid ${primaryColor}; margin-top: 8px; padding-top: 8px; font-size: 16px; font-weight: bold; color: ${primaryColor};">
+            <div><strong>Subtotal:</strong> R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</div>
+            ${budget.hoursWorked > 0 ? `<div style="margin-top: 8px;"><strong>Horas (${budget.hoursWorked}h):</strong> R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</div>` : ''}
+            <div style="border-top: 2px solid ${primaryColor}; margin-top: 10px; padding-top: 10px; font-size: 16px; font-weight: bold; color: ${primaryColor};">
               <strong>TOTAL:</strong> R$ ${budget.total.toFixed(2).replace('.', ',')}
             </div>
           </div>
@@ -686,7 +689,7 @@ const pdfTemplate = {
         </div>
         
         <!-- ASSINATURAS -->
-        <div style="margin: 30px 0 20px; display: flex; justify-content: space-between;">
+        <div style="margin: 30px 0 20px; display: flex; justify-content: space-between; gap: 40px;">
           <div style="flex: 1; text-align: center; border-top: 1px solid #ccc; padding-top: 12px;">
             <strong>Cliente</strong>
             <div style="font-size: 11px;">Data: ___/___/______</div>
@@ -709,46 +712,54 @@ const pdfTemplate = {
     container.innerHTML = html;
     document.body.appendChild(container);
     
-    // Usar html2canvas para capturar a imagem
-    html2canvas(container, {
-      scale: 2,
-      backgroundColor: '#ffffff',
-      logging: false
-    }).then(canvas => {
-      // Criar PDF com jsPDF
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
-      const imgWidth = 190; // mm (A4 width - margins)
-      const pageHeight = 277; // mm (A4 height - margins)
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'portrait'
-      });
-      
-      let heightLeft = imgHeight;
-      let position = 0;
-      
-      // Adicionar primeira página
-      pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      // Adicionar páginas extras se necessário
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
+    // Aguardar renderização
+    setTimeout(() => {
+      // Usar html2canvas para capturar todo o conteúdo
+      html2canvas(container, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        logging: false,
+        useCORS: false
+      }).then(canvas => {
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const { jsPDF } = window.jspdf;
+        
+        // Configurações do PDF
+        const imgWidth = 190; // mm (largura A4 - margens)
+        const pageHeight = 277; // mm (altura A4 - margens)
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        let heightLeft = imgHeight;
+        let position = 0;
+        let page = 1;
+        
+        // Criar PDF
+        const pdf = new jsPDF({
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait'
+        });
+        
+        // Adicionar primeira página
         pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
-      }
-      
-      pdf.save(`orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`);
-      document.body.removeChild(container);
-    }).catch(err => {
-      console.error('Erro ao gerar PDF:', err);
-      document.body.removeChild(container);
-    });
+        
+        // Adicionar páginas extras se necessário
+        while (heightLeft > 0) {
+          position = position - pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+          page++;
+        }
+        
+        pdf.save(`orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`);
+        document.body.removeChild(container);
+      }).catch(err => {
+        console.error('Erro ao gerar imagem:', err);
+        document.body.removeChild(container);
+      });
+    }, 500);
   }
 };
 // ============================================
