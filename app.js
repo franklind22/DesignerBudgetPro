@@ -2116,64 +2116,86 @@ removeClient(id) {
 },
 
 renderClients() {
-  let filtered = this.clients;
-  const searchTerm = this.clientSearchFilter?.toLowerCase() || '';
-  
-  if (searchTerm) {
-    filtered = filtered.filter(c => 
-      c.name?.toLowerCase().includes(searchTerm) ||
-      c.email?.toLowerCase().includes(searchTerm)
-    );
-  }
-  
-  const list = document.getElementById('clients-list');
-  if (!list) return;
-  
-  if (filtered.length === 0) {
-    list.innerHTML = `
-      <div class="text-center py-12 text-gray-500 dark:text-gray-400">
-        <i class="fa-solid fa-users text-4xl mb-3 opacity-50"></i>
-        <p>Nenhum cliente encontrado</p>
-      </div>
-    `;
-    return;
-  }
-  
-  list.innerHTML = filtered.map(client => `
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-      <div class="flex-1">
-        <div class="flex items-center gap-2">
-          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <i class="fa-solid fa-user text-primary"></i>
-          </div>
-          <div>
-            <h3 class="font-semibold">${client.name || 'Sem nome'}</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400">${client.email || 'Sem email'}</p>
-          </div>
+    let filtered = this.clients;
+    const searchTerm = this.clientSearchFilter?.toLowerCase() || '';
+    
+    if (searchTerm) {
+        filtered = filtered.filter(c => 
+            c.name?.toLowerCase().includes(searchTerm) ||
+            c.email?.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    const list = document.getElementById('clients-list');
+    if (!list) return;
+    
+    // Atualizar contador de resultados
+    const resultsSpan = document.getElementById('clients-results-count');
+    if (resultsSpan) resultsSpan.textContent = filtered.length;
+    
+    if (filtered.length === 0) {
+        list.innerHTML = `
+            <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+                <i class="fa-solid fa-users text-4xl mb-3 opacity-50"></i>
+                <p>Nenhum cliente encontrado</p>
+            </div>
+        `;
+        return;
+    }
+    
+    list.innerHTML = filtered.map(client => `
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
+                    hover:shadow-md transition-all duration-200">
+            
+            <!-- Layout responsivo: coluna em mobile, linha em desktop -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                
+                <!-- Informações do Cliente - ocupa espaço flexível -->
+                <div class="flex-1 w-full md:w-auto">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-user text-primary text-sm"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-semibold text-gray-900 dark:text-white truncate">${this.escapeHtml(client.name || 'Sem nome')}</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">${this.escapeHtml(client.email || 'Sem email')}</p>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
+                        ${client.phone ? `<span class="inline-flex items-center gap-1"><i class="fa-solid fa-phone text-primary text-xs"></i>${this.escapeHtml(client.phone)}</span>` : ''}
+                        ${client.company ? `<span class="inline-flex items-center gap-1"><i class="fa-solid fa-building text-primary text-xs"></i>${this.escapeHtml(client.company)}</span>` : ''}
+                    </div>
+                </div>
+                
+                <!-- Botões de Ação - sempre juntos e alinhados à direita -->
+                <div class="flex gap-2 flex-shrink-0 w-full md:w-auto justify-end md:justify-start">
+                    <button onclick="app.editClient(${client.id})" 
+                            class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg text-sm transition-all duration-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen text-xs"></i>
+                        <span>Editar</span>
+                    </button>
+                    <button onclick="app.removeClient(${client.id})" 
+                            class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-lg text-sm transition-all duration-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                        <span>Excluir</span>
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="mt-2 flex flex-wrap gap-2 text-sm text-gray-500 dark:text-gray-500">
-          ${client.phone ? `<span><i class="fa-solid fa-phone mr-1"></i>${client.phone}</span>` : ''}
-          ${client.company ? `<span><i class="fa-solid fa-building mr-1"></i>${client.company}</span>` : ''}
-        </div>
-      </div>
-      <div class="flex gap-2 self-end sm:self-auto">
-        <button onclick="app.editClient(${client.id})" 
-                class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg text-sm">
-          <i class="fa-solid fa-pen mr-1"></i> Editar
-        </button>
-        <button onclick="app.removeClient(${client.id})" 
-                class="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-lg text-sm">
-          <i class="fa-solid fa-trash mr-1"></i> Excluir
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `).join('');
+},
+
+// Função auxiliar para escapar HTML (segurança)
+escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 },
 
 filterClients() {
-  this.clientSearchFilter = document.getElementById('client-search')?.value || '';
-  this.renderClients();
+    this.clientSearchFilter = document.getElementById('client-search')?.value || '';
+    this.renderClients();
 },
   
   // Serviços
