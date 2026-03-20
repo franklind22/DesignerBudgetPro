@@ -547,7 +547,7 @@ removeClient(id) {
   }
 };
 
-// PDF Template - VERSÃO COMPLETA COM TODAS AS FUNCIONALIDADES
+// PDF Template - VERSÃO ESTÁVEL E COMPLETA
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     // Calcular datas
@@ -555,43 +555,29 @@ const pdfTemplate = {
     validityDate.setDate(validityDate.getDate() + (budget.validity || 30));
     
     // Pegar cores do tema
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2d8a8a';
-    const primaryDark = getComputedStyle(document.documentElement).getPropertyValue('--primary-dark').trim() || '#1e5f5f';
+    const primaryColor = '#2d8a8a';
+    const primaryDark = '#1e5f5f';
     
     // Calcular quantidade total de serviços
     const totalItems = budget.services?.length || 0;
     
-    // AJUSTE DINÂMICO DE FONTE (restaurado)
+    // Ajuste dinâmico de fonte
     let baseFontSize = 12;
-    let titleFontSize = 20;
-    let headerFontSize = 28;
+    let headerFontSize = 24;
     let tableFontSize = 11;
-    let paddingSize = 30;
     
     if (totalItems > 20) {
-      baseFontSize = 8;
-      titleFontSize = 14;
-      headerFontSize = 20;
-      tableFontSize = 7;
-      paddingSize = 18;
-    } else if (totalItems > 15) {
       baseFontSize = 9;
-      titleFontSize = 16;
-      headerFontSize = 22;
+      headerFontSize = 20;
       tableFontSize = 8;
-      paddingSize = 20;
-    } else if (totalItems > 10) {
+    } else if (totalItems > 15) {
       baseFontSize = 10;
-      titleFontSize = 18;
-      headerFontSize = 24;
+      headerFontSize = 22;
       tableFontSize = 9;
-      paddingSize = 25;
-    } else if (totalItems > 5) {
+    } else if (totalItems > 10) {
       baseFontSize = 11;
-      titleFontSize = 19;
-      headerFontSize = 26;
+      headerFontSize = 23;
       tableFontSize = 10;
-      paddingSize = 28;
     }
     
     // Agrupar serviços por categoria
@@ -603,20 +589,20 @@ const pdfTemplate = {
       servicesByCategory[s.category].push(s);
     });
     
-    // Construir HTML dos serviços
+    // Construir tabela de serviços
     let servicesHTML = '';
     
     for (const [category, items] of Object.entries(servicesByCategory)) {
       servicesHTML += `
-        <div style="margin-bottom: 20px; page-break-inside: avoid; break-inside: avoid;">
-          <h3 style="background: #f0f4f4; padding: 8px 12px; margin: 0 0 10px 0; font-size: ${baseFontSize + 2}px; color: ${primaryDark};">${category}</h3>
+        <div style="margin-bottom: 25px; page-break-inside: avoid;">
+          <div style="background: #e8f0f0; padding: 10px 12px; margin-bottom: 10px; font-weight: bold; font-size: 14px; color: ${primaryDark};">${category}</div>
           <table style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr style="background: #f8f9fa; border-bottom: 1px solid #dee2e6;">
-                <th style="text-align: left; padding: 8px; font-size: ${tableFontSize}px;">Serviço</th>
-                <th style="text-align: center; padding: 8px; width: 60px; font-size: ${tableFontSize}px;">Qtd</th>
-                <th style="text-align: right; padding: 8px; width: 100px; font-size: ${tableFontSize}px;">Valor Unit.</th>
-                <th style="text-align: right; padding: 8px; width: 100px; font-size: ${tableFontSize}px;">Total</th>
+              <tr style="border-bottom: 1px solid #dee2e6;">
+                <th style="text-align: left; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px;">Serviço</th>
+                <th style="text-align: center; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 70px;">Qtd</th>
+                <th style="text-align: right; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 110px;">Valor Unit.</th>
+                <th style="text-align: right; padding: 10px 8px; font-weight: 600; font-size: ${tableFontSize}px; width: 110px;">Total</th>
                </tr>
             </thead>
             <tbody>
@@ -626,11 +612,11 @@ const pdfTemplate = {
         const price = s.customPrice || s.price;
         const total = price * s.qty;
         servicesHTML += `
-          <tr style="border-bottom: 1px solid #eee;">
-            <td style="padding: 8px; font-size: ${tableFontSize}px;">${s.name}</td>
-            <td style="text-align: center; padding: 8px; font-size: ${tableFontSize}px;">${s.qty}</td>
-            <td style="text-align: right; padding: 8px; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
-            <td style="text-align: right; padding: 8px; font-size: ${tableFontSize}px; font-weight: 500;">R$ ${total.toFixed(2).replace('.', ',')}</td>
+          <tr style="border-bottom: 1px solid #f0f0f0;">
+            <td style="padding: 10px 8px; font-size: ${tableFontSize}px;">${s.name}</td>
+            <td style="text-align: center; padding: 10px 8px; font-size: ${tableFontSize}px;">${s.qty}</td>
+            <td style="text-align: right; padding: 10px 8px; font-size: ${tableFontSize}px;">R$ ${price.toFixed(2).replace('.', ',')}</td>
+            <td style="text-align: right; padding: 10px 8px; font-size: ${tableFontSize}px; font-weight: 500;">R$ ${total.toFixed(2).replace('.', ',')}</td>
            </tr>
         `;
       }
@@ -658,57 +644,41 @@ const pdfTemplate = {
           body {
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             background: white;
-            color: #000;
+            color: #000000;
+            font-size: ${baseFontSize}px;
+            line-height: 1.4;
           }
-          .container {
-            max-width: 210mm;
+          .page {
+            width: 210mm;
             margin: 0 auto;
             background: white;
+            position: relative;
           }
           
-          /* Cabeçalho com elementos abstratos */
+          /* CABEÇALHO FIXO - aparece em todas as páginas */
           .header {
             background: ${primaryColor};
             color: white;
-            padding: ${paddingSize}px;
+            padding: 25px 30px;
             position: relative;
             overflow: hidden;
           }
-          .header-bg-1 {
+          .header-bg {
             position: absolute;
-            top: -50px;
-            right: -30px;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.08);
+            top: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
           }
-          .header-bg-2 {
+          .header-bg2 {
             position: absolute;
-            bottom: -40px;
-            left: -20px;
-            width: 150px;
-            height: 150px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
-          }
-          .header-bg-3 {
-            position: absolute;
-            top: 50%;
-            left: 20%;
-            width: 80px;
-            height: 80px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 50%;
-            transform: translateY(-50%);
-          }
-          .header-bg-4 {
-            position: absolute;
-            bottom: 10px;
-            right: 15%;
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.05);
+            bottom: -30px;
+            left: -30px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
           }
           .header-content {
@@ -721,19 +691,21 @@ const pdfTemplate = {
           }
           .header-title {
             font-size: ${headerFontSize}px;
-            margin: 0;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            margin: 0;
+            color: white;
           }
           .header-subtitle {
-            margin: 8px 0 0;
+            margin-top: 8px;
             opacity: 0.85;
-            font-size: ${baseFontSize + 2}px;
+            font-size: ${baseFontSize + 1}px;
+            color: white;
           }
           .header-email {
-            margin: 4px 0 0;
+            margin-top: 4px;
             opacity: 0.7;
             font-size: ${baseFontSize - 1}px;
+            color: white;
           }
           .header-badge {
             background: rgba(255,255,255,0.2);
@@ -742,48 +714,52 @@ const pdfTemplate = {
             text-align: center;
           }
           .header-badge-label {
-            font-size: ${baseFontSize - 2}px;
+            font-size: 11px;
             opacity: 0.8;
+            color: white;
           }
           .header-badge-number {
-            font-size: ${baseFontSize + 4}px;
+            font-size: 18px;
             font-weight: bold;
+            color: white;
           }
           
-          /* Informações */
+          /* INFORMAÇÕES - TODOS TEXTOS PRETOS */
           .info-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             background: #f8f9fa;
-            padding: ${paddingSize - 10}px ${paddingSize}px;
+            padding: 20px 30px;
             border-bottom: 1px solid #e9ecef;
           }
           .info-label {
-            color: #6c757d;
-            font-size: ${baseFontSize - 2}px;
+            color: #000000;
+            font-size: 11px;
+            font-weight: 600;
             margin-bottom: 4px;
           }
           .info-value {
             font-weight: 600;
-            font-size: ${baseFontSize}px;
+            font-size: 14px;
+            color: #000000;
           }
           
-          /* Serviços */
+          /* SERVIÇOS */
           .services-section {
-            padding: ${paddingSize - 10}px ${paddingSize}px;
+            padding: 20px 30px;
           }
           .section-title {
             color: ${primaryColor};
-            font-size: ${titleFontSize}px;
-            margin: 0 0 15px 0;
+            font-size: 20px;
+            margin-bottom: 20px;
             border-bottom: 2px solid ${primaryColor};
             padding-bottom: 8px;
           }
           
-          /* Condições de Pagamento */
+          /* CONDIÇÕES DE PAGAMENTO */
           .payment-terms {
-            margin: 0 ${paddingSize}px 15px;
+            margin: 0 30px 20px;
           }
           .payment-box {
             background: #e8f0fe;
@@ -791,57 +767,67 @@ const pdfTemplate = {
             padding: 12px 15px;
             border-radius: 8px;
           }
+          .payment-box strong {
+            color: ${primaryColor};
+            font-size: 12px;
+          }
+          .payment-box p {
+            margin-top: 8px;
+            color: #000000;
+            font-size: 12px;
+          }
           
-          /* Total */
+          /* TOTAL */
           .total-box {
             background: #f8f9fa;
             padding: 15px 20px;
             border-radius: 8px;
             max-width: 320px;
-            margin: 0 ${paddingSize}px 20px;
+            margin: 0 30px 20px;
             margin-left: auto;
           }
           .total-row {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
-            font-size: ${baseFontSize - 1}px;
+            color: #000000;
+            font-size: 13px;
           }
           .total-grand {
             border-top: 2px solid ${primaryColor};
             margin-top: 5px;
             padding-top: 10px;
-            font-size: ${baseFontSize + 4}px;
+            font-size: 18px;
             font-weight: bold;
             color: ${primaryColor};
           }
           
-          /* Observações */
+          /* OBSERVAÇÕES */
           .notes {
             background: #fff9e6;
             border-left: 4px solid #fbbf24;
             padding: 12px 15px;
-            margin: 0 ${paddingSize}px 20px;
+            margin: 0 30px 20px;
             border-radius: 8px;
           }
           .notes strong {
             color: #b45309;
-            font-size: ${baseFontSize - 1}px;
+            font-size: 12px;
             display: block;
             margin-bottom: 6px;
           }
           .notes p {
             margin: 0;
-            font-size: ${baseFontSize - 1}px;
-            line-height: 1.4;
+            color: #000000;
+            font-size: 12px;
           }
           
-          /* Assinaturas */
+          /* ASSINATURAS */
           .signatures {
             display: flex;
             justify-content: space-between;
             gap: 40px;
-            margin: 10px ${paddingSize}px 25px;
+            margin: 20px 30px 30px;
           }
           .signature {
             flex: 1;
@@ -850,33 +836,29 @@ const pdfTemplate = {
             padding-top: 12px;
           }
           .signature strong {
-            font-size: ${baseFontSize - 1}px;
+            color: #000000;
+            font-size: 12px;
           }
           .signature-date {
-            font-size: ${baseFontSize - 3}px;
+            font-size: 10px;
             color: #6c757d;
             margin-top: 8px;
           }
           
-          /* Rodapé */
+          /* RODAPÉ */
           .footer {
             background: #f1f3f5;
             text-align: center;
-            padding: 12px ${paddingSize}px;
-            margin-top: 10px;
+            padding: 12px 30px;
+            margin-top: 20px;
           }
           .footer p {
             margin: 5px 0;
-            font-size: ${baseFontSize - 3}px;
-            color: #495057;
+            font-size: 9px;
+            color: #000000;
           }
           .footer-brand {
             color: ${primaryColor} !important;
-          }
-          .page-number {
-            margin-top: 8px;
-            font-size: ${baseFontSize - 4}px;
-            color: #6c757d;
           }
           
           table {
@@ -884,23 +866,24 @@ const pdfTemplate = {
             border-collapse: collapse;
           }
           th, td {
-            padding: 8px;
+            padding: 10px 8px;
+          }
+          th {
+            color: #000000;
           }
         </style>
       </head>
       <body>
-        <div class="container">
-          <!-- Cabeçalho com elementos abstratos -->
+        <div class="page">
+          <!-- CABEÇALHO FIXO -->
           <div class="header">
-            <div class="header-bg-1"></div>
-            <div class="header-bg-2"></div>
-            <div class="header-bg-3"></div>
-            <div class="header-bg-4"></div>
+            <div class="header-bg"></div>
+            <div class="header-bg2"></div>
             <div class="header-content">
               <div>
                 <h1 class="header-title">PROPOSTA COMERCIAL</h1>
-                <p class="header-subtitle">${settings.name || 'Designer Profissional'}</p>
-                ${settings.email ? `<p class="header-email">${settings.email}</p>` : ''}
+                <div class="header-subtitle">${settings.name || 'Designer Profissional'}</div>
+                ${settings.email ? `<div class="header-email">${settings.email}</div>` : ''}
               </div>
               <div class="header-badge">
                 <div class="header-badge-label">Nº</div>
@@ -909,7 +892,7 @@ const pdfTemplate = {
             </div>
           </div>
           
-          <!-- Informações -->
+          <!-- INFORMAÇÕES -->
           <div class="info-grid">
             <div>
               <div class="info-label">CLIENTE</div>
@@ -929,23 +912,28 @@ const pdfTemplate = {
             </div>
           </div>
           
-          <!-- Serviços -->
+          <!-- SERVIÇOS -->
           <div class="services-section">
             <h2 class="section-title">SERVIÇOS</h2>
             ${servicesHTML}
           </div>
           
-          <!-- Condições de Pagamento -->
-          ${budget.paymentTerms ? `
-          <div class="payment-terms">
-            <div class="payment-box">
-              <strong style="color: ${primaryColor};">💰 CONDIÇÕES DE PAGAMENTO:</strong>
-              <p style="margin: 8px 0 0; font-size: ${baseFontSize - 1}px;">${budget.paymentTerms}</p>
-            </div>
-          </div>
-          ` : ''}
+          // Substitua a seção de Condições de Pagamento no HTML por:
+
+<!-- QUEBRA DE PÁGINA CONTROLADA -->
+<div style="page-break-before: always; break-before: page; height: 0;"></div>
+
+<!-- CONDIÇÕES DE PAGAMENTO (começa em nova página) -->
+${budget.paymentTerms ? `
+<div class="payment-terms">
+  <div class="payment-box">
+    <strong>💰 CONDIÇÕES DE PAGAMENTO</strong>
+    <p>${budget.paymentTerms}</p>
+  </div>
+</div>
+` : ''}
           
-          <!-- Total -->
+          <!-- TOTAL -->
           <div class="total-box">
             <div class="total-row">
               <span>Subtotal:</span>
@@ -963,13 +951,13 @@ const pdfTemplate = {
             </div>
           </div>
           
-          <!-- Observações -->
+          <!-- OBSERVAÇÕES -->
           <div class="notes">
-            <strong>📝 OBSERVAÇÕES:</strong>
+            <strong>📝 OBSERVAÇÕES</strong>
             <p>${budget.notes || 'Nenhuma observação adicional.'}</p>
           </div>
           
-          <!-- Assinaturas -->
+          <!-- ASSINATURAS -->
           <div class="signatures">
             <div class="signature">
               <strong>Cliente</strong>
@@ -981,33 +969,20 @@ const pdfTemplate = {
             </div>
           </div>
           
-          <!-- Rodapé com número de página -->
+          <!-- RODAPÉ -->
           <div class="footer">
             <p>Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}</p>
             <p>Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
             <p class="footer-brand">Designer Budget Pro • Sistema Profissional de Orçamentos</p>
-            <div class="page-number">
-              <span class="pageNumber"></span> de <span class="totalPages"></span>
-            </div>
           </div>
         </div>
-        
-        <!-- Script para número de páginas -->
-        <script>
-          // Aguarda o PDF ser gerado para atualizar os números de página
-          setTimeout(() => {
-            const pages = document.querySelectorAll('.pageNumber');
-            const totals = document.querySelectorAll('.totalPages');
-            // O html2pdf.js atualiza automaticamente estes elementos
-          }, 100);
-        </script>
       </body>
       </html>
     `;
     
     // Configurações do PDF
     const opt = {
-      margin: [5, 5, 5, 5],
+      margin: [10, 10, 10, 10],
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -1023,9 +998,12 @@ const pdfTemplate = {
       }
     };
     
-    // Criar elemento temporário e gerar PDF
+    // Criar elemento e gerar PDF
     const element = document.createElement('div');
     element.innerHTML = htmlContent;
+    element.style.position = 'absolute';
+    element.style.left = '-9999px';
+    element.style.top = '-9999px';
     document.body.appendChild(element);
     
     html2pdf().set(opt).from(element).save().then(() => {
