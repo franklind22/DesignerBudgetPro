@@ -409,238 +409,248 @@
       <div id="services-accordion" class="space-y-3"></div>
     </main>
 
-    <!-- SETTINGS VIEW -->
-    <main id="settings-view" class="hidden space-y-6">
-      <h1 class="text-2xl font-bold">Configurações</h1>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="space-y-6">
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold mb-4">Perfil do Usuário</h3>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Nome Completo</label>
-                <input type="text" id="settingName" class="w-full px-4 py-2.5 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">E-mail</label>
-                <input type="email" id="settingEmail" class="w-full px-4 py-2.5 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Valor da Hora (R$)</label>
-                <input type="number" id="settingHourlyRate" value="150" class="w-full px-4 py-2.5 rounded-lg border">
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium">Tema Escuro</span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="settingDarkMode" class="sr-only peer" onchange="app.toggleTheme()">
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 
-                              peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 
-                              peer-checked:after:translate-x-full peer-checked:after:border-white 
-                              after:content-[''] after:absolute after:top-[2px] after:start-[2px] 
-                              after:bg-white after:border-gray-300 after:border after:rounded-full 
-                              after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary">
-                  </div>
-                </label>
-              </div>
-            </div>
+<!-- SETTINGS VIEW -->
+<main id="settings-view" class="hidden space-y-6">
+  <h1 class="text-2xl font-bold">Configurações</h1>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- COLUNA ESQUERDA -->
+    <div class="space-y-6">
+      <!-- Perfil do Usuário -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+        <h3 class="text-lg font-semibold mb-4">Perfil do Usuário</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nome Completo</label>
+            <input type="text" id="settingName" class="w-full px-4 py-2.5 rounded-lg border dark:bg-gray-700 dark:border-gray-600">
           </div>
-
-<!-- Dentro da view de configurações, na parte de Tema do Aplicativo -->
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-  <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tema do Aplicativo</h3>
-  
-  <div class="grid grid-cols-2 gap-4 mb-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cor base</label>
-      <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-    </div>
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Modelo</label>
-      <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-        <option value="monochromatic">Monocromática</option>
-        <option value="analogous">Analógica</option>
-        <option value="complementary">Complementar</option>
-        <option value="triadic">Triádica</option>
-        <option value="tetradic">Tetrádica</option>
-      </select>
-    </div>
-  </div>
-  
-  <div class="flex gap-2 mb-4">
-    <button onclick="app.applyThemeFromSettings()" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg">
-      Aplicar Tema
-    </button>
-    <button onclick="app.resetTheme()" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-medium rounded-lg">
-      Resetar
-    </button>
-  </div>
-  
-  <!-- Preview do tema (opcional) -->
-  <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
-    <div class="flex gap-2">
-      <div class="w-8 h-8 rounded-full bg-primary"></div>
-      <div class="w-8 h-8 rounded-full bg-primary-dark"></div>
-      <div class="w-8 h-8 rounded-full bg-primary-light" style="background-color: var(--primary-light, '#e6f3f3')"></div>
-    </div>
-  </div>
-</div>
-          <!-- CALCULADORA - COMPLETA com todos os IDs -->
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold mb-4">Calculadora de Hora</h3>
-            
-            <div class="flex border-b mb-4">
-              <button id="tab-hourly" onclick="app.switchCalcTab('hourly')" 
-                      class="flex-1 py-2 text-sm font-medium border-b-2 border-primary text-primary">
-                Valor/Hora
-              </button>
-              <button id="tab-project" onclick="app.switchCalcTab('project')" 
-                      class="flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500">
-                Preço Projeto
-              </button>
-            </div>
-
-            <div id="calc-tab-hourly" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Renda mensal desejada (R$)</label>
-                <input type="number" id="calc-monthly-income" value="5000" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Horas por dia</label>
-                <input type="number" id="calc-hours-per-day" value="8" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Dias por semana</label>
-                <input type="number" id="calc-days-per-week" value="5" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Semanas de férias/ano</label>
-                <input type="number" id="calc-vacation-weeks" value="4" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <button onclick="app.calcHourlyRate()" class="w-full py-2 bg-primary text-white rounded-lg">
-                Calcular
-              </button>
-              <div class="p-4 bg-gray-50 rounded-lg">
-                <div class="flex justify-between mb-2">
-                  <span>Semanas trabalhadas/ano:</span>
-                  <span id="calc-weeks-year" class="font-semibold">48</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                  <span>Horas trabalhadas/ano:</span>
-                  <span id="calc-hours-year" class="font-semibold">1.920h</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                  <span>Renda anual:</span>
-                  <span id="calc-annual-income" class="font-semibold">R$ 60.000</span>
-                </div>
-                <div class="flex justify-between text-base font-bold pt-2 border-t">
-                  <span>Seu valor/hora:</span>
-                  <span id="calc-hourly-rate" class="text-primary">R$ 31,25</span>
-                </div>
-              </div>
-              <button onclick="app.applyCalculatedHourlyRate()" class="w-full py-2 bg-green-600 text-white rounded-lg">
-                Aplicar nos orçamentos
-              </button>
-            </div>
-
-            <div id="calc-tab-project" class="hidden space-y-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Valor da hora (R$)</label>
-                <input type="number" id="calc-project-hourly" value="150" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Horas por dia</label>
-                <input type="number" id="calc-project-hours-day" value="8" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Dias do projeto</label>
-                <input type="number" id="calc-project-days" value="5" class="w-full px-4 py-2 rounded-lg border">
-              </div>
-              <button onclick="app.calcProjectPrice()" class="w-full py-2 bg-primary text-white rounded-lg">
-                Calcular
-              </button>
-              <div class="p-4 bg-gray-50 rounded-lg">
-                <div class="flex justify-between mb-2">
-                  <span>Total de horas:</span>
-                  <span id="calc-project-total-hours" class="font-semibold">40h</span>
-                </div>
-                <div class="flex justify-between mb-2">
-                  <span>Valor/hora:</span>
-                  <span id="calc-project-hourly-display" class="font-semibold">R$ 150,00</span>
-                </div>
-                <div class="flex justify-between text-base font-bold pt-2 border-t">
-                  <span>Preço total:</span>
-                  <span id="calc-project-total" class="text-primary">R$ 6.000,00</span>
-                </div>
-              </div>
-            </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">E-mail</label>
+            <input type="email" id="settingEmail" class="w-full px-4 py-2.5 rounded-lg border dark:bg-gray-700 dark:border-gray-600">
           </div>
-
-          <div id="backup-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold mb-4">Backup</h3>
-            <button onclick="app.exportData()" class="w-full px-4 py-2 bg-primary text-white rounded-lg mb-2">
-              <i class="fa-solid fa-download mr-2"></i>Exportar Dados
-            </button>
-            <label class="w-full px-4 py-2 bg-gray-100 text-center rounded-lg cursor-pointer block">
-              <i class="fa-solid fa-upload mr-2"></i>Importar Dados
-              <input type="file" accept=".json" onchange="app.importData(this.files[0])" class="hidden">
+          <div>
+            <label class="block text-sm font-medium mb-1">Valor da Hora (R$)</label>
+            <input type="number" id="settingHourlyRate" value="150" class="w-full px-4 py-2.5 rounded-lg border dark:bg-gray-700 dark:border-gray-600">
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium">Tema Escuro</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="settingDarkMode" class="sr-only peer" onchange="app.toggleTheme()">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 
+                          peer-focus:ring-primary/50 rounded-full peer dark:bg-gray-700 
+                          peer-checked:after:translate-x-full peer-checked:after:border-white 
+                          after:content-[''] after:absolute after:top-[2px] after:start-[2px] 
+                          after:bg-white after:border-gray-300 after:border after:rounded-full 
+                          after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary">
+              </div>
             </label>
-            <button onclick="app.showBackupHistory()" class="text-sm text-primary hover:underline mt-2">
-              Ver histórico de backups
-            </button>
           </div>
+        </div>
+      </div>
 
-          <!-- SOBRE - COMPLETO com todos os IDs -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-            <h3 class="text-lg font-semibold mb-4">Sobre</h3>
-            
-            <div class="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
-              <div class="text-center">
-                <div class="text-xl font-bold text-primary" id="about-total-services">51</div>
-                <div class="text-xs text-gray-500">Serviços</div>
-              </div>
-              <div class="text-center">
-                <div class="text-xl font-bold text-primary" id="about-total-clients">0</div>
-                <div class="text-xs text-gray-500">Clientes</div>
-              </div>
-              <div class="text-center">
-                <div class="text-xl font-bold text-primary" id="about-total-budgets">0</div>
-                <div class="text-xs text-gray-500">Orçamentos</div>
-              </div>
+      <!-- Tema do Aplicativo -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+        <h3 class="text-lg font-semibold mb-4">Tema do Aplicativo</h3>
+        
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Cor base</label>
+            <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border cursor-pointer">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Modelo</label>
+            <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border dark:bg-gray-700">
+              <option value="monochromatic">Monocromática</option>
+              <option value="analogous">Analógica</option>
+              <option value="complementary">Complementar</option>
+              <option value="triadic">Triádica</option>
+              <option value="tetradic">Tetrádica</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="flex gap-2 mb-4">
+          <button onclick="app.applyThemeFromSettings()" class="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg">
+            Aplicar Tema
+          </button>
+          <button onclick="app.resetTheme && app.resetTheme()" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white font-medium rounded-lg">
+            Resetar
+          </button>
+        </div>
+        
+        <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
+          <div class="flex gap-2">
+            <div class="w-8 h-8 rounded-full bg-primary"></div>
+            <div class="w-8 h-8 rounded-full" style="background-color: var(--primary-dark, '#1e5f5f')"></div>
+            <div class="w-8 h-8 rounded-full" style="background-color: var(--primary-light, '#e6f3f3')"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metas (será preenchido pelo JS) -->
+      <div id="goals-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+        <!-- Conteúdo preenchido pelo renderGoals() -->
+      </div>
+    </div>
+
+    <!-- COLUNA DIREITA -->
+    <div class="space-y-6">
+      <!-- Calculadora de Preços -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+        <h3 class="text-lg font-semibold mb-4">Calculadora de Preços</h3>
+        
+        <div class="flex border-b mb-4">
+          <button id="tab-hourly" onclick="app.switchCalcTab('hourly')" 
+                  class="flex-1 py-2 text-sm font-medium border-b-2 border-primary text-primary">
+            Valor/Hora
+          </button>
+          <button id="tab-project" onclick="app.switchCalcTab('project')" 
+                  class="flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500">
+            Preço Projeto
+          </button>
+        </div>
+
+        <!-- Aba Valor por Hora -->
+        <div id="calc-tab-hourly" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Renda mensal desejada (R$)</label>
+            <input type="number" id="calc-monthly-income" value="5000" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Horas por dia</label>
+            <input type="number" id="calc-hours-per-day" value="8" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Dias por semana</label>
+            <input type="number" id="calc-days-per-week" value="5" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Semanas de férias/ano</label>
+            <input type="number" id="calc-vacation-weeks" value="4" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <button onclick="app.calcHourlyRate()" class="w-full py-2 bg-primary text-white rounded-lg">
+            Calcular
+          </button>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="flex justify-between mb-2">
+              <span>Semanas trabalhadas/ano:</span>
+              <span id="calc-weeks-year" class="font-semibold">48</span>
             </div>
-            
-            <div class="space-y-2 text-sm">
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-primary"></i>
-                <span>51 serviços pré-configurados</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-primary"></i>
-                <span>Gerador de paleta de cores</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-primary"></i>
-                <span>6 status de orçamento</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-primary"></i>
-                <span>Dashboard com gráficos</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-primary"></i>
-                <span>Exportação em PDF</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-primary"></i>
-                <span>Backup automático</span>
-              </div>
+            <div class="flex justify-between mb-2">
+              <span>Horas trabalhadas/ano:</span>
+              <span id="calc-hours-year" class="font-semibold">1.920h</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <span>Renda anual:</span>
+              <span id="calc-annual-income" class="font-semibold">R$ 60.000</span>
+            </div>
+            <div class="flex justify-between text-base font-bold pt-2 border-t">
+              <span>Seu valor/hora:</span>
+              <span id="calc-hourly-rate" class="text-primary">R$ 31,25</span>
+            </div>
+          </div>
+          <button onclick="app.applyCalculatedHourlyRate()" class="w-full py-2 bg-green-600 text-white rounded-lg">
+            Aplicar nos orçamentos
+          </button>
+        </div>
+
+        <!-- Aba Preço Projeto -->
+        <div id="calc-tab-project" class="hidden space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Valor da hora (R$)</label>
+            <input type="number" id="calc-project-hourly" value="150" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Horas por dia</label>
+            <input type="number" id="calc-project-hours-day" value="8" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Dias do projeto</label>
+            <input type="number" id="calc-project-days" value="5" class="w-full px-4 py-2 rounded-lg border dark:bg-gray-700">
+          </div>
+          <button onclick="app.calcProjectPrice()" class="w-full py-2 bg-primary text-white rounded-lg">
+            Calcular
+          </button>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+            <div class="flex justify-between mb-2">
+              <span>Total de horas:</span>
+              <span id="calc-project-total-hours" class="font-semibold">40h</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <span>Valor/hora:</span>
+              <span id="calc-project-hourly-display" class="font-semibold">R$ 150,00</span>
+            </div>
+            <div class="flex justify-between text-base font-bold pt-2 border-t">
+              <span>Preço total:</span>
+              <span id="calc-project-total" class="text-primary">R$ 6.000,00</span>
             </div>
           </div>
         </div>
       </div>
-    </main>
+
+      <!-- Backup -->
+      <div id="backup-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+        <!-- Conteúdo preenchido pelo renderBackupSection() -->
+      </div>
+
+      <!-- Sobre -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+        <h3 class="text-lg font-semibold mb-4">Sobre</h3>
+        
+        <div class="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+          <div class="text-center">
+            <div class="text-xl font-bold text-primary" id="about-total-services">51</div>
+            <div class="text-xs text-gray-500">Serviços</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-primary" id="about-total-clients">0</div>
+            <div class="text-xs text-gray-500">Clientes</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-primary" id="about-total-budgets">0</div>
+            <div class="text-xs text-gray-500">Orçamentos</div>
+          </div>
+        </div>
+        
+        <div class="space-y-2 text-sm">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span>51 serviços pré-configurados</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span>Gerador de paleta de cores</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span>6 status de orçamento</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span>Dashboard com gráficos</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span>Exportação em PDF</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span>Backup automático</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+  
+  <!-- Botão Salvar Configurações no final -->
+  <div class="flex justify-end">
+    <button onclick="app.saveSettings()" 
+            class="px-6 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all duration-200">
+      <i class="fa-solid fa-save mr-2"></i>Salvar Configurações
+    </button>
+  </div>
+</main>
 
   <button onclick="app.toggleFocusMode()" 
           class="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center text-xl z-40">
