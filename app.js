@@ -713,6 +713,9 @@ const app = {
   isLoggedIn: false,
   charts: {},
   focusMode: false,
+  editingClientId: null,        // <-- ADICIONE ESTA LINHA
+  lastCalculatedRate: null,      // <-- ADICIONE ESTA LINHA
+  _initChartsTimeout: null,
   
   init() {
     console.log('Inicializando app...');
