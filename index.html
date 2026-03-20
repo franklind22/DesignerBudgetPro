@@ -206,146 +206,161 @@
       </div>
     </main>
 
-    <!-- DASHBOARD VIEW -->
-    <main id="dashboard-view" class="active space-y-6">
-      <div class="flex items-center gap-3">
+    <!-- DASHBOARD VIEW - CORRIGIDO -->
+<main id="dashboard-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center gap-3 mb-8">
         <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg">
-          <i class="fa-solid fa-chart-line text-xl"></i>
+            <i class="fa-solid fa-chart-line text-xl"></i>
         </div>
         <h1 class="text-2xl sm:text-3xl font-bold">Dashboard de Orçamentos</h1>
-      </div>
+    </div>
 
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+    <!-- Filtro de Data -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6 mb-8">
         <h3 class="flex items-center gap-2 text-lg font-semibold mb-4">
-          <i class="fa-regular fa-calendar-days text-primary"></i> Filtrar por Data
+            <i class="fa-regular fa-calendar-days text-primary"></i> Filtrar por Data
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">Data Inicial</label>
-            <input type="date" id="dashboard-date-from" class="w-full px-4 py-2.5 rounded-lg border">
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Data Final</label>
-            <input type="date" id="dashboard-date-to" class="w-full px-4 py-2.5 rounded-lg border">
-          </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Data Inicial</label>
+                <input type="date" id="dashboard-date-from" class="w-full px-4 py-2.5 rounded-lg border dark:bg-gray-700">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Data Final</label>
+                <input type="date" id="dashboard-date-to" class="w-full px-4 py-2.5 rounded-lg border dark:bg-gray-700">
+            </div>
         </div>
         <div class="flex flex-col sm:flex-row gap-3">
-          <button onclick="app.filterDashboardByDate()" class="flex-1 bg-primary text-white px-4 py-2.5 rounded-lg">
-            Aplicar Filtro
-          </button>
-          <button onclick="app.clearDateFilter()" class="flex-1 sm:flex-none bg-gray-100 px-4 py-2.5 rounded-lg">
-            Limpar Filtro
-          </button>
+            <button onclick="app.filterDashboardByDate()" class="flex-1 bg-primary text-white px-4 py-2.5 rounded-lg hover:bg-primary-dark transition-colors">
+                Aplicar Filtro
+            </button>
+            <button onclick="app.clearDateFilter()" class="flex-1 sm:flex-none bg-gray-100 dark:bg-gray-700 px-4 py-2.5 rounded-lg hover:bg-gray-200 transition-colors">
+                Limpar Filtro
+            </button>
         </div>
-      </div>
+    </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Cards de Estatísticas - 3 colunas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-              <i class="fa-solid fa-file-invoice text-primary text-xl"></i>
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <i class="fa-solid fa-file-invoice text-primary text-xl"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-500">Total</span>
             </div>
-            <span class="text-sm font-medium text-gray-500">Total</span>
-          </div>
-          <div class="text-3xl font-bold mb-1" id="stat-total">0</div>
-          <div class="text-sm text-gray-600">Orçamentos criados</div>
+            <div class="text-3xl font-bold mb-1" id="stat-total">0</div>
+            <div class="text-sm text-gray-600">Orçamentos criados</div>
         </div>
         
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-              <i class="fa-solid fa-coins text-green-600 text-xl"></i>
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                    <i class="fa-solid fa-coins text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-500">Receita</span>
             </div>
-            <span class="text-sm font-medium text-gray-500">Receita</span>
-          </div>
-          <div class="text-3xl font-bold mb-1" id="stat-revenue">R$ 0</div>
-          <div class="text-sm text-gray-600">Valor total dos orçamentos</div>
+            <div class="text-3xl font-bold mb-1" id="stat-revenue">R$ 0</div>
+            <div class="text-sm text-gray-600">Valor total dos orçamentos</div>
         </div>
         
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <i class="fa-solid fa-circle-check text-blue-600 text-xl"></i>
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                    <i class="fa-solid fa-circle-check text-blue-600 dark:text-blue-400 text-xl"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-500">Realizado</span>
             </div>
-            <span class="text-sm font-medium text-gray-500">Realizado</span>
-          </div>
-          <div class="text-3xl font-bold mb-1" id="stat-receipt">R$ 0</div>
-          <div class="text-sm text-gray-600">Orçamentos pagos</div>
+            <div class="text-3xl font-bold mb-1" id="stat-receipt">R$ 0</div>
+            <div class="text-sm text-gray-600">Orçamentos pagos</div>
         </div>
-      </div>
+    </div>
 
-      <div id="goals-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6"></div>
+    <!-- Cards de Status por Etapa - 6 colunas em telas grandes -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#FFA500] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('em_processo')">
+            <div class="text-2xl font-bold mb-1" id="stat-em-processo">0</div>
+            <div class="text-xs text-gray-600 flex items-center gap-1">
+                <i class="fa-solid fa-file-pen text-[#FFA500]"></i> Em Processo
+            </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#218040] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('aprovado')">
+            <div class="text-2xl font-bold mb-1" id="stat-aprovado">0</div>
+            <div class="text-xs text-gray-600 flex items-center gap-1">
+                <i class="fa-solid fa-circle-check text-[#218040]"></i> Aprovado
+            </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#c91530] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('nao_aprovado')">
+            <div class="text-2xl font-bold mb-1" id="stat-nao-aprovado">0</div>
+            <div class="text-xs text-gray-600 flex items-center gap-1">
+                <i class="fa-solid fa-circle-xmark text-[#c91530]"></i> Não Aprovado
+            </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#a84d2f] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('alterado')">
+            <div class="text-2xl font-bold mb-1" id="stat-alterado">0</div>
+            <div class="text-xs text-gray-600 flex items-center gap-1">
+                <i class="fa-solid fa-arrows-rotate text-[#a84d2f]"></i> Alterado
+            </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#2d8a8a] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('concluido')">
+            <div class="text-2xl font-bold mb-1" id="stat-concluido">0</div>
+            <div class="text-xs text-gray-600 flex items-center gap-1">
+                <i class="fa-solid fa-check text-[#2d8a8a]"></i> Concluído
+            </div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#1a6b4d] cursor-pointer hover:shadow-md transition-all" onclick="app.filterByStatus('pago')">
+            <div class="text-2xl font-bold mb-1" id="stat-pago">0</div>
+            <div class="text-xs text-gray-600 flex items-center gap-1">
+                <i class="fa-solid fa-coins text-[#1a6b4d]"></i> Pago
+            </div>
+        </div>
+    </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Metas -->
+    <div id="goals-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6 mb-8"></div>
+
+    <!-- Gráficos - 2 colunas lado a lado -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-          <h3 class="text-lg font-semibold mb-4">Distribuição por Status</h3>
-          <div class="w-full max-w-sm mx-auto"> 
-          <canvas id="statusChart" style="height: 200px;"></canvas>
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-primary"></i> Distribuição por Status
+            </h3>
+            <div class="w-full max-w-sm mx-auto">
+                <canvas id="statusChart" style="height: 280px;"></canvas>
+            </div>
         </div>
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-          <h3 class="text-lg font-semibold mb-4">Receita Mensal</h3>
-          <canvas id="revenueChart" width="400" height="200"></canvas>
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-chart-line text-primary"></i> Receita Mensal
+            </h3>
+            <div class="w-full">
+                <canvas id="revenueChart" style="height: 280px;"></canvas>
+            </div>
         </div>
-      </div>
+    </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#FFA500] cursor-pointer h-24 flex flex-col justify-center" onclick="app.filterByStatus('em_processo')">
-        <div class="text-2xl font-bold mb-1" id="stat-em-processo">1</div>
-        <div class="text-xs text-gray-600 flex items-center gap-1">
-            <i class="fa-solid fa-file-pen text-[#FFA500]"></i> Em Processo
-        </div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#218040] cursor-pointer h-24 flex flex-col justify-center" onclick="app.filterByStatus('aprovado')">
-        <div class="text-2xl font-bold mb-1" id="stat-aprovado">0</div>
-        <div class="text-xs text-gray-600 flex items-center gap-1">
-            <i class="fa-solid fa-circle-check text-[#218040]"></i> Aprovado
-        </div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#c91530] cursor-pointer h-24 flex flex-col justify-center" onclick="app.filterByStatus('nao_aprovado')">
-        <div class="text-2xl font-bold mb-1" id="stat-nao-aprovado">0</div>
-        <div class="text-xs text-gray-600 flex items-center gap-1">
-            <i class="fa-solid fa-circle-xmark text-[#c91530]"></i> Não Aprovado
-        </div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#a84d2f] cursor-pointer h-24 flex flex-col justify-center" onclick="app.filterByStatus('alterado')">
-        <div class="text-2xl font-bold mb-1" id="stat-alterado">0</div>
-        <div class="text-xs text-gray-600 flex items-center gap-1">
-            <i class="fa-solid fa-arrows-rotate text-[#a84d2f]"></i> Alterado
-        </div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#2d8a8a] cursor-pointer h-24 flex flex-col justify-center" onclick="app.filterByStatus('concluido')">
-        <div class="text-2xl font-bold mb-1" id="stat-concluido">0</div>
-        <div class="text-xs text-gray-600 flex items-center gap-1">
-            <i class="fa-solid fa-check text-[#2d8a8a]"></i> Concluído
-        </div>
-    </div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#1a6b4d] cursor-pointer h-24 flex flex-col justify-center" onclick="app.filterByStatus('pago')">
-        <div class="text-2xl font-bold mb-1" id="stat-pago">0</div>
-        <div class="text-xs text-gray-600 flex items-center gap-1">
-            <i class="fa-solid fa-coins text-[#1a6b4d]"></i> Pago
-        </div>
-    </div>
-</div>
-
-      <div class="space-y-4">
+    <!-- Últimos Orçamentos -->
+    <div class="space-y-4">
         <div class="flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-xl font-bold">
-            <span class="w-1.5 h-6 bg-primary rounded-full"></span>
-            Últimos Orçamentos
-          </h2>
-          <span class="text-sm text-gray-500">Atualizado agora</span>
+            <h2 class="flex items-center gap-2 text-xl font-bold">
+                <span class="w-1.5 h-6 bg-primary rounded-full"></span>
+                Últimos Orçamentos
+            </h2>
+            <span class="text-sm text-gray-500">Atualizado agora</span>
         </div>
-        <div id="recent-budgets" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
-          <div id="recent-budgets-list" class="space-y-3"></div>
-          <div id="recent-budgets-empty" class="text-center py-12 hidden">
-            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-              <i class="fa-solid fa-rocket text-3xl text-gray-400"></i>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border overflow-hidden">
+            <div id="recent-budgets-list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                <!-- Lista de orçamentos -->
             </div>
-            <p class="text-gray-500">Nenhum orçamento ainda. Crie um novo!</p>
-          </div>
+            <div id="recent-budgets-empty" class="text-center py-12 hidden">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                    <i class="fa-solid fa-rocket text-3xl text-gray-400"></i>
+                </div>
+                <p class="text-gray-500">Nenhum orçamento ainda. Crie um novo!</p>
+            </div>
         </div>
-      </div>
-    </main>
+    </div>
+</main>
 
     <!-- BUDGETS VIEW -->
     <main id="budgets-view" class="hidden space-y-6">
