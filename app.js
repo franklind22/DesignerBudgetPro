@@ -853,6 +853,7 @@ const app = {
       this.loadSettingsToForm();
       this.renderGoals();
       this.renderBackupSection();
+      this.updateAboutStats();
     }
     if (view === 'dashboard') {
       this.updateDashboard();
@@ -2922,6 +2923,27 @@ renderServicesList() {
   }
 };
 
+// ============================================
+// ATUALIZAR ESTATÍSTICAS DO SOBRE
+// ============================================
+
+updateAboutStats() {
+  const totalServices = document.getElementById('about-total-services');
+  const totalClients = document.getElementById('about-total-clients');
+  const totalBudgets = document.getElementById('about-total-budgets');
+  
+  if (totalServices) {
+    totalServices.textContent = this.services?.length || 51;
+  }
+  
+  if (totalClients) {
+    totalClients.textContent = this.clients?.length || 0;
+  }
+  
+  if (totalBudgets) {
+    totalBudgets.textContent = this.budgets?.length || 0;
+  }
+}
 // Expor globalmente
 window.app = app;
 window.colorUtils = colorUtils;
