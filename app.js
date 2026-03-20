@@ -2042,13 +2042,14 @@ syncCalculatorWithSettings() {
   },
   
 // ============================================
-// CLIENTES - VERSÃO CORRIGIDA (SEM DUPLICIDADE)
+// CLIENTES
 // ============================================
 
 // Variável para controlar edição
 editingClientId: null,
 
 showAddClientModal() {
+  this.navigate('clients');
   // Limpar formulário
   document.getElementById('client-name').value = '';
   document.getElementById('client-email').value = '';
@@ -2063,6 +2064,7 @@ showAddClientModal() {
 
 editClient(id) {
   console.log('Editando cliente ID:', id);
+    this.navigate('clients');
   
   const client = this.clients.find(c => c.id === id);
   if (!client) {
@@ -2192,6 +2194,8 @@ filterClients() {
   
   // Serviços
   showAddServiceModal(category = '') {
+    this.navigate('services');
+    
     const idEl = document.getElementById('service-id');
     const categoryEl = document.getElementById('service-category');
     const nameEl = document.getElementById('service-name');
@@ -2212,6 +2216,8 @@ filterClients() {
   editService(id) {
     const service = this.services.find(s => s.id === id);
     if (!service) return;
+
+     this.navigate('services');
     
     const idEl = document.getElementById('service-id');
     const categoryEl = document.getElementById('service-category');
@@ -2363,8 +2369,6 @@ renderServicesList() {
   // Orçamentos
 startNewBudget() {
   console.log('Iniciando novo orçamento...');
-  
-  // PRIMEIRO: Vá para a view de orçamentos
   this.navigate('budgets');
   
   // DEPOIS: Configure o novo orçamento
@@ -2416,6 +2420,7 @@ startNewBudget() {
   this.openModal('budget-modal');
 },
   editBudget(id) {
+      this.navigate('budgets');
     const budget = this.budgets.find(b => b.id === id);
     if (!budget) return;
     
