@@ -2906,30 +2906,46 @@ renderServicesList() {
   },
   
 // ============================================
-// MODAL HELPERS 
+// MODAL HELPERS - VERSÃO CORRIGIDA
 // ============================================
 
 openModal(id) {
   console.log('Abrindo modal:', id);
   
-  // Esconder todos os modais
-  document.querySelectorAll('.modal').forEach(m => {
-    m.classList.add('hidden');
-    m.classList.remove('flex');
-  });
-  
-  // Mostrar o modal desejado
   const modal = document.getElementById(id);
-  if (modal) {
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    console.log('Modal aberto!');
-  } else {
+  if (!modal) {
     console.error('Modal não encontrado:', id);
-    alert('Erro: Modal não encontrado!');
+    Toast.error('Erro ao abrir janela');
+    return;
   }
+  
+  // FORÇAR a exibição do modal (mais direto)
+  modal.style.display = 'flex';
+  modal.style.visibility = 'visible';
+  modal.style.opacity = '1';
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  
+  // Remover qualquer estilo que possa estar escondendo
+  modal.style.removeProperty('display');
+  modal.style.display = 'flex';
+  
+  console.log('✅ Modal aberto com sucesso!');
+  console.log('Display atual:', getComputedStyle(modal).display);
 },
 
+closeModal(id) {
+  console.log('Fechando modal:', id);
+  
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  
+  modal.style.display = 'none';
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  
+  console.log('✅ Modal fechado');
+},
 // ============================================
 // ATUALIZAR ESTATÍSTICAS DO SOBRE
 // ============================================
