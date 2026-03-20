@@ -1798,7 +1798,7 @@ syncCalculatorWithSettings() {
           },
           options: {
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'bottom',
