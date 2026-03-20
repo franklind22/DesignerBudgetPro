@@ -2907,45 +2907,38 @@ renderServicesList() {
   },
   
 // ============================================
-// MODAL HELPERS - VERSÃO CORRIGIDA
+// MODAL HELPERS - VERSÃO CORRIGIDA (USANDO TAILWIND)
 // ============================================
 
 openModal(id) {
   console.log('Abrindo modal:', id);
   
-  // Esconder todos os modais primeiro
-  document.querySelectorAll('[id$="-modal"]').forEach(m => {
-    m.style.display = 'none';
+  // Fechar todos os modais primeiro (usando classes)
+  document.querySelectorAll('.modal').forEach(m => {
+    m.classList.add('hidden');
+    m.classList.remove('flex');
   });
   
-  // Mostrar o modal desejado
+  // Abrir o modal desejado
   const modal = document.getElementById(id);
   if (modal) {
-    modal.style.display = 'flex';
-    modal.style.visibility = 'visible';
-    modal.style.opacity = '1';
-    modal.style.zIndex = '10000';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.right = '0';
-    modal.style.bottom = '0';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    console.log('✅ Modal aberto com classes Tailwind');
+  } else {
+    console.error('Modal não encontrado:', id);
   }
 },
+
 closeModal(id) {
   console.log('Fechando modal:', id);
   
   const modal = document.getElementById(id);
-  if (!modal) return;
-  
-  modal.style.display = 'none';
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  
-  console.log('✅ Modal fechado');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    console.log('✅ Modal fechado');
+  }
 },
 // ============================================
 // ATUALIZAR ESTATÍSTICAS DO SOBRE
