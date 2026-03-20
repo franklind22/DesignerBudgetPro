@@ -2912,23 +2912,21 @@ renderServicesList() {
 openModal(id) {
   console.log('Abrindo modal:', id);
   
-  const modal = document.getElementById(id);
-  if (!modal) {
-    console.error('Modal não encontrado:', id);
-    Toast.error('Erro ao abrir janela');
-    return;
-  }
+  // Esconder todos os modais
+  document.querySelectorAll('.modal').forEach(m => {
+    m.classList.add('hidden');
+    m.classList.remove('flex');
+  });
   
-  // Fechar outros modais primeiro
-  document.querySelectorAll('.modal').
-closeModal(id) {
+  // Mostrar o modal desejado
   const modal = document.getElementById(id);
   if (modal) {
- // Abrir o modal
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  
-  console.log('Modal aberto com sucesso!');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    console.log('Modal aberto!');
+  } else {
+    console.error('Modal não encontrado:', id);
+    alert('Erro: Modal não encontrado!');
   }
 },
 
