@@ -547,18 +547,16 @@ removeClient(id) {
   }
 };
 
-// PDF Template Moderno
+// PDF Template Moderno - Versão Melhorada
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     const element = document.createElement('div');
     element.className = 'pdf-container';
     
-    // Calcular datas
     const today = new Date();
     const validityDate = new Date(budget.date);
     validityDate.setDate(validityDate.getDate() + (budget.validity || 30));
     
-    // Agrupar serviços por categoria
     const servicesByCategory = {};
     budget.services?.forEach(s => {
       if (!servicesByCategory[s.category]) {
@@ -569,29 +567,33 @@ const pdfTemplate = {
     
     element.innerHTML = `
       <div style="font-family: 'Inter', sans-serif; max-width: 210mm; margin: 0 auto; background: white; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #2d8a8a 0%, #1e5f5f 100%); color: white; padding: 30px; border-radius: 12px 12px 0 0;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Cabeçalho com logo e informações -->
+        <div style="background: linear-gradient(135deg, var(--primary, #2d8a8a) 0%, var(--primary-dark, #1e5f5f) 100%); color: white; padding: 30px; border-radius: 12px 12px 0 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
             <div>
               <h1 style="font-size: 28px; margin: 0;">PROPOSTA COMERCIAL</h1>
               <p style="margin: 5px 0 0; opacity: 0.9;">${settings.name || 'Designer Profissional'}</p>
+              ${settings.email ? `<p style="margin: 2px 0 0; opacity: 0.7; font-size: 12px;">${settings.email}</p>` : ''}
             </div>
-            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 30px;">
-              #${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}
+            <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 30px; text-align: center;">
+              <div style="font-size: 12px;">Nº</div>
+              <div style="font-weight: bold;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
             </div>
           </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 30px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+        <!-- Informações do orçamento -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 30px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
           <div>
             <div style="font-size: 12px; color: #64748b;">Cliente</div>
             <div style="font-size: 16px; font-weight: 600;">${budget.clientName}</div>
           </div>
           <div>
-            <div style="font-size: 12px; color: #64748b;">Data</div>
+            <div style="font-size: 12px; color: #64748b;">Data de Emissão</div>
             <div style="font-size: 16px; font-weight: 600;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
           </div>
           <div>
-            <div style="font-size: 12px; color: #64748b;">Validade</div>
+            <div style="font-size: 12px; color: #64748b;">Data de Validade</div>
             <div style="font-size: 16px; font-weight: 600;">${validityDate.toLocaleDateString('pt-BR')}</div>
           </div>
           <div>
@@ -600,8 +602,9 @@ const pdfTemplate = {
           </div>
         </div>
         
+        <!-- Tabela de serviços -->
         <div style="padding: 30px;">
-          <h3 style="color: #2d8a8a; margin-top: 0;">SERVIÇOS</h3>
+          <h3 style="color: var(--primary, #2d8a8a); margin-top: 0; border-bottom: 2px solid var(--primary, #2d8a8a); padding-bottom: 10px;">SERVIÇOS</h3>
           <table style="width: 100%; border-collapse: collapse;">
             <thead>
               <tr style="background: #f1f5f9;">
@@ -609,12 +612,12 @@ const pdfTemplate = {
                 <th style="padding: 12px; text-align: center;">Qtd</th>
                 <th style="padding: 12px; text-align: right;">Valor Unit.</th>
                 <th style="padding: 12px; text-align: right;">Total</th>
-              </tr>
+               </tr>
             </thead>
             <tbody>
               ${Object.entries(servicesByCategory).map(([category, items]) => `
                 <tr style="background: #f8fafc;">
-                  <td colspan="4" style="padding: 8px 12px; font-weight: 600; color: #2d8a8a;">${category}</td>
+                  <td colspan="4" style="padding: 8px 12px; font-weight: 600; color: var(--primary, #2d8a8a);">${category}</td>
                 </tr>
                 ${items.map(s => {
                   const price = s.customPrice || s.price;
@@ -630,28 +633,40 @@ const pdfTemplate = {
                 }).join('')}
               `).join('')}
             </tbody>
-          </table>
+           </table>
         </div>
         
+        <!-- Resumo financeiro -->
         <div style="padding: 0 30px 30px;">
-          <div style="background: #f8fafc; border-radius: 12px; padding: 20px; max-width: 300px; margin-left: auto;">
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #cbd5e1;">
+          <div style="background: #f8fafc; border-radius: 12px; padding: 20px; max-width: 350px; margin-left: auto;">
+            <div style="display: flex; justify-content: space-between; padding: 8px 0;">
               <span>Subtotal:</span>
               <span style="font-weight: 600;">R$ ${budget.subtotal.toFixed(2)}</span>
             </div>
             ${budget.hoursWorked > 0 ? `
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #cbd5e1;">
-              <span>Horas (${budget.hoursWorked}h):</span>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px dashed #cbd5e1;">
+              <span>Horas Trabalhadas (${budget.hoursWorked}h):</span>
               <span style="font-weight: 600;">R$ ${budget.hoursCost.toFixed(2)}</span>
             </div>
             ` : ''}
-            <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 18px; font-weight: 700; color: #2d8a8a;">
+            <div style="display: flex; justify-content: space-between; padding: 12px 0; font-size: 20px; font-weight: 700; color: var(--primary, #2d8a8a); border-top: 2px solid var(--primary, #2d8a8a); margin-top: 8px;">
               <span>TOTAL:</span>
               <span>R$ ${budget.total.toFixed(2)}</span>
             </div>
           </div>
         </div>
         
+        <!-- Condições de Pagamento -->
+        ${budget.paymentTerms ? `
+        <div style="padding: 0 30px 30px;">
+          <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 15px; border-radius: 8px;">
+            <strong>💰 Condições de Pagamento:</strong>
+            <p style="margin: 8px 0 0;">${budget.paymentTerms}</p>
+          </div>
+        </div>
+        ` : ''}
+        
+        <!-- Observações -->
         <div style="padding: 0 30px 30px;">
           <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 15px; border-radius: 8px;">
             <strong>📝 Observações:</strong>
@@ -659,18 +674,37 @@ const pdfTemplate = {
           </div>
         </div>
         
-        <div style="padding: 30px; text-align: center; background: #1e293b; color: white; border-radius: 0 0 12px 12px;">
-          <p style="margin: 0; font-size: 12px; opacity: 0.8;">
+        <!-- Assinaturas -->
+        <div style="padding: 30px;">
+          <div style="display: flex; justify-content: space-between; gap: 40px; margin-top: 20px;">
+            <div style="flex: 1; text-align: center;">
+              <div style="border-top: 1px solid #cbd5e1; padding-top: 8px;">
+                <strong>Cliente</strong>
+              </div>
+            </div>
+            <div style="flex: 1; text-align: center;">
+              <div style="border-top: 1px solid #cbd5e1; padding-top: 8px;">
+                <strong>${settings.name || 'Designer'}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Rodapé -->
+        <div style="padding: 20px; text-align: center; background: #1e293b; color: white; border-radius: 0 0 12px 12px;">
+          <p style="margin: 0; font-size: 11px; opacity: 0.8;">
+            Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
+          </p>
+          <p style="margin: 5px 0 0; font-size: 10px; opacity: 0.6;">
             Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
           </p>
-          <p style="margin: 5px 0 0; font-size: 14px; color: #2d8a8a;">
-            Designer Budget Pro • Sistema Profissional de Orçamentos
+          <p style="margin: 5px 0 0; font-size: 11px; color: var(--primary, #2d8a8a);">
+            Designer Budget Pro
           </p>
         </div>
       </div>
     `;
     
-    // Configurações do PDF
     const opt = {
       margin: [0.5, 0.5, 0.5, 0.5],
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
@@ -690,7 +724,6 @@ const pdfTemplate = {
       }
     };
     
-    // Gerar PDF
     html2pdf().set(opt).from(element).save();
   }
 };
