@@ -2905,20 +2905,30 @@ renderServicesList() {
     select.innerHTML = `<option value="">Selecione um cliente</option>${options}`;
   },
   
-// Modal helpers
-openModal(id) {
-  const modal = document.getElementById(id);
-  if (modal) {
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-  }
-},
+// ============================================
+// MODAL HELPERS 
+// ============================================
 
+openModal(id) {
+  console.log('Abrindo modal:', id);
+  
+  const modal = document.getElementById(id);
+  if (!modal) {
+    console.error('Modal não encontrado:', id);
+    Toast.error('Erro ao abrir janela');
+    return;
+  }
+  
+  // Fechar outros modais primeiro
+  document.querySelectorAll('.modal').
 closeModal(id) {
   const modal = document.getElementById(id);
   if (modal) {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
+ // Abrir o modal
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  
+  console.log('Modal aberto com sucesso!');
   }
 },
 
