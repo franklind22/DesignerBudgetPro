@@ -2920,9 +2920,7 @@ renderServicesList() {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
-  }
-};
-
+  },
 // ============================================
 // ATUALIZAR ESTATÍSTICAS DO SOBRE
 // ============================================
