@@ -108,6 +108,56 @@
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
   }
+<style>
+  /* Variáveis CSS para temas */
+  :root {
+    --primary: #2d8a8a;
+    --primary-dark: #1e5f5f;
+    --primary-light: #e6f3f3;
+    --secondary: #f9fafb;
+    --bg: #f9fafb;
+  }
+  
+  .dark {
+    --primary: #2d8a8a;
+    --primary-dark: #1e5f5f;
+    --primary-light: #1e3a3a;
+    --secondary: #1f2937;
+    --bg: #111827;
+  }
+  
+  /* Usar as variáveis no Tailwind */
+  .bg-primary {
+    background-color: var(--primary) !important;
+  }
+  
+  .bg-primary-dark {
+    background-color: var(--primary-dark) !important;
+  }
+  
+  .bg-primary-light {
+    background-color: var(--primary-light) !important;
+  }
+  
+  .text-primary {
+    color: var(--primary) !important;
+  }
+  
+  .hover\:bg-primary-dark:hover {
+    background-color: var(--primary-dark) !important;
+  }
+  
+  .border-primary {
+    border-color: var(--primary) !important;
+  }
+  
+  .from-primary {
+    --tw-gradient-from: var(--primary) !important;
+  }
+  
+  .to-primary-dark {
+    --tw-gradient-to: var(--primary-dark) !important;
+  }
   </style>
   
   <!-- Font Awesome -->
