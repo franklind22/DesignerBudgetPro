@@ -2912,28 +2912,28 @@ renderServicesList() {
 openModal(id) {
   console.log('Abrindo modal:', id);
   
+  // Esconder todos os modais primeiro
+  document.querySelectorAll('[id$="-modal"]').forEach(m => {
+    m.style.display = 'none';
+  });
+  
+  // Mostrar o modal desejado
   const modal = document.getElementById(id);
-  if (!modal) {
-    console.error('Modal não encontrado:', id);
-    Toast.error('Erro ao abrir janela');
-    return;
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    modal.style.zIndex = '10000';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.right = '0';
+    modal.style.bottom = '0';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
   }
-  
-  // FORÇAR a exibição do modal (mais direto)
-  modal.style.display = 'flex';
-  modal.style.visibility = 'visible';
-  modal.style.opacity = '1';
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  
-  // Remover qualquer estilo que possa estar escondendo
-  modal.style.removeProperty('display');
-  modal.style.display = 'flex';
-  
-  console.log('✅ Modal aberto com sucesso!');
-  console.log('Display atual:', getComputedStyle(modal).display);
 },
-
 closeModal(id) {
   console.log('Fechando modal:', id);
   
