@@ -2127,65 +2127,67 @@ renderClients() {
     }
     
     const list = document.getElementById('clients-list');
+    const emptyState = document.getElementById('clients-empty-state');
+    const resultsSpan = document.getElementById('clients-results-count');
+    const clientsCountSpan = document.getElementById('clients-count');
+    
     if (!list) return;
     
-    // Atualizar contador de resultados
-    const resultsSpan = document.getElementById('clients-results-count');
+    // Atualizar contadores
     if (resultsSpan) resultsSpan.textContent = filtered.length;
+    if (clientsCountSpan) clientsCountSpan.textContent = this.clients.length;
     
     if (filtered.length === 0) {
-        list.innerHTML = `
-            <div class="text-center py-12 text-gray-500 dark:text-gray-400">
-                <i class="fa-solid fa-users text-4xl mb-3 opacity-50"></i>
-                <p>Nenhum cliente encontrado</p>
-            </div>
-        `;
+        list.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
         return;
     }
     
+    if (emptyState) emptyState.classList.add('hidden');
+    
+    // Renderizar cards em grid
     list.innerHTML = filtered.map(client => `
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    hover:shadow-md transition-all duration-200">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 
+                    hover:shadow-md transition-all duration-200 h-full flex flex-col">
             
-            <!-- Layout responsivo: coluna em mobile, linha em desktop -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                
-                <!-- Informações do Cliente - ocupa espaço flexível -->
-                <div class="flex-1 w-full md:w-auto">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-user text-primary text-sm"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-semibold text-gray-900 dark:text-white truncate">${this.escapeHtml(client.name || 'Sem nome')}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">${this.escapeHtml(client.email || 'Sem email')}</p>
-                        </div>
+            <!-- Conteúdo do card -->
+            <div class="p-4 flex-1">
+                <!-- Cabeçalho com avatar e nome -->
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-user text-primary text-sm"></i>
                     </div>
-                    <div class="mt-2 flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
-                        ${client.phone ? `<span class="inline-flex items-center gap-1"><i class="fa-solid fa-phone text-primary text-xs"></i>${this.escapeHtml(client.phone)}</span>` : ''}
-                        ${client.company ? `<span class="inline-flex items-center gap-1"><i class="fa-solid fa-building text-primary text-xs"></i>${this.escapeHtml(client.company)}</span>` : ''}
+                    <div class="min-w-0 flex-1">
+                        <h3 class="font-semibold text-gray-900 dark:text-white break-words">${this.escapeHtml(client.name || 'Sem nome')}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 break-all">${this.escapeHtml(client.email || 'Sem email')}</p>
                     </div>
                 </div>
                 
-                <!-- Botões de Ação - sempre juntos e alinhados à direita -->
-                <div class="flex gap-2 flex-shrink-0 w-full md:w-auto justify-end md:justify-start">
-                    <button onclick="app.editClient(${client.id})" 
-                            class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg text-sm transition-all duration-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-pen text-xs"></i>
-                        <span>Editar</span>
-                    </button>
-                    <button onclick="app.removeClient(${client.id})" 
-                            class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-lg text-sm transition-all duration-200 flex items-center gap-1.5">
-                        <i class="fa-solid fa-trash text-xs"></i>
-                        <span>Excluir</span>
-                    </button>
+                <!-- Informações adicionais -->
+                <div class="mt-3 flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
+                    ${client.phone ? `<span class="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full"><i class="fa-solid fa-phone text-primary text-xs"></i>${this.escapeHtml(client.phone)}</span>` : ''}
+                    ${client.company ? `<span class="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full"><i class="fa-solid fa-building text-primary text-xs"></i>${this.escapeHtml(client.company)}</span>` : ''}
                 </div>
+            </div>
+            
+            <!-- Botões de ação no rodapé do card -->
+            <div class="flex gap-2 p-4 pt-0 border-t border-gray-100 dark:border-gray-700 mt-auto">
+                <button onclick="app.editClient(${client.id})" 
+                        class="flex-1 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-pen text-xs"></i>
+                    <span>Editar</span>
+                </button>
+                <button onclick="app.removeClient(${client.id})" 
+                        class="flex-1 px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/30 dark:hover:bg-red-900/50 dark:text-red-400 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-trash text-xs"></i>
+                    <span>Excluir</span>
+                </button>
             </div>
         </div>
     `).join('');
 },
 
-// Função auxiliar para escapar HTML (segurança)
+// Função auxiliar para escapar HTML
 escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
