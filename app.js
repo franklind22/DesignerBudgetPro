@@ -577,7 +577,7 @@ const pdfTemplate = {
         <div style="background: ${primaryColor}; color: white; padding: 35px 30px;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <div>
-              <h1 style="font-size: 32px; margin: 0; font-weight: 700; color: white;">PROPOSTA COMERCIAL</h1>
+              <h1 style="font-size: 30px; margin: 0; font-weight: 700; color: white;">PROPOSTA COMERCIAL</h1>
               <p style="margin: 8px 0 0; opacity: 0.9; font-size: 16px; color: white;">${settings.name || 'Designer Profissional'}</p>
             </div>
             <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 40px; text-align: center;">
@@ -591,19 +591,19 @@ const pdfTemplate = {
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 25px 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
           <div>
             <div style="font-size: 12px; color: #6c757d; margin-bottom: 5px;">CLIENTE</div>
-            <div style="font-size: 16px; font-weight: 600; color: #000000;">${budget.clientName}</div>
+            <div style="font-size: 15px; font-weight: 600; color: #000000;">${budget.clientName}</div>
           </div>
           <div>
             <div style="font-size: 12px; color: #6c757d; margin-bottom: 5px;">DATA</div>
-            <div style="font-size: 16px; font-weight: 600; color: #000000;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
+            <div style="font-size: 15px; font-weight: 600; color: #000000;">${new Date(budget.date).toLocaleDateString('pt-BR')}</div>
           </div>
           <div>
             <div style="font-size: 12px; color: #6c757d; margin-bottom: 5px;">VALIDADE</div>
-            <div style="font-size: 16px; font-weight: 600; color: #000000;">${validityDate.toLocaleDateString('pt-BR')}</div>
+            <div style="font-size: 15px; font-weight: 600; color: #000000;">${validityDate.toLocaleDateString('pt-BR')}</div>
           </div>
           <div>
             <div style="font-size: 12px; color: #6c757d; margin-bottom: 5px;">PROJETO</div>
-            <div style="font-size: 16px; font-weight: 600; color: #000000;">${budget.projectName || 'Não especificado'}</div>
+            <div style="font-size: 15px; font-weight: 600; color: #000000;">${budget.projectName || 'Não especificado'}</div>
           </div>
         </div>
         
@@ -644,14 +644,14 @@ const pdfTemplate = {
         
         <!-- Resumo financeiro -->
         <div style="padding: 0 30px 30px;">
-          <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; max-width: 350px; margin-left: auto;">
+          <div style="background: #e9e9e9; border-radius: 12px; padding: 20px; max-width: 300px; margin-left: auto;">
             <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-              <span style="color: #495057;">Subtotal:</span>
+              <span style="color: #313131;">Subtotal:</span>
               <span style="font-weight: 600; color: #000000;">R$ ${budget.subtotal.toFixed(2).replace('.', ',')}</span>
             </div>
             ${budget.hoursWorked > 0 ? `
             <div style="display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #e9ecef;">
-              <span style="color: #495057;">Horas (${budget.hoursWorked}h):</span>
+              <span style="color: #313131;">Horas (${budget.hoursWorked}h):</span>
               <span style="font-weight: 600; color: #000000;">R$ ${budget.hoursCost.toFixed(2).replace('.', ',')}</span>
             </div>
             ` : ''}
@@ -664,8 +664,8 @@ const pdfTemplate = {
         
         <!-- Observações -->
         ${budget.notes ? `
-        <div style="padding: 0 30px 20px;">
-          <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 15px; border-radius: 8px;">
+        <div style="padding: 0 25px 20px;">
+          <div style="background: #a0a0a0; border-left: 4px solid #fbbf24; padding: 15px; border-radius: 8px;">
             <strong style="color: #b45309;">📝 OBSERVAÇÕES:</strong>
             <p style="margin: 8px 0 0; color: #000000;">${budget.notes}</p>
           </div>
@@ -673,11 +673,11 @@ const pdfTemplate = {
         ` : ''}
         
         <!-- Rodapé -->
-        <div style="padding: 20px 30px; text-align: center; background: #f1f3f5; margin-top: 20px;">
-          <p style="margin: 0; font-size: 11px; color: #495057;">
+        <div style="padding: 20px 25px; text-align: center; background: #f1f3f5; margin-top: 20px;">
+          <p style="margin: 0; font-size: 11px; color: #000000;">
             Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
           </p>
-          <p style="margin: 8px 0 0; font-size: 10px; color: #6c757d;">
+          <p style="margin: 8px 0 0; font-size: 10px; color: #000000;">
             Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
           </p>
           <p style="margin: 8px 0 0; font-size: 11px; color: ${primaryColor};">
@@ -689,7 +689,7 @@ const pdfTemplate = {
     
     // Configurações do PDF - SEM MARGENS
     const opt = {
-      margin: [0, 0, 0, 0],
+      margin: [2, 2, 2, 2],
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -710,7 +710,6 @@ const pdfTemplate = {
     html2pdf().set(opt).from(element).save();
   }
 };
-
 // ============================================
 // APLICAÇÃO PRINCIPAL - VERSÃO CORRIGIDA
 // ============================================
