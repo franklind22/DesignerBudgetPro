@@ -3006,7 +3006,7 @@ filterClients() {
     this.renderClients();
     this.updateClientsCount(); // Adicionar esta linha
 },
-
+};
 // ============================================
 // EXPOSIÇÃO GLOBAL (FORA DO APP)
 // ============================================
