@@ -108,7 +108,6 @@
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
   }
-<style>
   /* Variáveis CSS para temas */
   :root {
     --primary: #2d8a8a;
@@ -204,7 +203,7 @@
                            flex items-center justify-center" onclick="app.toggleNotifications()">
               <i class="fa-regular fa-bell"></i>
               <span class="absolute -top-1 -right-1 w-5 h-5 bg-danger text-white text-xs rounded-full 
-                           flex items-center justify-center hidden" id="notification-badge">3</span>
+                           flex items-center justify-center" id="notification-badge" style="display: none;">3</span>
             </button>
             <div id="notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 
                                                    rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden
@@ -451,8 +450,8 @@
       <!-- Status Cards -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <!-- Em Processo -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    border-l-4 border-[#FFA500] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
+                    border-l-4 border-l-[#FFA500] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('em_processo')">
           <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-em-processo">0</div>
           <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
@@ -462,8 +461,8 @@
         </div>
         
         <!-- Aprovado -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    border-l-4 border-[#218040] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
+                    border-l-4 border-l-[#218040] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('aprovado')">
           <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-aprovado">0</div>
           <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
@@ -473,8 +472,8 @@
         </div>
         
         <!-- Não Aprovado -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    border-l-4 border-[#c91530] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
+                    border-l-4 border-l-[#c91530] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('nao_aprovado')">
           <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-nao-aprovado">0</div>
           <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
@@ -484,8 +483,8 @@
         </div>
         
         <!-- Alterado -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    border-l-4 border-[#a84d2f] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
+                    border-l-4 border-l-[#a84d2f] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('alterado')">
           <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-alterado">0</div>
           <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
@@ -495,8 +494,8 @@
         </div>
         
         <!-- Concluído -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    border-l-4 border-[#2d8a8a] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
+                    border-l-4 border-l-[#2d8a8a] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('concluido')">
           <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-concluido">0</div>
           <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
@@ -506,8 +505,8 @@
         </div>
         
         <!-- Pago -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 
-                    border-l-4 border-[#1a6b4d] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
+                    border-l-4 border-l-[#1a6b4d] cursor-pointer hover:shadow-md transition-shadow"
              onclick="app.filterByStatus('pago')">
           <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-pago">0</div>
           <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
