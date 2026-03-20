@@ -1680,31 +1680,42 @@ syncCalculatorWithSettings() {
     }
   },
   
-  // ============================================
-  // GRÁFICOS - CORRIGIDO (sem loop infinito)
-  // ============================================
-  
+ // ============================================
+// GRÁFICOS - CORRIGIDO PARA MOBILE
+// ============================================
+
 initCharts() {
+    // Evitar múltiplas inicializações
     if (this._initChartsTimeout) {
         clearTimeout(this._initChartsTimeout);
     }
     
     this._initChartsTimeout = setTimeout(() => {
         try {
+            // Verificar se os elementos existem
             const statusCanvas = document.getElementById('statusChart');
             const revenueCanvas = document.getElementById('revenueChart');
             
-            if (!statusCanvas || !revenueCanvas) return;
-            if (typeof Chart === 'undefined') return;
+            if (!statusCanvas || !revenueCanvas) {
+                console.warn('Elementos de gráfico não encontrados');
+                return;
+            }
             
+            // Verificar se Chart.js está disponível
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js não carregado');
+                return;
+            }
+            
+            // Destruir gráficos anteriores
             this.destroyCharts();
             
             const budgets = this.dateFilterActive ? this.filteredBudgets : this.budgets;
             
-            // Detectar se é mobile
+            // Detectar se é dispositivo móvel
             const isMobile = window.innerWidth < 640;
             
-            // Configuração adaptada para mobile
+            // ========== GRÁFICO DE STATUS (Doughnut) ==========
             const statusCtx = statusCanvas.getContext('2d');
             const statusCounts = {
                 'Em Processo': budgets.filter(b => b.status === 'em_processo').length,
@@ -1715,15 +1726,25 @@ initCharts() {
                 'Pago': budgets.filter(b => b.status === 'pago').length
             };
             
+            // Configuração adaptada para mobile
             this.charts.status = new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(statusCounts),
                     datasets: [{
                         data: Object.values(statusCounts),
-                        backgroundColor: ['#FFA500', '#218040', '#c91530', '#a84d2f', '#2d8a8a', '#1a6b4d'],
+                        backgroundColor: [
+                            '#FFA500', // Em Processo
+                            '#218040', // Aprovado
+                            '#c91530', // Não Aprovado
+                            '#a84d2f', // Alterado
+                            '#2d8a8a', // Concluído
+                            '#1a6b4d'  // Pago
+                        ],
                         borderWidth: 0,
-                        cutout: isMobile ? '65%' : '60%'  // Buraco maior no mobile
+                        cutout: isMobile ? '65%' : '60%', // Buraco maior no mobile
+                        hoverOffset: 10,
+                        spacing: 2
                     }]
                 },
                 options: {
@@ -1731,25 +1752,46 @@ initCharts() {
                     maintainAspectRatio: true,
                     plugins: {
                         legend: {
-                            position: isMobile ? 'bottom' : 'bottom',
+                            position: 'bottom',
                             labels: {
                                 color: document.documentElement.classList.contains('dark') ? '#fff' : '#333',
-                                font: { size: isMobile ? 9 : 11 },
+                                font: { 
+                                    size: isMobile ? 10 : 11,
+                                    weight: 'normal'
+                                },
                                 boxWidth: isMobile ? 8 : 10,
-                                padding: isMobile ? 4 : 8
+                                boxHeight: isMobile ? 8 : 10,
+                                padding: isMobile ? 6 : 10,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: { size: isMobile ? 11 : 12 },
+                            titleFont: { size: isMobile ? 11 : 12 },
+                            padding: isMobile ? 6 : 8,
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
                             }
                         }
-                    }
+                    },
+                    layout: {
+                        padding: {
+                            top: isMobile ? 5 : 10,
+                            bottom: isMobile ? 5 : 10,
+                            left: isMobile ? 5 : 10,
+                            right: isMobile ? 5 : 10
+                        }
+                    },
+                    maintainAspectRatio: true
                 }
             });
-            
-            // ... resto do código do gráfico de receita ...
-            
-        } catch (error) {
-            console.warn('Erro ao inicializar gráficos:', error);
-        }
-    }, 300);
-}
         
         // Gráfico de Receita Mensal
         const revenueCtx = revenueCanvas.getContext('2d');
