@@ -2914,13 +2914,13 @@ startNewBudget() {
   },
   
 // ============================================
-// MODAL HELPERS - VERSÃO CORRIGIDA (USANDO TAILWIND)
+// MODAL HELPERS - VERSÃO DEFINITIVA CORRIGIDA
 // ============================================
 
 openModal(id) {
   console.log('Abrindo modal:', id);
   
-  // Fechar todos os modais primeiro (usando classes)
+  // Fechar outros modais (usando classes, não style)
   document.querySelectorAll('.modal').forEach(m => {
     m.classList.add('hidden');
     m.classList.remove('flex');
@@ -2931,7 +2931,12 @@ openModal(id) {
   if (modal) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    console.log('✅ Modal aberto com classes Tailwind');
+    
+    // Garantir que o modal está acima de tudo
+    modal.style.zIndex = '10000';
+    
+    console.log('✅ Modal aberto:', modal);
+    console.log('Classes do modal:', modal.classList);
   } else {
     console.error('Modal não encontrado:', id);
   }
