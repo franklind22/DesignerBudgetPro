@@ -581,7 +581,7 @@ const pdfTemplate = {
         
         // 5. Construir o HTML do PDF
         let html = `
-            <div style="padding: 25px; background: white;">
+            <div style="padding: 25px; background: rgb(255, 255, 255);">
                 
                 <div style="background: ${primaryColor}; color: white; padding: 30px; border-radius: 12px 12px 0 0;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -590,14 +590,14 @@ const pdfTemplate = {
                             <p style="margin: 8px 0 0; font-size: 16px;">${settings.name || 'Profissional'}</p>
                             ${settings.email ? `<p style="margin: 4px 0 0; font-size: 12px; opacity: 1;">${settings.email}</p>` : ''}
                         </div>
-                        <div style="background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 12px; text-align: center;">
+                        <div style="background: rgba(197, 197, 197, 0.2); padding: 10px 20px; border-radius: 12px; text-align: center;">
                             <div style="font-size: 10px; text-transform: uppercase;">Nº Documento</div>
                             <div style="font-size: 18px; font-weight: bold;">${budget.docNumber || 'ORÇ-' + String(budget.id).slice(-6)}</div>
                         </div>
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 10px; padding: 20px; background: #000000; border-bottom: 1px solid #000;">
+                <div style="display: flex; gap: 10px; padding: 20px; background: #e0e0e0; border-bottom: 1px solid #000;">
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">CLIENTE</small><br><strong>${budget.clientName}</strong></div>
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">DATA EMISSÃO</small><br><strong>${new Date(budget.date).toLocaleDateString('pt-BR')}</strong></div>
                     <div style="flex: 1;"><small style="color: #000; font-size: 10px;">VALIDADE</small><br><strong>${validityDate.toLocaleDateString('pt-BR')}</strong></div>
@@ -614,7 +614,7 @@ const pdfTemplate = {
                     <div style="background: ${primaryDark}10; padding: 6px 12px; font-weight: bold; color: ${primaryDark}; margin-bottom: 5px; border-radius: 4px;">${category}</div>
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
-                            <tr style="border-bottom: 2px solid #eee; font-size: 12px; color: #000;">
+                            <tr style="border-bottom: 2px solid #000000; font-size: 12px; color: #000;">
                                 <th style="text-align: left; padding: 10px;">DESCRIÇÃO</th>
                                 <th style="text-align: center; padding: 10px; width: 50px;">QTD</th>
                                 <th style="text-align: right; padding: 10px; width: 100px;">UNITÁRIO</th>
@@ -645,19 +645,19 @@ const pdfTemplate = {
             <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 20px; color: #000;">
                 
                 <div style="display: flex; gap: 20px;">
-                    <div style="flex: 1; border: 1.5px solid #000; border-radius: 8px; padding: 15px; background: #fff;">
+                    <div style="flex: 1; border: 1.5px solid #000; border-radius: 8px; padding: 15px; background: #e0e0e0;">
                         <strong style="font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 4px;">💰 CONDIÇÕES DE PAGAMENTO</strong>
                         <p style="margin: 0; font-size: 13px; line-height: 1.4;">${budget.paymentTerms || 'A combinar'}</p>
                     </div>
                     
-                    <div style="flex: 1; border: 1.5px solid #000; border-radius: 8px; padding: 15px; background: #fff;">
+                    <div style="flex: 1; border: 1.5px solid #000; border-radius: 8px; padding: 15px; background: #e0e0e0;">
                         <strong style="font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 4px;">📝 OBSERVAÇÕES</strong>
                         <p style="margin: 0; font-size: 13px; line-height: 1.4;">${budget.notes || 'Sem observações adicionais.'}</p>
                     </div>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end;">
-                    <div style="width: 320px; border: 2px solid #000; border-radius: 12px; padding: 20px; background: #f9f9f9;">
+                    <div style="width: 320px; border: 2px solid #000; border-radius: 12px; padding: 20px; background: #e0e0e0;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
                             <span>Subtotal:</span>
                             <span style="font-weight: bold; white-space: nowrap;">R$ ${budget.subtotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
