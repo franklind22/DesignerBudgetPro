@@ -2361,53 +2361,60 @@ renderServicesList() {
 },
   
   // Orçamentos
-  startNewBudget() {
-    this.isEditing = false;
-    this.currentBudgetId = null;
-    this.currentBudgetServices = [];
-    this.paletteMode = 'generator';
-    
-    const select = document.getElementById('budget-client');
-    if (select) {
-      const options = this.clients.map(c => 
-        `<option value="${c.id}">${c.name}</option>`
-      ).join('');
-      select.innerHTML = `<option value="">Selecione um cliente</option>${options}`;
-    }
-    
-    const projectEl = document.getElementById('budget-project-name');
-    const notesEl = document.getElementById('budget-notes');
-    const statusEl = document.getElementById('budget-status');
-    const hourlyEl = document.getElementById('budget-hourly');
-    const hoursEl = document.getElementById('budget-hours-worked');
-    const deadlineEl = document.getElementById('budget-deadline');
-    const termsEl = document.getElementById('budget-payment-terms');
-    const validityEl = document.getElementById('budget-validity');
-    const saveBtn = document.getElementById('budget-save-btn');
-    const paletteColor = document.getElementById('paletteColor');
-    const paletteModel = document.getElementById('paletteModel');
-    
-    if (projectEl) projectEl.value = '';
-    if (notesEl) notesEl.value = '';
-    if (statusEl) statusEl.value = 'em_processo';
-    if (hourlyEl) hourlyEl.value = this.settings.hourlyRate || 150;
-    if (hoursEl) hoursEl.value = '0';
-    if (deadlineEl) deadlineEl.value = '7';
-    if (termsEl) termsEl.value = '';
-    if (validityEl) validityEl.value = '30';
-    if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i>Gerar Orçamento';
-    if (paletteColor) paletteColor.value = '#2d8a8a';
-    if (paletteModel) paletteModel.value = 'monochromatic';
-    
-    this.setTodayDate();
-    this.initializeCategoryFilter();
-    this.displayFilteredServices();
-    this.updateBudgetTotal();
-    this.switchPaletteMode('generator');
-      console.log('Abrindo modal de orçamento...');
-  this.openModal('budget-modal');
-  },
+startNewBudget() {
+  console.log('Iniciando novo orçamento...');
   
+  // PRIMEIRO: Vá para a view de orçamentos
+  this.navigate('budgets');
+  
+  // DEPOIS: Configure o novo orçamento
+  this.isEditing = false;
+  this.currentBudgetId = null;
+  this.currentBudgetServices = [];
+  this.paletteMode = 'generator';
+  
+  const select = document.getElementById('budget-client');
+  if (select) {
+    const options = this.clients.map(c => 
+      `<option value="${c.id}">${c.name}</option>`
+    ).join('');
+    select.innerHTML = `<option value="">Selecione um cliente</option>${options}`;
+  }
+  
+  const projectEl = document.getElementById('budget-project-name');
+  const notesEl = document.getElementById('budget-notes');
+  const statusEl = document.getElementById('budget-status');
+  const hourlyEl = document.getElementById('budget-hourly');
+  const hoursEl = document.getElementById('budget-hours-worked');
+  const deadlineEl = document.getElementById('budget-deadline');
+  const termsEl = document.getElementById('budget-payment-terms');
+  const validityEl = document.getElementById('budget-validity');
+  const saveBtn = document.getElementById('budget-save-btn');
+  const paletteColor = document.getElementById('paletteColor');
+  const paletteModel = document.getElementById('paletteModel');
+  
+  if (projectEl) projectEl.value = '';
+  if (notesEl) notesEl.value = '';
+  if (statusEl) statusEl.value = 'em_processo';
+  if (hourlyEl) hourlyEl.value = this.settings.hourlyRate || 150;
+  if (hoursEl) hoursEl.value = '0';
+  if (deadlineEl) deadlineEl.value = '7';
+  if (termsEl) termsEl.value = '';
+  if (validityEl) validityEl.value = '30';
+  if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i>Gerar Orçamento';
+  if (paletteColor) paletteColor.value = '#2d8a8a';
+  if (paletteModel) paletteModel.value = 'monochromatic';
+  
+  this.setTodayDate();
+  this.initializeCategoryFilter();
+  this.displayFilteredServices();
+  this.updateBudgetTotal();
+  this.switchPaletteMode('generator');
+  
+  // POR FIM: Abra o modal
+  console.log('Abrindo modal de orçamento...');
+  this.openModal('budget-modal');
+},
   editBudget(id) {
     const budget = this.budgets.find(b => b.id === id);
     if (!budget) return;
