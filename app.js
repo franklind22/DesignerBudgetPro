@@ -2924,26 +2924,15 @@ startNewBudget() {
 
 openModal(id) {
   console.log('Abrindo modal:', id);
-  
-  // Fechar outros modais (usando classes, não style)
-  document.querySelectorAll('.modal').forEach(m => {
-    m.classList.add('hidden');
-    m.classList.remove('flex');
-  });
-  
-  // Abrir o modal desejado
   const modal = document.getElementById(id);
   if (modal) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    
-    // Garantir que o modal está acima de tudo
+    // Garante que o modal apareça sobre outros elementos
     modal.style.zIndex = '10000';
-    
-    console.log('✅ Modal aberto:', modal);
-    console.log('Classes do modal:', modal.classList);
+    console.log('✅ Modal aberto com sucesso');
   } else {
-    console.error('Modal não encontrado:', id);
+    console.error('❌ Erro: Modal não encontrado com o ID:', id);
   }
 },
 
