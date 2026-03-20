@@ -547,7 +547,7 @@ removeClient(id) {
   }
 };
 
-// PDF Template Moderno - VERSÃO FINAL COM TODAS AS MELHORIAS
+// PDF Template Moderno - VERSÃO CONTÍNUA (altura variável)
 const pdfTemplate = {
   gerarOrcamentoPDF(budget, settings) {
     const element = document.createElement('div');
@@ -602,9 +602,9 @@ const pdfTemplate = {
     });
     
     element.innerHTML = `
-      <div style="font-family: 'Inter', 'Segoe UI', sans-serif; width: 100%; background: white; color: #000000; box-sizing: border-box; font-size: ${baseFontSize}px;">
+      <div style="font-family: 'Inter', 'Segoe UI', sans-serif; width: 210mm; background: white; color: #000000; box-sizing: border-box; font-size: ${baseFontSize}px; margin: 0 auto;">
         
-        <!-- Cabeçalho com estilo abstrato e fixo no topo -->
+        <!-- Cabeçalho com estilo abstrato -->
         <div style="background: ${primaryColor}; color: white; padding: ${paddingSize}px ${paddingSize}px; position: relative; overflow: hidden;">
           <!-- Elementos abstratos de fundo -->
           <div style="position: absolute; top: -50px; right: -30px; width: 200px; height: 200px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
@@ -646,12 +646,12 @@ const pdfTemplate = {
           </div>
         </div>
         
-        <!-- Tabela de serviços - ALINHADA À ESQUERDA com quebra de página evitada -->
+        <!-- Tabela de serviços -->
         <div style="padding: ${paddingSize - 10}px ${paddingSize}px;">
           <h2 style="color: ${primaryColor}; margin: 0 0 15px 0; font-size: ${titleFontSize}px; border-bottom: 2px solid ${primaryColor}; padding-bottom: 8px;">SERVIÇOS</h2>
           
           ${Object.entries(servicesByCategory).map(([category, items]) => `
-            <div style="margin-bottom: 20px; page-break-inside: avoid; break-inside: avoid;">
+            <div style="margin-bottom: 20px;">
               <h3 style="color: ${primaryDark}; margin: 0 0 10px 0; font-size: ${baseFontSize + 2}px; background: #f0f4f4; padding: 6px 12px; border-radius: 4px;">${category}</h3>
               <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
@@ -660,7 +660,7 @@ const pdfTemplate = {
                     <th style="text-align: center; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 15%;">Qtd</th>
                     <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Valor Unit.</th>
                     <th style="text-align: right; padding: 8px 8px; font-weight: 600; color: #000000; font-size: ${tableFontSize}px; width: 17.5%;">Total</th>
-                   </tr>
+                  </tr>
                 </thead>
                 <tbody>
                   ${items.map(s => {
@@ -681,7 +681,7 @@ const pdfTemplate = {
           `).join('')}
         </div>
         
-        <!-- Condições de Pagamento (se houver) -->
+        <!-- Condições de Pagamento -->
         ${budget.paymentTerms ? `
         <div style="padding: 0 ${paddingSize}px 15px;">
           <div style="background: #e8f0fe; border-left: 4px solid ${primaryColor}; padding: 12px 15px; border-radius: 8px;">
@@ -711,7 +711,7 @@ const pdfTemplate = {
           </div>
         </div>
         
-        <!-- Observações - SEMPRE VISÍVEL -->
+        <!-- Observações -->
         <div style="padding: 0 ${paddingSize}px 20px;">
           <div style="background: #fff9e6; border-left: 4px solid #fbbf24; padding: 12px 15px; border-radius: 8px;">
             <strong style="color: #b45309; font-size: ${baseFontSize - 1}px; display: block; margin-bottom: 6px;">📝 OBSERVAÇÕES:</strong>
@@ -737,8 +737,8 @@ const pdfTemplate = {
           </div>
         </div>
         
-        <!-- RODAPÉ FIXO COM NÚMERO DE PÁGINAS -->
-        <div style="padding: 12px ${paddingSize}px; text-align: center; background: #f1f3f5; margin-top: 10px;">
+        <!-- RODAPÉ (sem quebra de página) -->
+        <div style="padding: 12px ${paddingSize}px; text-align: center; background: #f1f3f5;">
           <p style="margin: 0; font-size: ${baseFontSize - 3}px; color: #495057;">
             Este orçamento é válido até ${validityDate.toLocaleDateString('pt-BR')}
           </p>
@@ -748,17 +748,13 @@ const pdfTemplate = {
           <p style="margin: 5px 0 0; font-size: ${baseFontSize - 2}px; color: ${primaryColor};">
             Designer Budget Pro • Sistema Profissional de Orçamentos
           </p>
-          <!-- Número de páginas - será preenchido pelo html2pdf -->
-          <div style="margin-top: 8px; font-size: ${baseFontSize - 4}px; color: #6c757d;">
-            <span class="pageNumber"></span> de <span class="totalPages"></span>
-          </div>
         </div>
       </div>
     `;
     
-    // Configurações do PDF - com margens para impressão
+    // Configurações do PDF - MODO CONTÍNUO (altura automática)
     const opt = {
-      margin: [5, 5, 5, 5], // 5mm em todos os lados para impressão
+      margin: [0, 0, 0, 0], // Sem margens para o conteúdo contínuo
       filename: `orcamento_${budget.clientName}_${budget.docNumber || budget.id}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -766,7 +762,9 @@ const pdfTemplate = {
         letterRendering: true,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        scrollY: 0,
+        windowWidth: element.scrollWidth
       },
       jsPDF: { 
         unit: 'mm', 
