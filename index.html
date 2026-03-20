@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Designer Budget Pro</title>
+  <title>Designer Budget Pro - COMPLETO</title>
   
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -35,158 +35,40 @@
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
           },
-          animation: {
-            'slide-in': 'slideIn 0.3s ease-out',
-            'slide-out': 'slideOut 0.3s ease-out',
-            'fade-in': 'fadeIn 0.2s ease-out',
-            'scale-in': 'scaleIn 0.2s ease-out',
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'bounce-slow': 'bounce 2s infinite',
-          }
         }
       }
     }
   </script>
   
-  <!-- Estilos personalizados mínimos (só para animações que não estão no Tailwind) -->
   <style>
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    @keyframes slideOut {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes scaleIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    
-    .focus-mode {
-      background: #000 !important;
-    }
-    
-    .focus-mode .bg-white,
-    .focus-mode .dark\:bg-gray-800 {
-      background: rgba(255, 255, 255, 0.05) !important;
-      backdrop-filter: blur(10px);
-    }
-
-     /* Estilos para o accordion de serviços */
-  .accordion-item.active .accordion-content {
-    display: block !important;
-  }
-  
-  .accordion-item.active .accordion-chevron {
-    transform: rotate(180deg);
-  }
-  
-  .accordion-content {
-    display: none;
-  }
-
-  /* Animações */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out;
-  }
-  /* Variáveis CSS para temas */
-  :root {
-    --primary: #2d8a8a;
-    --primary-dark: #1e5f5f;
-    --primary-light: #e6f3f3;
-    --secondary: #f9fafb;
-    --bg: #f9fafb;
-  }
-  
-  .dark {
-    --primary: #2d8a8a;
-    --primary-dark: #1e5f5f;
-    --primary-light: #1e3a3a;
-    --secondary: #1f2937;
-    --bg: #111827;
-  }
-  
-  /* Usar as variáveis no Tailwind */
-  .bg-primary {
-    background-color: var(--primary) !important;
-  }
-  
-  .bg-primary-dark {
-    background-color: var(--primary-dark) !important;
-  }
-  
-  .bg-primary-light {
-    background-color: var(--primary-light) !important;
-  }
-  
-  .text-primary {
-    color: var(--primary) !important;
-  }
-  
-  .hover\:bg-primary-dark:hover {
-    background-color: var(--primary-dark) !important;
-  }
-  
-  .border-primary {
-    border-color: var(--primary) !important;
-  }
-  
-  .from-primary {
-    --tw-gradient-from: var(--primary) !important;
-  }
-  
-  .to-primary-dark {
-    --tw-gradient-to: var(--primary-dark) !important;
-  }
+    .accordion-item.active .accordion-content { display: block !important; }
+    .accordion-item.active .accordion-chevron { transform: rotate(180deg); }
+    .accordion-content { display: none; }
+    .modal { transition: opacity 0.2s ease; }
+    .focus-mode { background: #000 !important; }
+    .focus-mode .bg-white, .focus-mode .dark\:bg-gray-800 { background: rgba(255,255,255,0.05) !important; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+    .animate-slide-in { animation: slideIn 0.3s ease-out; }
+    .animate-slide-out { animation: slideOut 0.3s ease-out; }
   </style>
   
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  
-  <!-- html2pdf -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased">
   
-  <!-- Skip Link -->
   <a href="#dashboard-view" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 
-     bg-primary text-white px-4 py-2 rounded-lg z-50 shadow-lg">
-    Pular para conteúdo
-  </a>
+     bg-primary text-white px-4 py-2 rounded-lg z-50 shadow-lg">Pular para conteúdo</a>
   
-  <!-- Toast Container -->
   <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
   <!-- Header -->
   <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
-        <!-- Logo -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="app.navigate('dashboard')">
           <div class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center">
             <i class="fa-solid fa-palette"></i>
@@ -194,16 +76,14 @@
           <span class="text-lg font-semibold text-primary">Designer Budget Pro</span>
         </div>
         
-        <!-- User Actions -->
         <div class="flex items-center gap-3">
-          <!-- Notificações -->
           <div class="relative">
             <button class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 
                            text-gray-600 dark:text-gray-400 hover:border-primary hover:text-primary transition-colors
                            flex items-center justify-center" onclick="app.toggleNotifications()">
               <i class="fa-regular fa-bell"></i>
               <span class="absolute -top-1 -right-1 w-5 h-5 bg-danger text-white text-xs rounded-full 
-                           flex items-center justify-center" id="notification-badge" style="display: none;">3</span>
+                           flex items-center justify-center hidden" id="notification-badge">0</span>
             </button>
             <div id="notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-800 
                                                    rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 hidden
@@ -212,7 +92,6 @@
             </div>
           </div>
           
-          <!-- User Info -->
           <div class="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full 
                       border border-gray-200 dark:border-gray-600 cursor-pointer hover:border-primary transition-colors"
                onclick="app.navigate('settings')">
@@ -221,7 +100,6 @@
                  id="userAvatar">U</div>
           </div>
           
-          <!-- Theme Toggle -->
           <button class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 
                          text-gray-600 dark:text-gray-400 hover:border-primary hover:text-primary transition-colors
                          flex items-center justify-center" id="theme-toggle">
@@ -236,36 +114,30 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <!-- Navigation -->
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 mb-6">
-      <nav class="flex gap-2 flex-wrap" role="navigation" aria-label="Navegação principal">
-        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm transition-all
-                       bg-primary text-white shadow-md hover:shadow-lg" 
+      <nav class="flex gap-2 flex-wrap">
+        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm bg-primary text-white" 
                 data-view="dashboard" onclick="app.navigate('dashboard')">
           <i class="fa-solid fa-chart-line mr-2"></i>Dashboard
         </button>
-        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm transition-all
-                       bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" 
+        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300" 
                 data-view="budgets" onclick="app.navigate('budgets')">
           <i class="fa-solid fa-clipboard-list mr-2"></i>Orçamentos
         </button>
-        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm transition-all
-                       bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" 
+        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300" 
                 data-view="clients" onclick="app.navigate('clients')">
           <i class="fa-solid fa-users mr-2"></i>Clientes
         </button>
-        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm transition-all
-                       bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" 
+        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300" 
                 data-view="services" onclick="app.navigate('services')">
           <i class="fa-solid fa-bullseye mr-2"></i>Serviços
         </button>
-        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm transition-all
-                       bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600" 
+        <button class="nav-btn px-5 py-2.5 rounded-lg font-medium text-sm bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300" 
                 data-view="settings" onclick="app.navigate('settings')">
           <i class="fa-solid fa-gear mr-2"></i>Configurações
         </button>
       </nav>
     </div>
 
-    <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl text-center">
         <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -273,9 +145,7 @@
       </div>
     </div>
 
-    <!-- ======================================== -->
     <!-- LOGIN VIEW -->
-    <!-- ======================================== -->
     <main id="login-view" class="hidden">
       <div class="min-h-[60vh] flex items-center justify-center">
         <div class="w-full max-w-md">
@@ -284,38 +154,21 @@
               <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary text-white flex items-center justify-center text-3xl shadow-lg">
                 <i class="fa-solid fa-palette"></i>
               </div>
-              <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Bem-vindo de volta!</h1>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Faça login para continuar</p>
+              <h1 class="text-2xl font-bold">Bem-vindo de volta!</h1>
+              <p class="text-sm text-gray-500 mt-2">Faça login para continuar</p>
             </div>
             
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Nome Completo
-                </label>
-                <input type="text" id="loginName" 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 
-                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                       placeholder="Seu nome">
+                <label class="block text-sm font-medium mb-1">Nome Completo</label>
+                <input type="text" id="loginName" class="w-full px-4 py-3 rounded-lg border" placeholder="Seu nome">
               </div>
-              
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  E-mail
-                </label>
-                <input type="email" id="loginEmail" 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 
-                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
-                       placeholder="seu@email.com">
+                <label class="block text-sm font-medium mb-1">E-mail</label>
+                <input type="email" id="loginEmail" class="w-full px-4 py-3 rounded-lg border" placeholder="seu@email.com">
               </div>
-              
-              <button onclick="app.submitLogin()" 
-                      class="w-full mt-6 px-4 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                             transition-colors flex items-center justify-center gap-2">
-                <span>Entrar</span>
-                <i class="fa-solid fa-arrow-right"></i>
+              <button onclick="app.submitLogin()" class="w-full mt-6 px-4 py-3 bg-primary text-white rounded-lg">
+                Entrar
               </button>
             </div>
           </div>
@@ -323,249 +176,164 @@
       </div>
     </main>
 
-    <!-- ======================================== -->
     <!-- DASHBOARD VIEW -->
-    <!-- ======================================== -->
     <main id="dashboard-view" class="active space-y-6">
-      <!-- Header -->
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg">
           <i class="fa-solid fa-chart-line text-xl"></i>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-          Dashboard de Orçamentos
-        </h1>
+        <h1 class="text-2xl sm:text-3xl font-bold">Dashboard de Orçamentos</h1>
       </div>
 
-      <!-- Filtro por Data -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
         <h3 class="flex items-center gap-2 text-lg font-semibold mb-4">
-          <i class="fa-regular fa-calendar-days text-primary"></i>
-          Filtrar por Data
+          <i class="fa-regular fa-calendar-days text-primary"></i> Filtrar por Data
         </h3>
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Data Inicial
-            </label>
-            <input type="date" id="dashboard-date-from"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <label class="block text-sm font-medium mb-1">Data Inicial</label>
+            <input type="date" id="dashboard-date-from" class="w-full px-4 py-2.5 rounded-lg border">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Data Final
-            </label>
-            <input type="date" id="dashboard-date-to"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <label class="block text-sm font-medium mb-1">Data Final</label>
+            <input type="date" id="dashboard-date-to" class="w-full px-4 py-2.5 rounded-lg border">
           </div>
         </div>
-        
         <div class="flex flex-col sm:flex-row gap-3">
-          <button onclick="app.filterDashboardByDate()" 
-                  class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 
-                         bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                         transition-colors">
-            <i class="fa-solid fa-magnifying-glass"></i>
+          <button onclick="app.filterDashboardByDate()" class="flex-1 bg-primary text-white px-4 py-2.5 rounded-lg">
             Aplicar Filtro
           </button>
-          <button onclick="app.clearDateFilter()" 
-                  class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 
-                         bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 
-                         dark:text-gray-200 font-medium rounded-lg border border-gray-300 dark:border-gray-600
-                         transition-colors">
-            <i class="fa-solid fa-xmark"></i>
+          <button onclick="app.clearDateFilter()" class="flex-1 sm:flex-none bg-gray-100 px-4 py-2.5 rounded-lg">
             Limpar Filtro
           </button>
         </div>
       </div>
 
-      <!-- Cards de Resumo -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Total Orçamentos -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
               <i class="fa-solid fa-file-invoice text-primary text-xl"></i>
             </div>
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total</span>
+            <span class="text-sm font-medium text-gray-500">Total</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1" id="stat-total">0</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Orçamentos criados</div>
+          <div class="text-3xl font-bold mb-1" id="stat-total">0</div>
+          <div class="text-sm text-gray-600">Orçamentos criados</div>
         </div>
         
-        <!-- Receita Total -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
           <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <i class="fa-solid fa-coins text-green-600 dark:text-green-400 text-xl"></i>
+            <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
+              <i class="fa-solid fa-coins text-green-600 text-xl"></i>
             </div>
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Receita</span>
+            <span class="text-sm font-medium text-gray-500">Receita</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1" id="stat-revenue">R$ 0</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Valor total dos orçamentos</div>
+          <div class="text-3xl font-bold mb-1" id="stat-revenue">R$ 0</div>
+          <div class="text-sm text-gray-600">Valor total dos orçamentos</div>
         </div>
         
-        <!-- Orçamentos Pagos -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
           <div class="flex items-center justify-between mb-4">
-            <div class="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <i class="fa-solid fa-circle-check text-blue-600 dark:text-blue-400 text-xl"></i>
+            <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
+              <i class="fa-solid fa-circle-check text-blue-600 text-xl"></i>
             </div>
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Realizado</span>
+            <span class="text-sm font-medium text-gray-500">Realizado</span>
           </div>
-          <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1" id="stat-receipt">R$ 0</div>
-          <div class="text-sm text-gray-600 dark:text-gray-400">Orçamentos pagos</div>
+          <div class="text-3xl font-bold mb-1" id="stat-receipt">R$ 0</div>
+          <div class="text-sm text-gray-600">Orçamentos pagos</div>
         </div>
       </div>
 
-      <!-- Metas -->
-      <div id="goals-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"></div>
+      <div id="goals-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6"></div>
 
-      <!-- Gráficos -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Gráfico de Status -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie text-primary"></i>
-            Distribuição por Status
-          </h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+          <h3 class="text-lg font-semibold mb-4">Distribuição por Status</h3>
           <canvas id="statusChart" width="400" height="200"></canvas>
         </div>
-        
-        <!-- Gráfico de Receita Mensal -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-chart-line text-primary"></i>
-            Receita Mensal
-          </h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+          <h3 class="text-lg font-semibold mb-4">Receita Mensal</h3>
           <canvas id="revenueChart" width="400" height="200"></canvas>
         </div>
       </div>
 
-      <!-- Status Cards -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <!-- Em Processo -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
-                    border-l-4 border-l-[#FFA500] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#FFA500] cursor-pointer"
              onclick="app.filterByStatus('em_processo')">
-          <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-em-processo">0</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-solid fa-file-pen text-[#FFA500]"></i>
-            Em Processo
+          <div class="text-2xl font-bold mb-1" id="stat-em-processo">0</div>
+          <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-file-pen text-[#FFA500]"></i> Em Processo
           </div>
         </div>
-        
-        <!-- Aprovado -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
-                    border-l-4 border-l-[#218040] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#218040] cursor-pointer"
              onclick="app.filterByStatus('aprovado')">
-          <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-aprovado">0</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-solid fa-circle-check text-[#218040]"></i>
-            Aprovado
+          <div class="text-2xl font-bold mb-1" id="stat-aprovado">0</div>
+          <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-circle-check text-[#218040]"></i> Aprovado
           </div>
         </div>
-        
-        <!-- Não Aprovado -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
-                    border-l-4 border-l-[#c91530] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#c91530] cursor-pointer"
              onclick="app.filterByStatus('nao_aprovado')">
-          <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-nao-aprovado">0</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-solid fa-circle-xmark text-[#c91530]"></i>
-            Não Aprovado
+          <div class="text-2xl font-bold mb-1" id="stat-nao-aprovado">0</div>
+          <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-circle-xmark text-[#c91530]"></i> Não Aprovado
           </div>
         </div>
-        
-        <!-- Alterado -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
-                    border-l-4 border-l-[#a84d2f] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#a84d2f] cursor-pointer"
              onclick="app.filterByStatus('alterado')">
-          <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-alterado">0</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-solid fa-arrows-rotate text-[#a84d2f]"></i>
-            Alterado
+          <div class="text-2xl font-bold mb-1" id="stat-alterado">0</div>
+          <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-arrows-rotate text-[#a84d2f]"></i> Alterado
           </div>
         </div>
-        
-        <!-- Concluído -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
-                    border-l-4 border-l-[#2d8a8a] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#2d8a8a] cursor-pointer"
              onclick="app.filterByStatus('concluido')">
-          <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-concluido">0</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-solid fa-check text-[#2d8a8a]"></i>
-            Concluído
+          <div class="text-2xl font-bold mb-1" id="stat-concluido">0</div>
+          <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-check text-[#2d8a8a]"></i> Concluído
           </div>
         </div>
-        
-        <!-- Pago -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border-b-2 border-b-gray-200 dark:border-b-gray-700 p-4 
-                    border-l-4 border-l-[#1a6b4d] cursor-pointer hover:shadow-md transition-shadow"
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 border-l-4 border-[#1a6b4d] cursor-pointer"
              onclick="app.filterByStatus('pago')">
-          <div class="text-2xl font-bold text-gray-900 dark:text-white mb-1" id="stat-pago">0</div>
-          <div class="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-solid fa-coins text-[#1a6b4d]"></i>
-            Pago
+          <div class="text-2xl font-bold mb-1" id="stat-pago">0</div>
+          <div class="text-xs text-gray-600 flex items-center gap-1">
+            <i class="fa-solid fa-coins text-[#1a6b4d]"></i> Pago
           </div>
         </div>
       </div>
 
-      <!-- Últimos Orçamentos -->
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h2 class="flex items-center gap-2 text-xl font-bold">
             <span class="w-1.5 h-6 bg-primary rounded-full"></span>
             Últimos Orçamentos
           </h2>
-          <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-            <i class="fa-regular fa-clock"></i>
-            Atualizado agora
-          </span>
+          <span class="text-sm text-gray-500">Atualizado agora</span>
         </div>
-        
-        <div id="recent-budgets" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        <div id="recent-budgets" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
           <div id="recent-budgets-list" class="space-y-3"></div>
           <div id="recent-budgets-empty" class="text-center py-12 hidden">
-            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
               <i class="fa-solid fa-rocket text-3xl text-gray-400"></i>
             </div>
-            <p class="text-gray-500 dark:text-gray-400">
-              Nenhum orçamento ainda. Crie um novo!
-            </p>
+            <p class="text-gray-500">Nenhum orçamento ainda. Crie um novo!</p>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- ======================================== -->
     <!-- BUDGETS VIEW -->
-    <!-- ======================================== -->
     <main id="budgets-view" class="hidden space-y-6">
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Orçamentos</h1>
-        <button onclick="app.startNewBudget()" 
-                class="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                       transition-colors inline-flex items-center gap-2">
-          <i class="fa-solid fa-plus"></i>
-          Novo Orçamento
+        <h1 class="text-2xl font-bold">Orçamentos</h1>
+        <button onclick="app.startNewBudget()" class="px-4 py-2 bg-primary text-white rounded-lg">
+          <i class="fa-solid fa-plus mr-2"></i>Novo Orçamento
         </button>
       </div>
 
-      <!-- Filtro por Status -->
       <div class="max-w-xs">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Filtrar por Status
-        </label>
-        <select id="budget-filter-status" onchange="app.filterBudgetsByStatus()"
-                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                       bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                       focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+        <label class="block text-sm font-medium mb-1">Filtrar por Status</label>
+        <select id="budget-filter-status" onchange="app.filterBudgetsByStatus()" class="w-full px-4 py-2.5 rounded-lg border">
           <option value="">Todos os status</option>
           <option value="em_processo">Em Processo</option>
           <option value="aprovado">Aprovado</option>
@@ -576,104 +344,64 @@
         </select>
       </div>
 
-      <!-- Lista de Orçamentos -->
       <div id="budgets-list" class="space-y-4"></div>
     </main>
 
-    <!-- ======================================== -->
     <!-- CLIENTS VIEW -->
-    <!-- ======================================== -->
     <main id="clients-view" class="hidden space-y-6">
       <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Clientes</h1>
-        <button onclick="app.showAddClientModal()" 
-                class="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                       transition-colors inline-flex items-center gap-2">
-          <i class="fa-solid fa-plus"></i>
-          Novo Cliente
+        <h1 class="text-2xl font-bold">Clientes</h1>
+        <button onclick="app.showAddClientModal()" class="px-4 py-2 bg-primary text-white rounded-lg">
+          <i class="fa-solid fa-plus mr-2"></i>Novo Cliente
         </button>
       </div>
 
-      <!-- Busca -->
       <div class="max-w-md">
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
           <input type="text" id="client-search" placeholder="Buscar cliente..." onkeyup="app.filterClients()"
-                 class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                 class="w-full pl-10 pr-4 py-2.5 rounded-lg border">
         </div>
       </div>
 
-      <!-- Lista de Clientes -->
       <div id="clients-list" class="space-y-4"></div>
     </main>
 
-<!-- ======================================== -->
-<!-- SERVICES VIEW - CORRIGIDO -->
-<!-- ======================================== -->
-<main id="services-view" class="hidden space-y-6">
-  <div class="flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Serviços</h1>
-    <button onclick="app.showAddServiceModal()" 
-            class="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                   transition-colors inline-flex items-center gap-2">
-      <i class="fa-solid fa-plus"></i>
-      Novo Serviço
-    </button>
-  </div>
+    <!-- SERVICES VIEW -->
+    <main id="services-view" class="hidden space-y-6">
+      <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Serviços</h1>
+        <button onclick="app.showAddServiceModal()" class="px-4 py-2 bg-primary text-white rounded-lg">
+          <i class="fa-solid fa-plus mr-2"></i>Novo Serviço
+        </button>
+      </div>
 
-  <!-- Accordion de Serviços -->
-  <div id="services-accordion" class="space-y-3">
-    <!-- Os serviços serão inseridos aqui pelo JavaScript -->
-  </div>
-</main>
+      <div id="services-accordion" class="space-y-3"></div>
+    </main>
 
-    <!-- ======================================== -->
     <!-- SETTINGS VIEW -->
-    <!-- ======================================== -->
     <main id="settings-view" class="hidden space-y-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Configurações</h1>
+      <h1 class="text-2xl font-bold">Configurações</h1>
       
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Coluna Esquerda -->
         <div class="space-y-6">
-          <!-- Perfil -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-user text-primary"></i>
-              Perfil do Usuário
-            </h3>
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+            <h3 class="text-lg font-semibold mb-4">Perfil do Usuário</h3>
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Nome Completo
-                </label>
-                <input type="text" id="settingName"
-                       class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                <label class="block text-sm font-medium mb-1">Nome Completo</label>
+                <input type="text" id="settingName" class="w-full px-4 py-2.5 rounded-lg border">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  E-mail
-                </label>
-                <input type="email" id="settingEmail"
-                       class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                <label class="block text-sm font-medium mb-1">E-mail</label>
+                <input type="email" id="settingEmail" class="w-full px-4 py-2.5 rounded-lg border">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Valor da Hora (R$)
-                </label>
-                <input type="number" id="settingHourlyRate" value="150"
-                       class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                              focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                <label class="block text-sm font-medium mb-1">Valor da Hora (R$)</label>
+                <input type="number" id="settingHourlyRate" value="150" class="w-full px-4 py-2.5 rounded-lg border">
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Tema Escuro</span>
+                <span class="text-sm font-medium">Tema Escuro</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" id="settingDarkMode" class="sr-only peer" onchange="app.toggleTheme()">
                   <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 
@@ -688,28 +416,16 @@
             </div>
           </div>
 
-          <!-- Tema Personalizado -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-palette text-primary"></i>
-              Tema do Aplicativo
-            </h3>
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+            <h3 class="text-lg font-semibold mb-4">Tema do Aplicativo</h3>
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Cor base
-                </label>
-                <input type="color" id="settings-theme-base" value="#2d8a8a"
-                       class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
+                <label class="block text-sm font-medium mb-1">Cor base</label>
+                <input type="color" id="settings-theme-base" value="#2d8a8a" class="w-full h-10 rounded-lg border cursor-pointer">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Modelo
-                </label>
-                <select id="settings-theme-model"
-                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                               bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                               focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+                <label class="block text-sm font-medium mb-1">Modelo</label>
+                <select id="settings-theme-model" class="w-full px-4 py-2.5 rounded-lg border">
                   <option value="monochromatic">Monocromática</option>
                   <option value="analogous">Analógica</option>
                   <option value="complementary">Complementar</option>
@@ -718,384 +434,213 @@
                 </select>
               </div>
             </div>
-            <button onclick="app.applyThemeFromSettings()" 
-                    class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 
-                           dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 
-                           font-medium rounded-lg transition-colors">
+            <button onclick="app.applyThemeFromSettings()" class="w-full px-4 py-2 bg-gray-100 rounded-lg">
               Aplicar Tema
             </button>
           </div>
 
-          <button onclick="app.saveSettings()" 
-                  class="w-full px-4 py-2.5 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                         transition-colors flex items-center justify-center gap-2">
-            <i class="fa-solid fa-floppy-disk"></i>
-            Salvar Configurações
+          <button onclick="app.saveSettings()" class="w-full px-4 py-2.5 bg-primary text-white rounded-lg">
+            <i class="fa-solid fa-floppy-disk mr-2"></i>Salvar Configurações
           </button>
         </div>
 
-        <!-- Coluna Direita -->
         <div class="space-y-6">
-<!-- ======================================== -->
-<!-- CALCULADORA - VERSÃO CORRIGIDA -->
-<!-- ======================================== -->
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-  <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-    <i class="fa-solid fa-calculator text-primary"></i>
-    Calculadora de Hora
-  </h3>
-  
-  <!-- Tabs -->
-  <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4">
-    <button id="tab-hourly" onclick="app.switchCalcTab('hourly')" 
-            class="tab-hourly-btn flex-1 py-2 text-sm font-medium border-b-2 border-primary text-primary">
-      <i class="fa-solid fa-hand-holding-dollar mr-1"></i>
-      Valor/Hora
-    </button>
-    <button id="tab-project" onclick="app.switchCalcTab('project')" 
-            class="tab-project-btn flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-      <i class="fa-solid fa-chart-pie mr-1"></i>
-      Preço Projeto
-    </button>
+          <!-- CALCULADORA - COMPLETA com todos os IDs -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+            <h3 class="text-lg font-semibold mb-4">Calculadora de Hora</h3>
+            
+            <div class="flex border-b mb-4">
+              <button id="tab-hourly" onclick="app.switchCalcTab('hourly')" 
+                      class="flex-1 py-2 text-sm font-medium border-b-2 border-primary text-primary">
+                Valor/Hora
+              </button>
+              <button id="tab-project" onclick="app.switchCalcTab('project')" 
+                      class="flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500">
+                Preço Projeto
+              </button>
+            </div>
+
+            <div id="calc-tab-hourly" class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Renda mensal desejada (R$)</label>
+                <input type="number" id="calc-monthly-income" value="5000" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Horas por dia</label>
+                <input type="number" id="calc-hours-per-day" value="8" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Dias por semana</label>
+                <input type="number" id="calc-days-per-week" value="5" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Semanas de férias/ano</label>
+                <input type="number" id="calc-vacation-weeks" value="4" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <button onclick="app.calcHourlyRate()" class="w-full py-2 bg-primary text-white rounded-lg">
+                Calcular
+              </button>
+              <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="flex justify-between mb-2">
+                  <span>Semanas trabalhadas/ano:</span>
+                  <span id="calc-weeks-year" class="font-semibold">48</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span>Horas trabalhadas/ano:</span>
+                  <span id="calc-hours-year" class="font-semibold">1.920h</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span>Renda anual:</span>
+                  <span id="calc-annual-income" class="font-semibold">R$ 60.000</span>
+                </div>
+                <div class="flex justify-between text-base font-bold pt-2 border-t">
+                  <span>Seu valor/hora:</span>
+                  <span id="calc-hourly-rate" class="text-primary">R$ 31,25</span>
+                </div>
+              </div>
+              <button onclick="app.applyCalculatedHourlyRate()" class="w-full py-2 bg-green-600 text-white rounded-lg">
+                Aplicar nos orçamentos
+              </button>
+            </div>
+
+            <div id="calc-tab-project" class="hidden space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Valor da hora (R$)</label>
+                <input type="number" id="calc-project-hourly" value="150" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Horas por dia</label>
+                <input type="number" id="calc-project-hours-day" value="8" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Dias do projeto</label>
+                <input type="number" id="calc-project-days" value="5" class="w-full px-4 py-2 rounded-lg border">
+              </div>
+              <button onclick="app.calcProjectPrice()" class="w-full py-2 bg-primary text-white rounded-lg">
+                Calcular
+              </button>
+              <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="flex justify-between mb-2">
+                  <span>Total de horas:</span>
+                  <span id="calc-project-total-hours" class="font-semibold">40h</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span>Valor/hora:</span>
+                  <span id="calc-project-hourly-display" class="font-semibold">R$ 150,00</span>
+                </div>
+                <div class="flex justify-between text-base font-bold pt-2 border-t">
+                  <span>Preço total:</span>
+                  <span id="calc-project-total" class="text-primary">R$ 6.000,00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="backup-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+            <h3 class="text-lg font-semibold mb-4">Backup</h3>
+            <button onclick="app.exportData()" class="w-full px-4 py-2 bg-primary text-white rounded-lg mb-2">
+              <i class="fa-solid fa-download mr-2"></i>Exportar Dados
+            </button>
+            <label class="w-full px-4 py-2 bg-gray-100 text-center rounded-lg cursor-pointer block">
+              <i class="fa-solid fa-upload mr-2"></i>Importar Dados
+              <input type="file" accept=".json" onchange="app.importData(this.files[0])" class="hidden">
+            </label>
+            <button onclick="app.showBackupHistory()" class="text-sm text-primary hover:underline mt-2">
+              Ver histórico de backups
+            </button>
+          </div>
+
+          <!-- SOBRE - COMPLETO com todos os IDs -->
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-6">
+            <h3 class="text-lg font-semibold mb-4">Sobre</h3>
+            
+            <div class="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
+              <div class="text-center">
+                <div class="text-xl font-bold text-primary" id="about-total-services">51</div>
+                <div class="text-xs text-gray-500">Serviços</div>
+              </div>
+              <div class="text-center">
+                <div class="text-xl font-bold text-primary" id="about-total-clients">0</div>
+                <div class="text-xs text-gray-500">Clientes</div>
+              </div>
+              <div class="text-center">
+                <div class="text-xl font-bold text-primary" id="about-total-budgets">0</div>
+                <div class="text-xs text-gray-500">Orçamentos</div>
+              </div>
+            </div>
+            
+            <div class="space-y-2 text-sm">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-primary"></i>
+                <span>51 serviços pré-configurados</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-primary"></i>
+                <span>Gerador de paleta de cores</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-primary"></i>
+                <span>6 status de orçamento</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-primary"></i>
+                <span>Dashboard com gráficos</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-primary"></i>
+                <span>Exportação em PDF</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-primary"></i>
+                <span>Backup automático</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- TAB 1: VALOR/HORA -->
-  <div id="calc-tab-hourly" class="space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Quanto você quer ganhar por mês? (R$)
-      </label>
-      <input type="number" id="calc-monthly-income" value="5000" min="1000" step="500"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Horas trabalhadas por dia
-      </label>
-      <input type="number" id="calc-hours-per-day" value="8" min="1" max="24" step="0.5"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Dias trabalhados por semana
-      </label>
-      <input type="number" id="calc-days-per-week" value="5" min="1" max="7" step="1"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Semanas de férias por ano
-      </label>
-      <input type="number" id="calc-vacation-weeks" value="4" min="0" max="12" step="1"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <!-- Botão Calcular -->
-    <button onclick="app.calcHourlyRate()" 
-            class="w-full py-2.5 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                   transition-colors flex items-center justify-center gap-2">
-      <i class="fa-solid fa-calculator"></i>
-      Calcular Valor/Hora
-    </button>
-    
-    <!-- Resultado -->
-    <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg space-y-2">
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-600 dark:text-gray-400">Semanas trabalhadas/ano:</span>
-        <span id="calc-weeks-year" class="font-semibold">48</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-600 dark:text-gray-400">Horas trabalhadas/ano:</span>
-        <span id="calc-hours-year" class="font-semibold">1.920h</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-600 dark:text-gray-400">Renda desejada/ano:</span>
-        <span id="calc-annual-income" class="font-semibold">R$ 60.000</span>
-      </div>
-      <div class="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-gray-600">
-        <span class="text-primary">Seu valor/hora ideal:</span>
-        <span id="calc-hourly-rate" class="text-primary text-xl">R$ 31,25</span>
-      </div>
-    </div>
-    
-    <!-- Botão Aplicar -->
-    <button onclick="app.applyCalculatedHourlyRate()" 
-            class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg
-                   transition-colors flex items-center justify-center gap-2 mt-2">
-      <i class="fa-solid fa-check-circle"></i>
-      Aplicar este valor nos orçamentos
-    </button>
-  </div>
-
-  <!-- TAB 2: PREÇO PROJETO -->
-  <div id="calc-tab-project" class="hidden space-y-4">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Seu valor/hora (R$)
-      </label>
-      <input type="number" id="calc-project-hourly" value="150" min="10" step="10"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Horas por dia
-      </label>
-      <input type="number" id="calc-project-hours-day" value="8" min="1" max="24" step="0.5"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <div>
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Dias do projeto
-      </label>
-      <input type="number" id="calc-project-days" value="5" min="1" step="1"
-             class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                    focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-    </div>
-    
-    <!-- Botão Calcular -->
-    <button onclick="app.calcProjectPrice()" 
-            class="w-full py-2.5 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg
-                   transition-colors flex items-center justify-center gap-2">
-      <i class="fa-solid fa-calculator"></i>
-      Calcular Preço do Projeto
-    </button>
-    
-    <!-- Resultado -->
-    <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg space-y-2">
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-600 dark:text-gray-400">Total de horas:</span>
-        <span id="calc-project-total-hours" class="font-semibold">40h</span>
-      </div>
-      <div class="flex justify-between text-sm">
-        <span class="text-gray-600 dark:text-gray-400">Valor/hora:</span>
-        <span id="calc-project-hourly-display" class="font-semibold">R$ 150,00</span>
-      </div>
-      <div class="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-gray-600">
-        <span class="text-primary">Preço total do projeto:</span>
-        <span id="calc-project-total" class="text-primary text-xl">R$ 6.000,00</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-          <!-- Backup e Exportação -->
-          <div id="backup-container" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"></div>
-
-        <!-- ======================================== -->
-<!-- SOBRE - VERSÃO ATUALIZADA -->
-<!-- ======================================== -->
-<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-  <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-    <i class="fa-solid fa-circle-info text-primary"></i>
-    Sobre o Designer Budget Pro
-  </h3>
-  
-  <!-- Versão e data -->
-  <div class="flex items-center gap-2 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-    <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-      Versão 3.1.0
-    </span>
-    <span class="text-sm text-gray-500 dark:text-gray-400">
-      Atualizado em Março/2024
-    </span>
-  </div>
-  
-  <!-- Descrição -->
-  <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-    Sistema profissional para designers e freelancers gerenciarem orçamentos, 
-    clientes e serviços com elegância e eficiência.
-  </p>
-  
-  <!-- Grid de recursos -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">51 serviços</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">pré-configurados</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">4 modelos</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">gerador de paleta</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">6 status</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">de orçamento</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">Dashboard</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">com gráficos</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">Calculadora</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">valor/hora integrada</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">PDF profissional</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">exportação</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">Backup automático</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">a cada 5 minutos</p>
-      </div>
-    </div>
-    
-    <div class="flex items-start gap-2">
-      <div class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 mt-0.5">
-        <i class="fa-solid fa-check text-green-600 dark:text-green-400 text-xs"></i>
-      </div>
-      <div>
-        <span class="text-sm font-medium">Dados por usuário</span>
-        <p class="text-xs text-gray-500 dark:text-gray-500">isolamento</p>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Estatísticas (opcional - se quiser mostrar números reais) -->
-  <div class="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-    <div class="text-center">
-      <div class="text-xl font-bold text-primary" id="about-total-services">51</div>
-      <div class="text-xs text-gray-500 dark:text-gray-400">Serviços</div>
-    </div>
-    <div class="text-center">
-      <div class="text-xl font-bold text-primary" id="about-total-clients">0</div>
-      <div class="text-xs text-gray-500 dark:text-gray-400">Clientes</div>
-    </div>
-    <div class="text-center">
-      <div class="text-xl font-bold text-primary" id="about-total-budgets">0</div>
-      <div class="text-xs text-gray-500 dark:text-gray-400">Orçamentos</div>
-    </div>
-  </div>
-  
-  <!-- Links e créditos -->
-  <div class="text-xs text-center text-gray-500 dark:text-gray-500 pt-3 border-t border-gray-200 dark:border-gray-700">
-    <p>Desenvolvido para designers e freelancers</p>
-    <p class="mt-1">
-      <i class="fa-regular fa-heart text-red-500"></i> 
-      Código aberto • 
-      <a href="#" class="text-primary hover:underline" onclick="app.showBackupHistory()">Backups</a> • 
-      <a href="#" class="text-primary hover:underline" onclick="app.exportData()">Exportar dados</a>
-    </p>
-  </div>
-</div>
-
-  <!-- Modo Foco Button -->
   <button onclick="app.toggleFocusMode()" 
-          class="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-xl z-40">
+          class="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center text-xl z-40">
     <i class="fa-regular fa-eye"></i>
   </button>
 
-
-  <!-- Modo Foco Button -->
-  <button onclick="app.toggleFocusMode()" 
-          class="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center text-xl z-40">
-    <i class="fa-regular fa-eye"></i>
-  </button>
+  <!-- ======================================== -->
+  <!-- MODAIS COMPLETOS -->
+  <!-- ======================================== -->
 
   <!-- Modal de Orçamento -->
- <div id="budget-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+  <div id="budget-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl m-4">
-      <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex justify-between items-center p-6 border-b">
         <h2 class="text-xl font-semibold" id="budget-modal-title">
           <i class="fa-solid fa-clipboard-list text-primary mr-2"></i>
           Criar Novo Orçamento
         </h2>
-        <button onclick="app.closeModal('budget-modal')" 
-                class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors">
+        <button onclick="app.closeModal('budget-modal')" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center">
           <i class="fa-solid fa-times text-xl"></i>
         </button>
       </div>
       
       <div class="p-6 space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Data do Orçamento
-          </label>
-          <input type="date" id="budget-date" required
-                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          <label class="block text-sm font-medium mb-1">Data do Orçamento</label>
+          <input type="date" id="budget-date" required class="w-full px-4 py-2.5 rounded-lg border">
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Nome do Projeto
-          </label>
-          <input type="text" id="budget-project-name" placeholder="Ex: Identidade Visual da Loja"
-                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          <label class="block text-sm font-medium mb-1">Nome do Projeto</label>
+          <input type="text" id="budget-project-name" class="w-full px-4 py-2.5 rounded-lg border">
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Cliente
-          </label>
+          <label class="block text-sm font-medium mb-1">Cliente</label>
           <div class="flex gap-2">
-            <select id="budget-client" required
-                    class="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <select id="budget-client" required class="flex-1 px-4 py-2.5 rounded-lg border">
               <option value="">Selecione um cliente</option>
             </select>
-            <button onclick="app.openNewClientFromBudget()" 
-                    class="px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg">
+            <button onclick="app.openNewClientFromBudget()" class="px-4 py-2.5 bg-primary text-white rounded-lg">
               <i class="fa-solid fa-plus"></i>
             </button>
           </div>
@@ -1103,95 +648,55 @@
         
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Valor da Hora (R$)
-            </label>
-            <input type="number" id="budget-hourly" value="150" onchange="app.updateBudgetTotal()"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <label class="block text-sm font-medium mb-1">Valor da Hora (R$)</label>
+            <input type="number" id="budget-hourly" value="150" onchange="app.updateBudgetTotal()" class="w-full px-4 py-2.5 rounded-lg border">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Horas Trabalhadas
-            </label>
-            <input type="number" id="budget-hours-worked" value="0" step="0.5" onchange="app.updateBudgetTotal()"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <label class="block text-sm font-medium mb-1">Horas Trabalhadas</label>
+            <input type="number" id="budget-hours-worked" value="0" step="0.5" onchange="app.updateBudgetTotal()" class="w-full px-4 py-2.5 rounded-lg border">
           </div>
         </div>
         
-        <h3 class="font-semibold text-lg mt-4 flex items-center gap-2">
-          <i class="fa-solid fa-bullseye text-primary"></i>
-          Serviços
-        </h3>
+        <h3 class="font-semibold text-lg mt-4">Serviços</h3>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input type="text" id="service-search" placeholder="Buscar serviço..." onkeyup="app.searchServices()"
-                   class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <input type="text" id="service-search" placeholder="Buscar serviço..." onkeyup="app.searchServices()" class="w-full pl-10 pr-4 py-2.5 rounded-lg border">
           </div>
-          
-          <select id="service-category-filter" onchange="app.filterServicesByCategory()"
-                  class="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          <select id="service-category-filter" onchange="app.filterServicesByCategory()" class="px-4 py-2.5 rounded-lg border">
             <option value="">Todas as categorias</option>
           </select>
         </div>
         
-        <div id="services-list-container" class="max-h-60 overflow-y-auto space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50"></div>
+        <div id="services-list-container" class="max-h-60 overflow-y-auto space-y-2 border rounded-lg p-4"></div>
         
-        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-          <strong class="mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-primary"></i>
-            Serviços Selecionados:
-          </strong>
-          <div id="selected-services-summary" class="text-sm text-gray-600 dark:text-gray-400 space-y-1"></div>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <strong>Serviços Selecionados:</strong>
+          <div id="selected-services-summary" class="text-sm mt-2"></div>
         </div>
         
-        <h3 class="font-semibold text-lg mt-4 flex items-center gap-2">
-          <i class="fa-solid fa-palette text-primary"></i>
-          Paleta de Cores
-        </h3>
+        <h3 class="font-semibold text-lg mt-4">Paleta de Cores</h3>
         
         <div class="flex gap-2">
-          <button type="button" onclick="app.switchPaletteMode('generator')" 
-                  class="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium"
-                  id="btn-palette-generator">
-            <i class="fa-solid fa-wand-magic mr-2"></i>
-            Gerador
+          <button type="button" onclick="app.switchPaletteMode('generator')" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg" id="btn-palette-generator">
+            <i class="fa-solid fa-wand-magic mr-2"></i>Gerador
           </button>
-          <button type="button" onclick="app.switchPaletteMode('custom')" 
-                  class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 rounded-lg font-medium"
-                  id="btn-palette-custom">
-            <i class="fa-solid fa-paint-brush mr-2"></i>
-            Personalizada
+          <button type="button" onclick="app.switchPaletteMode('custom')" class="flex-1 px-4 py-2 bg-gray-100 rounded-lg" id="btn-palette-custom">
+            <i class="fa-solid fa-paint-brush mr-2"></i>Personalizada
           </button>
         </div>
         
         <div id="autoPaletteMode">
           <div class="flex gap-2">
-            <input type="color" id="paletteColor" value="#2d8a8a" onchange="app.generatePaletteModels()"
-                   class="flex-1 h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-            <button onclick="app.generatePaletteModels()" 
-                    class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
-              Gerar
-            </button>
-            <button onclick="app.randomizeBaseColor()" 
-                    class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded-lg">
+            <input type="color" id="paletteColor" value="#2d8a8a" onchange="app.generatePaletteModels()" class="flex-1 h-10 rounded-lg border cursor-pointer">
+            <button onclick="app.generatePaletteModels()" class="px-4 py-2 bg-primary text-white rounded-lg">Gerar</button>
+            <button onclick="app.randomizeBaseColor()" class="px-4 py-2 bg-gray-100 rounded-lg">
               <i class="fa-solid fa-shuffle"></i>
             </button>
           </div>
           
-          <select id="paletteModel" onchange="app.updatePaletteDisplay()"
-                  class="w-full mt-2 px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                         bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          <select id="paletteModel" onchange="app.updatePaletteDisplay()" class="w-full mt-2 px-4 py-2.5 rounded-lg border">
             <option value="monochromatic">Monocromática</option>
             <option value="analogous">Analógica</option>
             <option value="complementary">Complementar</option>
@@ -1205,56 +710,34 @@
         <div id="customPaletteMode" class="hidden">
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <input type="color" id="customColor1" value="#2d8a8a" onchange="app.updateCustomPalette()"
-                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-              <input type="text" id="customColor1Name" value="Primária" onchange="app.updateCustomPalette()"
-                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <input type="color" id="customColor1" value="#2d8a8a" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+              <input type="text" id="customColor1Name" value="Primária" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
             </div>
             <div>
-              <input type="color" id="customColor2" value="#FFFFFF" onchange="app.updateCustomPalette()"
-                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-              <input type="text" id="customColor2Name" value="Secundária" onchange="app.updateCustomPalette()"
-                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <input type="color" id="customColor2" value="#FFFFFF" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+              <input type="text" id="customColor2Name" value="Secundária" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
             </div>
             <div>
-              <input type="color" id="customColor3" value="#667eea" onchange="app.updateCustomPalette()"
-                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-              <input type="text" id="customColor3Name" value="Destaque" onchange="app.updateCustomPalette()"
-                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <input type="color" id="customColor3" value="#667eea" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+              <input type="text" id="customColor3Name" value="Destaque" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
             </div>
             <div>
-              <input type="color" id="customColor4" value="#f8f9fa" onchange="app.updateCustomPalette()"
-                     class="w-full h-10 rounded-lg border border-gray-300 dark:border-gray-600 cursor-pointer">
-              <input type="text" id="customColor4Name" value="Fundo" onchange="app.updateCustomPalette()"
-                     class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 
-                            bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <input type="color" id="customColor4" value="#f8f9fa" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+              <input type="text" id="customColor4Name" value="Fundo" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
             </div>
           </div>
           <div id="customPalette" class="grid grid-cols-4 gap-2 mt-3"></div>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Observações
-          </label>
-          <textarea id="budget-notes" rows="3" placeholder="Prazos, revisões, direitos de uso..."
-                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"></textarea>
+          <label class="block text-sm font-medium mb-1">Observações</label>
+          <textarea id="budget-notes" rows="3" class="w-full px-4 py-2.5 rounded-lg border"></textarea>
         </div>
         
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Status
-            </label>
-            <select id="budget-status"
-                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <label class="block text-sm font-medium mb-1">Status</label>
+            <select id="budget-status" class="w-full px-4 py-2.5 rounded-lg border">
               <option value="em_processo">Em Processo</option>
               <option value="aprovado">Aprovado</option>
               <option value="nao_aprovado">Não Aprovado</option>
@@ -1264,271 +747,123 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Prazo (dias)
-            </label>
-            <input type="number" id="budget-deadline" value="7"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+            <label class="block text-sm font-medium mb-1">Prazo (dias)</label>
+            <input type="number" id="budget-deadline" value="7" class="w-full px-4 py-2.5 rounded-lg border">
           </div>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Condições de Pagamento
-          </label>
-          <input type="text" id="budget-payment-terms" placeholder="Ex: 50% adiantado, 50% na entrega"
-                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          <label class="block text-sm font-medium mb-1">Condições de Pagamento</label>
+          <input type="text" id="budget-payment-terms" class="w-full px-4 py-2.5 rounded-lg border">
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Validade (dias)
-          </label>
-          <input type="number" id="budget-validity" value="30"
-                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                        bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
+          <label class="block text-sm font-medium mb-1">Validade (dias)</label>
+          <input type="number" id="budget-validity" value="30" class="w-full px-4 py-2.5 rounded-lg border">
         </div>
         
-        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 space-y-2">
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Subtotal (Serviços):</span>
+        <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+          <div class="flex justify-between">
+            <span>Subtotal:</span>
             <span id="budget-subtotal" class="font-semibold">R$ 0,00</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Horas Trabalhadas:</span>
-            <span id="budget-hours-display" class="font-semibold">0h</span>
+          <div class="flex justify-between">
+            <span>Horas:</span>
+            <span id="budget-hours-display">0h</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">Valor (Horas × Taxa):</span>
-            <span id="budget-hours-cost" class="font-semibold">R$ 0,00</span>
+          <div class="flex justify-between">
+            <span>Valor horas:</span>
+            <span id="budget-hours-cost">R$ 0,00</span>
           </div>
-          <div class="flex justify-between text-base font-bold pt-2 border-t border-gray-200 dark:border-gray-600">
-            <span class="text-primary">Total:</span>
-            <span id="budget-total" class="text-primary">R$ 0,00</span>
+          <div class="flex justify-between font-bold text-primary">
+            <span>Total:</span>
+            <span id="budget-total">R$ 0,00</span>
           </div>
         </div>
       </div>
       
-      <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-        <button onclick="app.closeModal('budget-modal')" 
-                class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
-          Cancelar
-        </button>
-        <button onclick="app.saveBudget()" id="budget-save-btn"
-                class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg flex items-center gap-2">
-          <i class="fa-solid fa-circle-check"></i>
-          Gerar Orçamento
+      <div class="flex justify-end gap-3 p-6 border-t">
+        <button onclick="app.closeModal('budget-modal')" class="px-4 py-2 bg-gray-100 rounded-lg">Cancelar</button>
+        <button onclick="app.saveBudget()" id="budget-save-btn" class="px-4 py-2 bg-primary text-white rounded-lg">
+          <i class="fa-solid fa-circle-check mr-2"></i>Gerar Orçamento
         </button>
       </div>
     </div>
   </div>
 
   <!-- Modal de Cliente -->
-<div id="client-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+  <div id="client-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl m-4">
       <div class="p-6">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-user-plus text-primary"></i>
-          Novo Cliente
-        </h3>
+        <h3 class="text-xl font-semibold mb-4">Novo Cliente</h3>
         <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Nome
-            </label>
-            <input type="text" id="client-name" required
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              E-mail
-            </label>
-            <input type="email" id="client-email" required
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Telefone
-            </label>
-            <input type="tel" id="client-phone"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Empresa
-            </label>
-            <input type="text" id="client-company"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
+          <input type="text" id="client-name" placeholder="Nome" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="email" id="client-email" placeholder="E-mail" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="tel" id="client-phone" placeholder="Telefone" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="text" id="client-company" placeholder="Empresa" class="w-full px-4 py-2.5 rounded-lg border">
         </div>
         <div class="flex justify-end gap-3 mt-6">
-          <button onclick="app.closeModal('client-modal')" 
-                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
-            Cancelar
-          </button>
-          <button onclick="app.saveClient()" 
-                  class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
-            Salvar Cliente
-          </button>
+          <button onclick="app.closeModal('client-modal')" class="px-4 py-2 bg-gray-100 rounded-lg">Cancelar</button>
+          <button onclick="app.saveClient()" class="px-4 py-2 bg-primary text-white rounded-lg">Salvar</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Modal de Serviço -->
- <div id="service-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+  <div id="service-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl m-4">
       <div class="p-6">
-        <h3 class="text-xl font-semibold mb-4" id="service-modal-title">
-          <i class="fa-solid fa-bullseye text-primary mr-2"></i>
-          Adicionar Serviço
-        </h3>
+        <h3 class="text-xl font-semibold mb-4" id="service-modal-title">Adicionar Serviço</h3>
         <input type="hidden" id="service-id">
         <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Categoria
-            </label>
-            <input type="text" id="service-category" placeholder="Ex: Redes Sociais" required
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Nome do Serviço
-            </label>
-            <input type="text" id="service-name" placeholder="Ex: Post Instagram" required
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Preço (R$)
-            </label>
-            <input type="number" id="service-price" min="0" step="10" required
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Tipo
-            </label>
-            <select id="service-type" required
-                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                           bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-              <option value="fixed">Preço Fixo</option>
-              <option value="hourly">Por Hora</option>
-            </select>
-          </div>
+          <input type="text" id="service-category" placeholder="Categoria" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="text" id="service-name" placeholder="Nome do Serviço" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="number" id="service-price" placeholder="Preço" class="w-full px-4 py-2.5 rounded-lg border">
+          <select id="service-type" class="w-full px-4 py-2.5 rounded-lg border">
+            <option value="fixed">Preço Fixo</option>
+            <option value="hourly">Por Hora</option>
+          </select>
         </div>
         <div class="flex justify-end gap-3 mt-6">
-          <button onclick="app.closeModal('service-modal')" 
-                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
-            Cancelar
-          </button>
-          <button onclick="app.saveService()" 
-                  class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
-            Salvar Serviço
-          </button>
+          <button onclick="app.closeModal('service-modal')" class="px-4 py-2 bg-gray-100 rounded-lg">Cancelar</button>
+          <button onclick="app.saveService()" class="px-4 py-2 bg-primary text-white rounded-lg">Salvar</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Modal de Metas -->
-<div id="goals-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+  <div id="goals-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl m-4">
       <div class="p-6">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-bullseye text-primary"></i>
-          Editar Metas
-        </h3>
-        
+        <h3 class="text-xl font-semibold mb-4">Editar Metas</h3>
         <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Meta Mensal (R$)
-            </label>
-            <input type="number" id="goal-monthly" value="50000" min="0" step="1000"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Meta Anual (R$)
-            </label>
-            <input type="number" id="goal-yearly" value="600000" min="0" step="10000"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Projetos por Mês
-            </label>
-            <input type="number" id="goal-projects" value="10" min="1" step="1"
-                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 
-                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                          focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary">
-          </div>
+          <input type="number" id="goal-monthly" value="50000" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="number" id="goal-yearly" value="600000" class="w-full px-4 py-2.5 rounded-lg border">
+          <input type="number" id="goal-projects" value="10" class="w-full px-4 py-2.5 rounded-lg border">
         </div>
-        
         <div class="flex justify-end gap-3 mt-6">
-          <button onclick="app.closeModal('goals-modal')" 
-                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
-            Cancelar
-          </button>
-          <button onclick="app.saveGoals()" 
-                  class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg">
-            Salvar Metas
-          </button>
+          <button onclick="app.closeModal('goals-modal')" class="px-4 py-2 bg-gray-100 rounded-lg">Cancelar</button>
+          <button onclick="app.saveGoals()" class="px-4 py-2 bg-primary text-white rounded-lg">Salvar</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Modal de Backup -->
-<div id="backup-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+  <div id="backup-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-2xl shadow-2xl m-4">
       <div class="p-6">
-        <h3 class="text-xl font-semibold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-clock-rotate-left text-primary"></i>
-          Histórico de Backups
-        </h3>
-        
+        <h3 class="text-xl font-semibold mb-4">Histórico de Backups</h3>
         <div id="backup-history-list" class="max-h-96 overflow-y-auto space-y-2 mb-4"></div>
-        
         <div class="flex justify-end">
-          <button onclick="app.closeModal('backup-modal')" 
-                  class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg">
-            Fechar
-          </button>
+          <button onclick="app.closeModal('backup-modal')" class="px-4 py-2 bg-gray-100 rounded-lg">Fechar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="app.js"></script>
 </body>
 </html>
