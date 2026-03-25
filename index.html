@@ -28,9 +28,11 @@
       }
     }
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
+
+
   <style>
     /* Variáveis CSS para temas dinâmicos */
     :root {
@@ -372,6 +374,19 @@ textarea:focus {
     outline-offset: 1px !important;
     box-shadow: none !important;
 }
+
+/* Garantir que os ícones apareçam */
+.fa-minus:before {
+    content: "\f068";
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
+
+.fa-plus:before {
+    content: "\f067";
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+}
 </style>
   
 
@@ -424,13 +439,14 @@ textarea:focus {
                 
                 <!-- Perfil do Usuário -->
                 <div class="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 dark:bg-gray-700 
-                            rounded-full border border-gray-200 dark:border-gray-600 cursor-pointer 
-                            hover:border-primary hover:shadow-md transition-all duration-200
-                            group" onclick="app.navigate('settings')">
-                    <span class="text-xs sm:text-sm font-medium text-gray-900 dark:text-white hidden xs:inline" id="userName">Usuário</span>
-                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary text-white flex items-center justify-center 
-                                font-semibold text-xs sm:text-sm shadow-sm" id="userAvatar">U</div>
-                </div>
+            rounded-full border border-gray-200 dark:border-gray-600 cursor-pointer 
+            hover:border-primary hover:shadow-md transition-all duration-200
+            group" onclick="window.location.href='profile-page.html'">
+    <i class="fa-solid fa-user-circle text-primary text-sm sm:text-base"></i>
+    <span class="text-xs sm:text-sm font-medium text-gray-900 dark:text-white hidden xs:inline" id="userName">franklin</span>
+    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary text-white flex items-center justify-center 
+                font-semibold text-xs sm:text-sm shadow-sm" id="userAvatar">F</div>
+</div>
                 
                 <!-- Toggle Theme -->
                 <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gray-100 dark:bg-gray-700 
@@ -445,50 +461,76 @@ textarea:focus {
     </div>
 </header>
 
-<!-- NAVEGAÇÃO - COM TEXTO ABAIXO DOS ÍCONES -->
+<!-- NAVEGAÇÃO - VERSÃO PARA INDEX (views internas) -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 mb-6 shadow-sm">
-        <nav class="grid grid-cols-3 sm:grid-cols-5 gap-2">
-            <!-- Dashboard -->
+        <nav class="grid grid-cols-3 sm:grid-cols-7 gap-2">
+            
+            <!-- Dashboard - VIEW INTERNA -->
             <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
-                           rounded-lg transition-all duration-200 group
-                           bg-primary text-white shadow-md hover:shadow-lg" 
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
                     data-view="dashboard" onclick="app.navigate('dashboard')">
                 <i class="fa-solid fa-chart-line text-lg sm:text-xl"></i>
                 <span class="text-[11px] sm:text-xs font-medium">Dashboard</span>
             </button>
             
-            <!-- Orçamentos -->
+            <!-- Orçamentos - VIEW INTERNA -->
             <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
-                           rounded-lg transition-all duration-200 group
-                           bg-primary text-white shadow-md hover:shadow-lg"
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
                     data-view="budgets" onclick="app.navigate('budgets')">
                 <i class="fa-solid fa-clipboard-list text-lg sm:text-xl"></i>
                 <span class="text-[11px] sm:text-xs font-medium">Orçamentos</span>
             </button>
             
-            <!-- Clientes -->
+            <!-- Clientes - VIEW INTERNA -->
             <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
-                           rounded-lg transition-all duration-200 group
-                           bg-primary text-white shadow-md hover:shadow-lg"
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
                     data-view="clients" onclick="app.navigate('clients')">
                 <i class="fa-solid fa-users text-lg sm:text-xl"></i>
                 <span class="text-[11px] sm:text-xs font-medium">Clientes</span>
             </button>
             
-            <!-- Serviços -->
+            <!-- Serviços - VIEW INTERNA -->
             <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
-                           rounded-lg transition-all duration-200 group
-                           bg-primary text-white shadow-md hover:shadow-lg"
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
                     data-view="services" onclick="app.navigate('services')">
                 <i class="fa-solid fa-bullseye text-lg sm:text-xl"></i>
                 <span class="text-[11px] sm:text-xs font-medium">Serviços</span>
             </button>
             
-            <!-- Configurações -->
+            <!-- Documentos - LINK EXTERNO -->
             <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
-                           rounded-lg transition-all duration-200 group
-                           bg-primary text-white shadow-md hover:shadow-lg"
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
+                    onclick="window.location.href='documents-page.html'">
+                <i class="fa-solid fa-file-alt text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Documentos</span>
+            </button>
+            
+            <!-- Perfil - LINK EXTERNO -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
+                    onclick="window.location.href='profile-page.html'">
+                <i class="fa-solid fa-user-circle text-lg sm:text-xl"></i>
+                <span class="text-[11px] sm:text-xs font-medium">Perfil</span>
+            </button>
+            
+            <!-- Configurações - VIEW INTERNA -->
+            <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 
+                           rounded-lg transition-all duration-200
+                           bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300
+                           hover:bg-primary hover:text-white hover:shadow-md"
                     data-view="settings" onclick="app.navigate('settings')">
                 <i class="fa-solid fa-gear text-lg sm:text-xl"></i>
                 <span class="text-[11px] sm:text-xs font-medium">Configurações</span>
@@ -497,7 +539,8 @@ textarea:focus {
     </div>
 </div>
 
-    <!-- Loading Overlay -->
+
+ <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl text-center">
             <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -725,42 +768,37 @@ textarea:focus {
         </button>
     </div>
 
-    <!-- Filtro por Status com ícone -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                    <i class="fa-solid fa-filter text-primary text-sm"></i>
-                </div>
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por:</span>
+<!-- Filtro por Status - Versão simplificada -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                <i class="fa-solid fa-search text-primary text-sm"></i>
             </div>
-            
-            <div class="flex-1 w-full sm:w-auto">
-                <div class="relative">
-                    <i class="fa-solid fa-tag absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                    <select id="budget-filter-status" onchange="app.filterBudgetsByStatus()" 
-                            class="w-full sm:w-64 pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 
-                                   bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300
-                                   focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all
-                                   appearance-none cursor-pointer">
-                        <option value="">📊 Todos os status</option>
-                        <option value="em_processo">🟡 Em Processo</option>
-                        <option value="aprovado">🟢 Aprovado</option>
-                        <option value="nao_aprovado">🔴 Não Aprovado</option>
-                        <option value="alterado">🟠 Alterado</option>
-                        <option value="concluido">🔵 Concluído</option>
-                        <option value="pago">💰 Pago</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                <i class="fa-regular fa-clock"></i>
-                <span>Última atualização: agora</span>
-            </div>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por:</span>
+        </div>
+        
+        <div class="flex-1 w-full sm:w-auto">
+            <select id="budget-filter-status" onchange="app.filterBudgetsByStatus()" 
+                    class="w-full sm:w-64 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 
+                           bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300
+                           focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+                <option value="">Todos os status</option>
+                <option value="em_processo">Em Processo</option>
+                <option value="aprovado">Aprovado</option>
+                <option value="nao_aprovado">Não Aprovado</option>
+                <option value="alterado">Alterado</option>
+                <option value="concluido">Concluído</option>
+                <option value="pago">Pago</option>
+            </select>
+        </div>
+        
+        <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <i class="fa-regular fa-clock"></i>
+            <span>Última atualização: agora</span>
         </div>
     </div>
+</div>
 
     <!-- Contador de Resultados -->
     <div class="flex justify-between items-center mb-4">
@@ -805,38 +843,37 @@ textarea:focus {
         </button>
     </div>
 
-    <!-- Barra de Busca e Estatísticas -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <!-- Busca -->
-            <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
-                <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
-                   <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div class="relative flex-1">
-                    <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                    <input type="text" id="client-search" placeholder="Buscar por nome ou e-mail..." 
-                           onkeyup="app.filterClients()" 
-                           class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 
-                                  bg-white dark:bg-gray-700 text-gray-900 dark:text-white
-                                  focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
-                </div>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <!-- Busca -->
+        <div class="flex items-center gap-2 flex-1 w-full sm:w-auto">
+            <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-search text-primary text-sm"></i>
             </div>
-            
-            <!-- Estatísticas rápidas -->
-            <div class="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">
-                <div class="flex items-center gap-1">
-                    <i class="fa-regular fa-user text-primary"></i>
-                    <span id="clients-count" class="font-semibold text-primary">0</span>
-                    <span>clientes</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <i class="fa-regular fa-clock"></i>
-                    <span>última atualização: agora</span>
-                </div>
+            <div class="relative flex-1">
+                <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="client-search" placeholder="Buscar por nome ou e-mail..." 
+                       onkeyup="app.filterClients()" 
+                       class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 
+                              bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                              focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all">
+            </div>
+        </div>
+        
+        <!-- Estatísticas rápidas -->
+        <div class="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 flex-shrink-0">
+            <div class="flex items-center gap-1">
+                <i class="fa-regular fa-user text-primary"></i>
+                <span id="clients-count" class="font-semibold text-primary">2</span>
+                <span>clientes</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <i class="fa-regular fa-clock"></i>
+                <span>última atualização: agora</span>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Contador de Resultados -->
     <div class="flex justify-between items-center mb-4">
@@ -999,11 +1036,11 @@ textarea:focus {
                             <label class="block text-sm font-medium mb-1">Modelo</label>
                             <select id="settings-theme-model" 
                                     class="w-full px-3 py-2 rounded-lg border dark:bg-gray-700">
-                                <option value="monochromatic">🎨 Monocromática</option>
-                                <option value="analogous">🌈 Analógica</option>
-                                <option value="complementary">🎯 Complementar</option>
-                                <option value="triadic">🔺 Triádica</option>
-                                <option value="tetradic">⬜ Tetrádica</option>
+                                <option value="monochromatic"> Monocromática</option>
+                                <option value="analogous"> Analógica</option>
+                                <option value="complementary"> Complementar</option>
+                                <option value="triadic"> Triádica</option>
+                                <option value="tetradic"> Tetrádica</option>
                             </select>
                         </div>
                     </div>
@@ -1203,7 +1240,7 @@ textarea:focus {
 </div>
 
             <!-- Sobre -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            //<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                     <h3 class="text-lg font-semibold flex items-center gap-2">
                         <i class="fa-solid fa-info-circle text-primary"></i>
@@ -1263,186 +1300,198 @@ textarea:focus {
   <!-- MODAIS COMPLETOS -->
   <!-- ======================================== -->
 
-  <!-- Modal de Orçamento -->
-  <div id="budget-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
+ <!-- Modal de Orçamento -->
+<div id="budget-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl m-4">
-      <div class="flex justify-between items-center p-6 border-b">
-        <h2 class="text-xl font-semibold" id="budget-modal-title">
-          <i class="fa-solid fa-clipboard-list text-primary mr-2"></i>
-          Criar Novo Orçamento
-        </h2>
-        <button onclick="app.closeModal('budget-modal')" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center">
-          <i class="fa-solid fa-times text-xl"></i>
-        </button>
-      </div>
-      
-      <div class="p-6 space-y-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">Data do Orçamento</label>
-          <input type="date" id="budget-date" required class="w-full px-4 py-2.5 rounded-lg border">
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">Nome do Projeto</label>
-          <input type="text" id="budget-project-name" class="w-full px-4 py-2.5 rounded-lg border">
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">Cliente</label>
-          <div class="flex gap-2">
-            <select id="budget-client" required class="flex-1 px-4 py-2.5 rounded-lg border">
-              <option value="">Selecione um cliente</option>
-            </select>
-            <button onclick="app.openNewClientFromBudget()" class="px-4 py-2.5 bg-primary text-white rounded-lg">
-              <i class="fa-solid fa-plus"></i>
+        <div class="flex justify-between items-center p-6 border-b">
+            <h2 class="text-xl font-semibold" id="budget-modal-title">
+                <i class="fa-solid fa-clipboard-list text-primary mr-2"></i>
+                Criar Novo Orçamento
+            </h2>
+            <button onclick="app.closeModal('budget-modal')" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center">
+                <i class="fa-solid fa-times text-xl"></i>
             </button>
-          </div>
         </div>
         
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">Valor da Hora (R$)</label>
-            <input type="number" id="budget-hourly" value="150" onchange="app.updateBudgetTotal()" class="w-full px-4 py-2.5 rounded-lg border">
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Horas Trabalhadas</label>
-            <input type="number" id="budget-hours-worked" value="0" step="0.5" onchange="app.updateBudgetTotal()" class="w-full px-4 py-2.5 rounded-lg border">
-          </div>
-        </div>
-        
-        <h3 class="font-semibold text-lg mt-4">Serviços</h3>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="relative">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input type="text" id="service-search" placeholder="Buscar serviço..." onkeyup="app.searchServices()" class="w-full pl-10 pr-4 py-2.5 rounded-lg border">
-          </div>
-          <select id="service-category-filter" onchange="app.filterServicesByCategory()" class="px-4 py-2.5 rounded-lg border">
-            <option value="">Todas as categorias</option>
-          </select>
-        </div>
-        
-        <div id="services-list-container" class="max-h-60 overflow-y-auto space-y-2 border rounded-lg p-4"></div>
-        
-        <div class="bg-gray-600 rounded-lg p-4">
-          <strong>Serviços Selecionados:</strong>
-          <div id="selected-services-summary" class="text-sm mt-2"></div>
-        </div>
-        
-        <h3 class="font-semibold text-lg mt-4">Paleta de Cores</h3>
-        
-        <div class="flex gap-2">
-          <button type="button" onclick="app.switchPaletteMode('generator')" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg" id="btn-palette-generator">
-            <i class="fa-solid fa-wand-magic mr-2"></i>Gerador
-          </button>
-          <button type="button" onclick="app.switchPaletteMode('custom')" class="flex-1 px-4 py-2 bg-gray-100 rounded-lg" id="btn-palette-custom">
-            <i class="fa-solid fa-paint-brush mr-2"></i>Personalizada
-          </button>
-        </div>
-        
-        <div id="autoPaletteMode">
-          <div class="flex gap-2">
-            <input type="color" id="paletteColor" value="#2d8a8a" onchange="app.generatePaletteModels()" class="flex-1 h-10 rounded-lg border cursor-pointer">
-            <button onclick="app.generatePaletteModels()" class="px-4 py-2 bg-primary text-white rounded-lg">Gerar</button>
-            <button onclick="app.randomizeBaseColor()" class="px-4 py-2 bg-gray-100 rounded-lg">
-              <i class="fa-solid fa-shuffle"></i>
-            </button>
-          </div>
-          
-          <select id="paletteModel" onchange="app.updatePaletteDisplay()" class="w-full mt-2 px-4 py-2.5 rounded-lg border">
-            <option value="monochromatic">Monocromática</option>
-            <option value="analogous">Analógica</option>
-            <option value="complementary">Complementar</option>
-            <option value="triadic">Triádica</option>
-            <option value="tetradic">Tetrádica</option>
-          </select>
-          
-          <div id="generatedPalette" class="grid grid-cols-5 gap-2 mt-3"></div>
-        </div>
-        
-        <div id="customPaletteMode" class="hidden">
-          <div class="grid grid-cols-2 gap-3">
+        <div class="p-6 space-y-4">
             <div>
-              <input type="color" id="customColor1" value="#2d8a8a" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
-              <input type="text" id="customColor1Name" value="Primária" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                <label class="block text-sm font-medium mb-1">Data do Orçamento</label>
+                <input type="date" id="budget-date" required class="w-full px-4 py-2.5 rounded-lg border">
             </div>
+            
             <div>
-              <input type="color" id="customColor2" value="#FFFFFF" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
-              <input type="text" id="customColor2Name" value="Secundária" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                <label class="block text-sm font-medium mb-1">Nome do Projeto</label>
+                <input type="text" id="budget-project-name" class="w-full px-4 py-2.5 rounded-lg border">
             </div>
+            
             <div>
-              <input type="color" id="customColor3" value="#667eea" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
-              <input type="text" id="customColor3Name" value="Destaque" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                <label class="block text-sm font-medium mb-1">Cliente</label>
+                <div class="flex gap-2">
+                    <select id="budget-client" required class="flex-1 px-4 py-2.5 rounded-lg border">
+                        <option value="">Selecione um cliente</option>
+                    </select>
+                    <button onclick="app.openNewClientFromBudget()" class="px-4 py-2.5 bg-primary text-white rounded-lg">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
             </div>
-            <div>
-              <input type="color" id="customColor4" value="#f8f9fa" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
-              <input type="text" id="customColor4Name" value="Fundo" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Valor da Hora (R$)</label>
+                    <input type="number" id="budget-hourly" value="150" onchange="app.updateBudgetTotal()" class="w-full px-4 py-2.5 rounded-lg border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Horas Trabalhadas</label>
+                    <input type="number" id="budget-hours-worked" value="0" step="0.5" onchange="app.updateBudgetTotal()" class="w-full px-4 py-2.5 rounded-lg border">
+                </div>
             </div>
-          </div>
-          <div id="customPalette" class="grid grid-cols-4 gap-2 mt-3"></div>
+            
+            <h3 class="font-semibold text-lg mt-4">Serviços</h3>
+            
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Busca com ícone separado -->
+    <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-search text-primary text-sm"></i>
         </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">Observações</label>
-          <textarea id="budget-notes" rows="3" class="w-full px-4 py-2.5 rounded-lg border"></textarea>
+        <div class="flex-1">
+            <input type="text" id="service-search" placeholder="Buscar serviço..." 
+                   onkeyup="app.searchServices()" 
+                   class="w-full px-4 py-2.5 rounded-lg border">
         </div>
-        
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium mb-1">Status</label>
-            <select id="budget-status" class="w-full px-4 py-2.5 rounded-lg border">
-              <option value="em_processo">Em Processo</option>
-              <option value="aprovado">Aprovado</option>
-              <option value="nao_aprovado">Não Aprovado</option>
-              <option value="alterado">Alterado</option>
-              <option value="concluido">Concluído</option>
-              <option value="pago">Pago</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Prazo (dias)</label>
-            <input type="number" id="budget-deadline" value="7" class="w-full px-4 py-2.5 rounded-lg border">
-          </div>
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">Condições de Pagamento</label>
-          <input type="text" id="budget-payment-terms" class="w-full px-4 py-2.5 rounded-lg border">
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium mb-1">Validade (dias)</label>
-          <input type="number" id="budget-validity" value="30" class="w-full px-4 py-2.5 rounded-lg border">
-        </div>
-        
-        <div class="bg-gray-500 rounded-lg p-4 space-y-2">
-          <div class="flex justify-between">
-            <span>Subtotal:</span>
-            <span id="budget-subtotal" class="font-semibold">R$ 0,00</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Horas:</span>
-            <span id="budget-hours-display">0h</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Valor horas:</span>
-            <span id="budget-hours-cost">R$ 0,00</span>
-          </div>
-          <div class="flex justify-between font-bold text-primary">
-            <span>Total:</span>
-            <span id="budget-total">R$ 0,00</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="flex justify-end gap-3 p-6 border-t">
-        <button onclick="app.closeModal('budget-modal')" class="px-4 py-2 bg-gray-500 rounded-lg">Cancelar</button>
-        <button onclick="app.saveBudget()" id="budget-save-btn" class="px-4 py-2 bg-primary text-white rounded-lg">
-          <i class="fa-solid fa-circle-check mr-2"></i>Gerar Orçamento
-        </button>
-      </div>
     </div>
-  </div>
+    <select id="service-category-filter" onchange="app.filterServicesByCategory()" 
+            class="px-4 py-2.5 rounded-lg border">
+        <option value="">Todas as categorias</option>
+    </select>
+</div>
+            
+            <div id="services-list-container" class="max-h-60 overflow-y-auto space-y-2 border rounded-lg p-4"></div>
+            
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                <strong><i class="fa-solid fa-list-check text-primary mr-2"></i>Serviços Selecionados:</strong>
+                <div id="selected-services-summary" class="text-sm mt-2"></div>
+            </div>
+            
+            <h3 class="font-semibold text-lg mt-4">Paleta de Cores</h3>
+            
+            <div class="flex gap-2">
+                <button type="button" onclick="app.switchPaletteMode('generator')" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg" id="btn-palette-generator">
+                    <i class="fa-solid fa-wand-magic mr-2"></i>Gerador
+                </button>
+                <button type="button" onclick="app.switchPaletteMode('custom')" class="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg" id="btn-palette-custom">
+                    <i class="fa-solid fa-paintbrush mr-2"></i>Personalizada
+                </button>
+            </div>
+            
+            <div id="autoPaletteMode">
+                <div class="flex gap-2">
+                    <input type="color" id="paletteColor" value="#2d8a8a" onchange="app.generatePaletteModels()" class="flex-1 h-10 rounded-lg border cursor-pointer">
+                    <button onclick="app.generatePaletteModels()" class="px-4 py-2 bg-primary text-white rounded-lg">
+                        <i class="fa-solid fa-rotate-right mr-1"></i>Gerar
+                    </button>
+                    <button onclick="app.randomizeBaseColor()" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                </div>
+                
+                <select id="paletteModel" onchange="app.updatePaletteDisplay()" class="w-full mt-2 px-4 py-2.5 rounded-lg border">
+                    <option value="monochromatic"> Monocromática</option>
+                    <option value="analogous">Analógica</option>
+                    <option value="complementary"> Complementar</option>
+                    <option value="triadic"> Triádica</option>
+                    <option value="tetradic"> Tetrádica</option>
+                </select>
+                
+                <div id="generatedPalette" class="grid grid-cols-5 gap-2 mt-3"></div>
+            </div>
+            
+            <div id="customPaletteMode" class="hidden">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <input type="color" id="customColor1" value="#2d8a8a" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+                        <input type="text" id="customColor1Name" value="Primária" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                    </div>
+                    <div>
+                        <input type="color" id="customColor2" value="#FFFFFF" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+                        <input type="text" id="customColor2Name" value="Secundária" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                    </div>
+                    <div>
+                        <input type="color" id="customColor3" value="#667eea" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+                        <input type="text" id="customColor3Name" value="Destaque" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                    </div>
+                    <div>
+                        <input type="color" id="customColor4" value="#f8f9fa" onchange="app.updateCustomPalette()" class="w-full h-10 rounded-lg border cursor-pointer">
+                        <input type="text" id="customColor4Name" value="Fundo" onchange="app.updateCustomPalette()" class="w-full mt-1 px-3 py-1.5 text-sm rounded-lg border">
+                    </div>
+                </div>
+                <div id="customPalette" class="grid grid-cols-4 gap-2 mt-3"></div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1"><i class="fa-solid fa-note-sticky text-primary mr-1"></i>Observações</label>
+                <textarea id="budget-notes" rows="3" class="w-full px-4 py-2.5 rounded-lg border"></textarea>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1"><i class="fa-regular fa-flag mr-1"></i>Status</label>
+                    <select id="budget-status" class="w-full px-4 py-2.5 rounded-lg border">
+                        <option value="em_processo">🟡 Em Processo</option>
+                        <option value="aprovado">🟢 Aprovado</option>
+                        <option value="nao_aprovado">🔴 Não Aprovado</option>
+                        <option value="alterado">🟠 Alterado</option>
+                        <option value="concluido">🔵 Concluído</option>
+                        <option value="pago">💰 Pago</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1"><i class="fa-regular fa-calendar-check mr-1"></i>Prazo (dias)</label>
+                    <input type="number" id="budget-deadline" value="7" class="w-full px-4 py-2.5 rounded-lg border">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1"><i class="fa-solid fa-credit-card mr-1"></i>Condições de Pagamento</label>
+                <input type="text" id="budget-payment-terms" class="w-full px-4 py-2.5 rounded-lg border" placeholder="Ex: 50% entrada, 50% na entrega">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium mb-1"><i class="fa-regular fa-hourglass-half mr-1"></i>Validade (dias)</label>
+                <input type="number" id="budget-validity" value="30" class="w-full px-4 py-2.5 rounded-lg border">
+            </div>
+            
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 space-y-2">
+                <div class="flex justify-between">
+                    <span><i class="fa-solid fa-calculator text-primary mr-1"></i>Subtotal:</span>
+                    <span id="budget-subtotal" class="font-semibold">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span><i class="fa-regular fa-clock text-primary mr-1"></i>Horas:</span>
+                    <span id="budget-hours-display">0h</span>
+                </div>
+                <div class="flex justify-between">
+                    <span><i class="fa-solid fa-coins text-primary mr-1"></i>Valor horas:</span>
+                    <span id="budget-hours-cost">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between font-bold text-primary pt-2 border-t border-gray-300 dark:border-gray-600">
+                    <span><i class="fa-solid fa-chart-line mr-1"></i>Total:</span>
+                    <span id="budget-total">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 p-6 border-t">
+            <button onclick="app.closeModal('budget-modal')" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                <i class="fa-solid fa-xmark mr-1"></i>Cancelar
+            </button>
+            <button onclick="app.saveBudget()" id="budget-save-btn" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                <i class="fa-solid fa-circle-check mr-2"></i>Gerar Orçamento
+            </button>
+        </div>
+    </div>
+</div>
 
   <!-- Modal de Cliente -->
   <div id="client-modal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">

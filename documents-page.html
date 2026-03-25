@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentos — Designer Budget Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#2d8a8a', dark: '#1e5f5f', light: '#e6f3f3' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    :root { 
+        --primary: #2d8a8a; 
+        --primary-dark: #1e5f5f; 
+        --primary-light: #e6f3f3; 
+    }
+    * { font-family: 'DM Sans', sans-serif; }
+
+    .bg-primary { background-color: var(--primary) !important; }
+    .text-primary { color: var(--primary) !important; }
+    .border-primary { border-color: var(--primary) !important; }
+    .bg-primary-light { background-color: var(--primary-light) !important; }
+
+    .doc-tab { transition: all .2s; border-bottom: 3px solid transparent; }
+    .doc-tab.active { border-color: var(--primary); color: var(--primary); font-weight: 600; }
+    .doc-tab:not(.active):hover { background: #f9fafb; }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: var(--primary) !important;
+        outline: 2px solid rgba(45,138,138,0.2) !important;
+        outline-offset: 1px;
+        box-shadow: none !important;
+    }
+
+    .required-field {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2 !important;
+    }
+
+    .doc-preview {
+        font-family: 'Georgia', serif;
+        background: #fff;
+        color: #111;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn .3s ease-out forwards; }
+
+    @keyframes slideIn { from { transform: translateX(110%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity:1; } to { transform: translateX(110%); opacity:0; } }
+    .toast-in { animation: slideIn .3s ease-out forwards; }
+    .toast-out { animation: slideOut .3s ease-out forwards; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 6px; }
+
+    .header-accent { background: linear-gradient(90deg, var(--primary), #5bbcbc, var(--primary-dark)); height: 3px; }
+
+    .doc-item { transition: all .15s; }
+    .doc-item:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(45,138,138,.1); }
+    
+    .contract-preview-content {
+        font-family: 'Georgia', serif;
+        line-height: 1.6;
+    }
+    
+    .contract-preview-content h3 {
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 16px;
+        margin-bottom: 8px;
+        color: #000000;
+    }
+    
+    .contract-preview-content p {
+        margin-bottom: 8px;
+        font-size: 11px;
+        color: #000000;
+    }
+    
+    .option-divider {
+        position: relative;
+        text-align: center;
+        margin: 16px 0;
+    }
+    .option-divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #e5e7eb;
+    }
+    .option-divider span {
+        position: relative;
+        background: white;
+        padding: 0 12px;
+        font-size: 12px;
+        color: #6b7280;
+    }
+    .dark .option-divider::before {
+        background: #374151;
+    }
+    .dark .option-divider span {
+        background: #1f2937;
+        color: #9ca3af;
+    }
+</style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+
+  <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 pointer-events-none"></div>
+  
+  <div class="header-accent"></div>
+
+  <!-- HEADER -->
+  <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-2 sm:gap-3 cursor-pointer group" onclick="window.location.href='index.html'">
+          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary text-white flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+            <i class="fa-solid fa-palette text-sm sm:text-base"></i>
+          </div>
+          <span class="text-base sm:text-lg font-semibold text-primary hidden xs:inline">Designer Budget Pro</span>
+          <span class="text-base sm:text-lg font-semibold text-primary xs:hidden">Designer Budget Pro</span>
+        </div>
+        
+        <div class="flex items-center gap-2 sm:gap-3">
+          <div class="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 dark:bg-gray-700 
+                      rounded-full border border-gray-200 dark:border-gray-600 cursor-pointer 
+                      hover:border-primary hover:shadow-md transition-all duration-200 group" 
+                      onclick="window.location.href='profile-page.html'">
+            <i class="fa-solid fa-user-circle text-primary text-sm sm:text-base"></i>
+            <span class="text-xs sm:text-sm font-medium text-gray-900 dark:text-white hidden xs:inline" id="userName">Carregando...</span>
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary text-white flex items-center justify-center 
+                        font-semibold text-xs sm:text-sm shadow-sm" id="userAvatar">U</div>
+          </div>
+          
+          <button class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gray-100 dark:bg-gray-700 
+                         border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 
+                         hover:border-primary hover:text-primary transition-all duration-200
+                         flex items-center justify-center group" id="theme-toggle">
+            <i class="fa-regular fa-moon dark:hidden text-sm sm:text-base"></i>
+            <i class="fa-regular fa-sun hidden dark:inline text-sm sm:text-base"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVEGAÇÃO -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 mb-6 shadow-sm">
+      <nav class="grid grid-cols-3 sm:grid-cols-7 gap-2">
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-md" onclick="window.location.href='index.html'">
+          <i class="fa-solid fa-chart-line text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Dashboard</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-md" onclick="localStorage.setItem('dbp_target_view', 'budgets'); window.location.href='index.html'">
+          <i class="fa-solid fa-clipboard-list text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Orçamentos</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-md" onclick="localStorage.setItem('dbp_target_view', 'clients'); window.location.href='index.html'">
+          <i class="fa-solid fa-users text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Clientes</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-md" onclick="localStorage.setItem('dbp_target_view', 'services'); window.location.href='index.html'">
+          <i class="fa-solid fa-bullseye text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Serviços</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-primary text-white shadow-md" onclick="window.location.href='documents-page.html'">
+          <i class="fa-solid fa-file-alt text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Documentos</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-md" onclick="window.location.href='profile-page.html'">
+          <i class="fa-solid fa-user-circle text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Perfil</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center gap-1.5 p-2 sm:p-3 rounded-lg transition-all duration-200 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white hover:shadow-md" onclick="localStorage.setItem('dbp_target_view', 'settings'); window.location.href='index.html'">
+          <i class="fa-solid fa-gear text-lg sm:text-xl"></i>
+          <span class="text-[11px] sm:text-xs font-medium">Configurações</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex items-center justify-between gap-3 mb-8 flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+          <i class="fa-solid fa-file-alt text-primary text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-bold">Documentos</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Gere recibos e contratos a partir dos orçamentos ou clientes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Tabs -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+      <div class="flex border-b border-gray-200 dark:border-gray-700">
+        <button onclick="switchMainTab('receipt')" id="main-tab-receipt" class="doc-tab active flex-1 sm:flex-none px-6 py-4 text-sm font-medium text-gray-700 dark:text-gray-300 text-center">
+          <i class="fa-solid fa-receipt mr-2"></i>Recibo
+        </button>
+        <button onclick="switchMainTab('contract')" id="main-tab-contract" class="doc-tab flex-1 sm:flex-none px-6 py-4 text-sm font-medium text-gray-500 dark:text-gray-400 text-center">
+          <i class="fa-solid fa-file-contract mr-2"></i>Contrato
+        </button>
+        <button onclick="switchMainTab('history')" id="main-tab-history" class="doc-tab flex-1 sm:flex-none px-6 py-4 text-sm font-medium text-gray-500 dark:text-gray-400 text-center">
+          <i class="fa-solid fa-clock-rotate-left mr-2"></i>Histórico
+        </button>
+      </div>
+
+      <!-- RECIBO -->
+      <div id="tab-receipt" class="fade-in">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:divide-x divide-gray-200 dark:divide-gray-700">
+          <div class="p-6 space-y-5">
+            <h2 class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-pen text-primary text-sm"></i> Dados do Recibo
+            </h2>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
+                  <i class="fa-solid fa-clipboard-list mr-1"></i> Carregar de Orçamento
+                </label>
+                <select id="rec-budget-select" onchange="loadBudgetToReceipt()" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm">
+                  <option value="">Selecione um orçamento</option>
+                </select>
+              </div>
+              <div class="option-divider"><span>ou</span></div>
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
+                  <i class="fa-solid fa-user mr-1"></i> Carregar de Cliente
+                </label>
+                <select id="rec-client-select" onchange="loadClientToReceipt()" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm">
+                  <option value="">Selecione um cliente</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Nº do Recibo</label><input type="text" id="rec-number" readonly class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 text-gray-500 text-sm cursor-not-allowed"></div>
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Data</label><input type="date" id="rec-date" onchange="updateReceiptPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Nome do Pagador <span class="text-red-500">*</span></label><input type="text" id="rec-payer-name" oninput="updateReceiptPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"></div>
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">CPF / CNPJ</label><input type="text" id="rec-payer-doc" oninput="updateReceiptPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"></div>
+            </div>
+
+            <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Serviço prestado <span class="text-red-500">*</span></label><textarea id="rec-service" rows="3" oninput="updateReceiptPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm resize-none"></textarea></div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Valor (R$) <span class="text-red-500">*</span></label><div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">R$</span><input type="number" id="rec-value" min="0" step="0.01" oninput="updateReceiptPreview()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"></div></div>
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Forma de Pagamento</label><select id="rec-payment-method" onchange="updateReceiptPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"><option value="PIX">PIX</option><option value="Transferência Bancária">Transferência Bancária</option><option value="Dinheiro">Dinheiro</option><option value="Cartão de Crédito">Cartão de Crédito</option><option value="Cartão de Débito">Cartão de Débito</option><option value="Boleto">Boleto</option></select></div>
+            </div>
+
+            <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Observações</label><textarea id="rec-notes" rows="2" oninput="updateReceiptPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm resize-none"></textarea></div>
+
+            <div class="flex gap-3 pt-2">
+              <button onclick="generateReceiptPDF()" class="flex-1 px-5 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-file-pdf"></i>Gerar PDF</button>
+              <button onclick="saveReceipt()" class="px-5 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2"><i class="fa-solid fa-bookmark"></i>Salvar</button>
+              <button onclick="clearReceiptForm()" class="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-500 text-sm rounded-xl hover:bg-gray-200 transition-all"><i class="fa-solid fa-eraser"></i></button>
+            </div>
+          </div>
+
+          <div class="p-6 bg-gray-50 dark:bg-gray-900/50">
+            <h2 class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2 mb-4"><i class="fa-solid fa-eye text-primary text-sm"></i> Pré-visualização</h2>
+            <div id="receipt-preview" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 doc-preview text-sm leading-relaxed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTRATO -->
+      <div id="tab-contract" class="hidden fade-in">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-0 xl:divide-x divide-gray-200 dark:divide-gray-700">
+          <div class="p-6 space-y-5 overflow-y-auto max-h-[700px]">
+            <h2 class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2"><i class="fa-solid fa-pen text-primary text-sm"></i> Dados do Contrato</h2>
+
+            <div class="space-y-3">
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fa-solid fa-clipboard-list mr-1"></i> Carregar de Orçamento</label><select id="ctr-budget-select" onchange="loadBudgetToContract()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"><option value="">Selecione um orçamento</option></select></div>
+              <div class="option-divider"><span>ou</span></div>
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5"><i class="fa-solid fa-user mr-1"></i> Carregar de Cliente</label><select id="ctr-client-select" onchange="loadClientToContract()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"><option value="">Selecione um cliente</option></select></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Nº do Contrato</label><input type="text" id="ctr-number" readonly class="w-full px-4 py-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 text-gray-400 text-sm cursor-not-allowed"></div>
+              <div><label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Data do Contrato</label><input type="date" id="ctr-date" onchange="updateContractPreview()" class="w-full px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-700 text-gray-900 text-sm"></div>
+            </div>
+
+            <div class="p-4 bg-primary/5 rounded-xl border border-primary/20">
+              <p class="text-xs font-semibold text-primary mb-3">CONTRATADO (PRESTADOR)</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div><label class="block text-xs text-gray-600 mb-1">Nome</label><input type="text" id="ctr-provider-name" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+                <div><label class="block text-xs text-gray-600 mb-1">CPF/CNPJ</label><input type="text" id="ctr-provider-doc" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+                <div><label class="block text-xs text-gray-600 mb-1">Endereço</label><input type="text" id="ctr-provider-address" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+                <div><label class="block text-xs text-gray-600 mb-1">E-mail</label><input type="email" id="ctr-provider-email" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border">
+              <p class="text-xs font-semibold text-gray-600 mb-3">CONTRATANTE (CLIENTE)</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div><label class="block text-xs text-gray-600 mb-1">Nome <span class="text-red-500">*</span></label><input type="text" id="ctr-client-name" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+                <div><label class="block text-xs text-gray-600 mb-1">CPF/CNPJ</label><input type="text" id="ctr-client-doc" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+                <div><label class="block text-xs text-gray-600 mb-1">Endereço</label><input type="text" id="ctr-client-address" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+                <div><label class="block text-xs text-gray-600 mb-1">E-mail</label><input type="email" id="ctr-client-email" oninput="updateContractPreview()" class="w-full px-3 py-2 rounded-lg border text-sm"></div>
+              </div>
+            </div>
+
+            <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Objeto do Contrato <span class="text-red-500">*</span></label><textarea id="ctr-object" rows="4" oninput="updateContractPreview()" class="w-full px-4 py-2.5 rounded-xl border text-sm resize-none"></textarea></div>
+            <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Serviços Detalhados</label><textarea id="ctr-services-text" rows="3" oninput="updateContractPreview()" placeholder="Liste os serviços (um por linha)..." class="w-full px-4 py-2.5 rounded-xl border text-sm resize-none"></textarea></div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Valor Total (R$) <span class="text-red-500">*</span></label><div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">R$</span><input type="number" id="ctr-value" min="0" step="0.01" oninput="updateContractPreview()" class="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm"></div></div>
+              <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Prazo de Entrega</label><input type="text" id="ctr-deadline" placeholder="Ex: 15 dias úteis" oninput="updateContractPreview()" class="w-full px-4 py-2.5 rounded-xl border text-sm"></div>
+            </div>
+
+            <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Condições de Pagamento</label><textarea id="ctr-payment-terms" rows="2" oninput="updateContractPreview()" class="w-full px-4 py-2.5 rounded-xl border text-sm resize-none"></textarea></div>
+            <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Revisões Inclusas</label><input type="number" id="ctr-revisions" value="2" min="0" oninput="updateContractPreview()" class="w-full px-4 py-2.5 rounded-xl border text-sm"></div>
+            <div><label class="block text-xs font-semibold text-gray-700 mb-1.5">Cláusulas Adicionais</label><textarea id="ctr-extra-clauses" rows="3" oninput="updateContractPreview()" class="w-full px-4 py-2.5 rounded-xl border text-sm resize-none"></textarea></div>
+
+            <div class="flex gap-3 pt-2">
+              <button onclick="generateContractPDF()" class="flex-1 px-5 py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-file-pdf"></i>Gerar PDF</button>
+              <button onclick="saveContract()" class="px-5 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2"><i class="fa-solid fa-bookmark"></i>Salvar</button>
+              <button onclick="clearContractForm()" class="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-500 text-sm rounded-xl hover:bg-gray-200 transition-all"><i class="fa-solid fa-eraser"></i></button>
+            </div>
+          </div>
+
+          <div class="p-6 bg-gray-50 dark:bg-gray-900/50">
+            <h2 class="text-base font-semibold text-gray-800 dark:text-white flex items-center gap-2 mb-4"><i class="fa-solid fa-eye text-primary text-sm"></i> Pré-visualização</h2>
+            <div id="contract-preview" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 contract-preview-content text-xs leading-relaxed overflow-y-auto max-h-[620px]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div id="tab-history" class="hidden fade-in p-6">
+        <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <h2 class="text-base font-semibold">Documentos Salvos</h2>
+          <select id="history-filter" onchange="renderHistory()" class="px-3 py-2 text-sm rounded-xl border"><option value="all">Todos</option><option value="receipt">Recibos</option><option value="contract">Contratos</option></select>
+        </div>
+        <div id="history-list" class="space-y-3"></div>
+        <div id="history-empty" class="hidden text-center py-16 text-gray-400"><i class="fa-solid fa-folder-open text-4xl mb-3 block opacity-30"></i><p>Nenhum documento salvo ainda.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    let appState = null;
+    let documents = [];
+    let budgets = [];
+    let clients = [];
+
+    function getCurrentUserId() { return localStorage.getItem('dbp_last_user'); }
+
+    function loadAppState() {
+      const userId = getCurrentUserId();
+      if (!userId) { window.location.href = 'index.html'; return null; }
+      try {
+        const key = `dbp_user_${userId}`;
+        const s = localStorage.getItem(key);
+        return s ? JSON.parse(s) : { settings: {}, clients: [], budgets: [], services: [] };
+      } catch(e) { return null; }
+    }
+
+    function loadDocuments() {
+      try {
+        const userId = getCurrentUserId();
+        return JSON.parse(localStorage.getItem(`dbp_documents_${userId}`) || '[]');
+      } catch(e) { return []; }
+    }
+
+    function saveDocuments() {
+      const userId = getCurrentUserId();
+      localStorage.setItem(`dbp_documents_${userId}`, JSON.stringify(documents));
+    }
+
+    function generateDocNumber(type, budgetNumber) {
+      const prefix = type === 'receipt' ? 'REC' : 'CTR';
+      if (budgetNumber) {
+        const numberPart = budgetNumber.replace(/^ORC-/, '');
+        return `${prefix}-${numberPart}`;
+      }
+      const year = new Date().getFullYear();
+      const existing = documents.filter(d => d.type === type && d.number?.startsWith(`${prefix}-${year}`));
+      const next = existing.length + 1;
+      return `${prefix}-${year}-${String(next).padStart(4, '0')}`;
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = getCurrentUserId();
+      if (!userId) { window.location.href = 'index.html'; return; }
+
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+
+      document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+      appState = loadAppState();
+      documents = loadDocuments();
+      budgets = appState?.budgets || [];
+      clients = appState?.clients || [];
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('rec-date').value = today;
+      document.getElementById('ctr-date').value = today;
+
+      populateSelects();
+      loadProviderData();
+
+      updateReceiptPreview();
+      updateContractPreview();
+    });
+
+    function populateSelects() {
+      const recBudgetSelect = document.getElementById('rec-budget-select');
+      const ctrBudgetSelect = document.getElementById('ctr-budget-select');
+      const budgetOptions = budgets.map(b => `<option value="${b.id}" data-doc-number="${b.docNumber || ''}">${b.docNumber || 'ORC-' + b.id} - ${b.clientName} - R$ ${(b.total || 0).toFixed(2)}</option>`).join('');
+      recBudgetSelect.innerHTML = `<option value="">Selecione um orçamento</option>${budgetOptions}`;
+      ctrBudgetSelect.innerHTML = `<option value="">Selecione um orçamento</option>${budgetOptions}`;
+
+      const recClientSelect = document.getElementById('rec-client-select');
+      const ctrClientSelect = document.getElementById('ctr-client-select');
+      const clientOptions = clients.map(c => `<option value="${c.id}">${c.name}${c.company ? ' - ' + c.company : ''}</option>`).join('');
+      recClientSelect.innerHTML = `<option value="">Selecione um cliente</option>${clientOptions}`;
+      ctrClientSelect.innerHTML = `<option value="">Selecione um cliente</option>${clientOptions}`;
+    }
+
+    function loadProviderData() {
+      const s = appState?.settings || {};
+      const p = s.profile || {};
+      document.getElementById('ctr-provider-name').value = s.name || '';
+      document.getElementById('ctr-provider-email').value = s.email || '';
+      document.getElementById('ctr-provider-doc').value = p.document || '';
+      document.getElementById('ctr-provider-address').value = p.address || '';
+    }
+
+    // ============================================
+    // LOAD FUNCTIONS
+    // ============================================
+    function loadBudgetToReceipt() {
+      const select = document.getElementById('rec-budget-select');
+      const budgetId = parseInt(select.value);
+      const budget = budgets.find(b => b.id === budgetId);
+      if (!budget) return;
+      document.getElementById('rec-number').value = generateDocNumber('receipt', budget.docNumber || '');
+      document.getElementById('rec-payer-name').value = budget.clientName || '';
+      const servicesText = (budget.services || []).map(s => { const price = s.customPrice !== null ? s.customPrice : s.price; const qty = s.qty || 1; return `${s.name} x${qty} - R$ ${(price * qty).toFixed(2)}`; }).join('\n');
+      document.getElementById('rec-service').value = servicesText || 'Serviços de design conforme orçamento';
+      document.getElementById('rec-value').value = budget.total || 0;
+      if (budget.paymentTerms) {
+        const terms = budget.paymentTerms.toLowerCase();
+        if (terms.includes('pix')) document.getElementById('rec-payment-method').value = 'PIX';
+        else if (terms.includes('transferência')) document.getElementById('rec-payment-method').value = 'Transferência Bancária';
+      }
+      if (budget.notes) document.getElementById('rec-notes').value = budget.notes;
+      updateReceiptPreview();
+      showToast('Dados carregados do orçamento!', 'success');
+    }
+
+    function loadBudgetToContract() {
+      const select = document.getElementById('ctr-budget-select');
+      const budgetId = parseInt(select.value);
+      const budget = budgets.find(b => b.id === budgetId);
+      if (!budget) return;
+      document.getElementById('ctr-number').value = generateDocNumber('contract', budget.docNumber || '');
+      document.getElementById('ctr-client-name').value = budget.clientName || '';
+      document.getElementById('ctr-value').value = budget.total || 0;
+      if (budget.paymentTerms) document.getElementById('ctr-payment-terms').value = budget.paymentTerms;
+      if (budget.deadline) document.getElementById('ctr-deadline').value = `${budget.deadline} dias úteis após assinatura`;
+      const projectName = budget.projectName || 'projeto de design';
+      const servicesList = (budget.services || []).map(s => { const price = s.customPrice !== null ? s.customPrice : s.price; const qty = s.qty || 1; return `• ${s.name} (${qty}x) - R$ ${(price * qty).toFixed(2)}`; }).join('\n');
+      document.getElementById('ctr-object').value = `Prestação de serviços de design para ${projectName}, conforme detalhado abaixo:\n\n${servicesList}`;
+      document.getElementById('ctr-services-text').value = (budget.services || []).map(s => s.name).join('\n');
+      if (budget.notes) document.getElementById('ctr-extra-clauses').value = budget.notes;
+      updateContractPreview();
+      showToast('Dados carregados do orçamento!', 'success');
+    }
+
+    function loadClientToReceipt() {
+      const select = document.getElementById('rec-client-select');
+      const clientId = parseInt(select.value);
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+      document.getElementById('rec-payer-name').value = client.name || '';
+      document.getElementById('rec-payer-doc').value = client.document || '';
+      updateReceiptPreview();
+      showToast('Dados do cliente carregados!', 'success');
+    }
+
+    function loadClientToContract() {
+      const select = document.getElementById('ctr-client-select');
+      const clientId = parseInt(select.value);
+      const client = clients.find(c => c.id === clientId);
+      if (!client) return;
+      document.getElementById('ctr-client-name').value = client.name || '';
+      document.getElementById('ctr-client-doc').value = client.document || '';
+      document.getElementById('ctr-client-email').value = client.email || '';
+      document.getElementById('ctr-client-address').value = client.address || '';
+      updateContractPreview();
+      showToast('Dados do cliente carregados!', 'success');
+    }
+
+    // ============================================
+    // PREVIEW
+    // ============================================
+    function fmtCurrency(v) { const n = parseFloat(v) || 0; return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    function fmtDate(d) { if (!d) return '—'; const [y, m, day] = d.split('-'); return `${day}/${m}/${y}`; }
+    function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+
+    function updateReceiptPreview() {
+      const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2d8a8a';
+      const settings = appState?.settings || {};
+      const profile = settings.profile || {};
+      const num = document.getElementById('rec-number')?.value || '—';
+      const date = fmtDate(document.getElementById('rec-date')?.value);
+      const payer = document.getElementById('rec-payer-name')?.value || '—';
+      const payerDoc = document.getElementById('rec-payer-doc')?.value;
+      const service = document.getElementById('rec-service')?.value || '—';
+      const value = fmtCurrency(document.getElementById('rec-value')?.value);
+      const method = document.getElementById('rec-payment-method')?.value || '—';
+      const notes = document.getElementById('rec-notes')?.value;
+      const providerName = settings.name || 'Prestador';
+      const providerEmail = settings.email || '';
+      const providerPix = profile.pix || '';
+      const providerDoc = profile.document || '';
+
+      document.getElementById('receipt-preview').innerHTML = `
+        <div style="border-top: 4px solid ${primary}; padding-top: 16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+            <div><h2 style="margin:0; font-size:20px; font-weight:800; color:#000000; letter-spacing:1px;">RECIBO DE PAGAMENTO</h2><p style="margin:4px 0 0; font-size:11px; color:#000000;">${escapeHtml(providerName)}${providerEmail ? ' · ' + providerEmail : ''}</p></div>
+            <div style="text-align:right;"><div style="font-size:10px; color:#000000;">Nº do Documento</div><div style="font-size:16px; font-weight:700; color:${primary};">${escapeHtml(num)}</div><div style="font-size:11px; color:#000000;">Data: ${date}</div></div>
+          </div>
+          <div style="background:#f8f9fa; border-radius:8px; padding:14px; margin-bottom:16px;"><div style="font-size:10px; color:#000000; margin-bottom:6px;">Recebido de</div><div style="font-size:14px; font-weight:600; color:#000000;">${escapeHtml(payer)}</div>${payerDoc ? `<div style="font-size:11px; color:#000000; margin-top:2px;">CPF/CNPJ: ${escapeHtml(payerDoc)}</div>` : ''}</div>
+          <div style="margin-bottom:16px;"><div style="font-size:10px; color:#000000; margin-bottom:6px;">Referente a</div><div style="font-size:13px; line-height:1.5; white-space:pre-wrap; color:#000000;">${escapeHtml(service)}</div></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;"><div style="background:${primary}15; border-radius:8px; padding:12px;"><div style="font-size:10px; color:#000000;">Valor Recebido</div><div style="font-size:18px; font-weight:700; color:${primary};">${value}</div></div><div style="background:#f8f9fa; border-radius:8px; padding:12px;"><div style="font-size:10px; color:#000000;">Forma de Pagamento</div><div style="font-size:13px; font-weight:600; color:#000000;">${escapeHtml(method)}</div></div></div>
+          ${notes ? `<div style="border-left:3px solid ${primary}; padding-left:12px; margin-bottom:16px; font-size:12px; color:#000000;">${escapeHtml(notes)}</div>` : ''}
+          ${providerDoc || providerPix ? `<div style="background:#f8f9fa; border-radius:8px; padding:10px; font-size:11px; color:#000000; margin-bottom:16px;">${providerDoc ? `<span><strong>CPF/CNPJ:</strong> ${escapeHtml(providerDoc)}</span>` : ''}${providerPix ? `<span style="margin-left:16px;"><strong>PIX:</strong> ${escapeHtml(providerPix)}</span>` : ''}</div>` : ''}
+          <div style="border-top:1px solid #eee; padding-top:14px; text-align:center;"><div style="display:inline-block; border-top:1px solid #000000; padding-top:6px; min-width:200px;"><div style="font-size:12px; font-weight:600; color:#000000;">${escapeHtml(providerName)}</div><div style="font-size:10px; color:#000000;">Assinatura do Prestador</div></div></div>
+        </div>
+      `;
+    }
+
+    function updateContractPreview() {
+      const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2d8a8a';
+      const num = document.getElementById('ctr-number')?.value || '—';
+      const date = fmtDate(document.getElementById('ctr-date')?.value);
+      const providerName = document.getElementById('ctr-provider-name')?.value || '—';
+      const providerDoc = document.getElementById('ctr-provider-doc')?.value;
+      const providerAddress = document.getElementById('ctr-provider-address')?.value;
+      const providerEmail = document.getElementById('ctr-provider-email')?.value;
+      const clientName = document.getElementById('ctr-client-name')?.value || '—';
+      const clientDoc = document.getElementById('ctr-client-doc')?.value;
+      const clientAddress = document.getElementById('ctr-client-address')?.value;
+      const clientEmail = document.getElementById('ctr-client-email')?.value;
+      const object = document.getElementById('ctr-object')?.value || '—';
+      const servicesText = document.getElementById('ctr-services-text')?.value;
+      const value = fmtCurrency(document.getElementById('ctr-value')?.value);
+      const paymentTerms = document.getElementById('ctr-payment-terms')?.value || 'A combinar entre as partes';
+      const deadline = document.getElementById('ctr-deadline')?.value || 'a ser definido';
+      const revisions = document.getElementById('ctr-revisions')?.value || '2';
+      const extraClauses = document.getElementById('ctr-extra-clauses')?.value;
+      const servicesList = servicesText ? servicesText.split('\n').filter(s => s.trim()).map(s => `<li style="margin-bottom: 4px; color:#000000;">${escapeHtml(s.trim())}</li>`).join('') : '<li>Conforme descrito no objeto acima</li>';
+
+      document.getElementById('contract-preview').innerHTML = `
+        <div style="font-family:'Georgia',serif; color:#111; font-size:11px; line-height:1.7;">
+          <div style="border-bottom:3px solid ${primary}; padding-bottom:12px; margin-bottom:16px;"><h2 style="margin:0; font-size:16px; font-weight:700; color:#000000; text-align:center; letter-spacing:2px; text-transform:uppercase;">CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h2><p style="text-align:center; color:#000000; font-size:10px; margin:4px 0 0;">Nº ${escapeHtml(num)} · Data: ${date}</p></div>
+          <p style="color:#000000;">Pelo presente instrumento particular, de um lado <strong>CONTRATADO</strong>, e de outro <strong>CONTRATANTE</strong>, têm entre si justo e contratado o seguinte:</p>
+          <div style="background:#f8f9fa; border-radius:8px; padding:12px; margin:12px 0;"><div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"><div><strong style="color:${primary};">CONTRATADO (PRESTADOR)</strong><br><span style="color:#000000;">${escapeHtml(providerName)}</span>${providerDoc ? `<br><span style="color:#000000;">CPF/CNPJ: ${escapeHtml(providerDoc)}</span>` : ''}${providerAddress ? `<br><span style="color:#000000;">End.: ${escapeHtml(providerAddress)}</span>` : ''}${providerEmail ? `<br><span style="color:#000000;">E-mail: ${escapeHtml(providerEmail)}</span>` : ''}</div><div><strong style="color:${primary};">CONTRATANTE (CLIENTE)</strong><br><span style="color:#000000;">${escapeHtml(clientName)}</span>${clientDoc ? `<br><span style="color:#000000;">CPF/CNPJ: ${escapeHtml(clientDoc)}</span>` : ''}${clientAddress ? `<br><span style="color:#000000;">End.: ${escapeHtml(clientAddress)}</span>` : ''}${clientEmail ? `<br><span style="color:#000000;">E-mail: ${escapeHtml(clientEmail)}</span>` : ''}</div></div></div>
+          <h3 style="color:#000000;">CLÁUSULA 1ª - DO OBJETO</h3><p style="color:#000000;">O CONTRATADO obriga-se a prestar os serviços de design conforme descrição abaixo:</p><div style="background:#f9fafb; padding:12px; border-radius:8px; margin:8px 0;"><p style="margin:0; white-space:pre-wrap; color:#000000;">${escapeHtml(object)}</p></div>
+          <h3 style="color:#000000;">CLÁUSULA 2ª - DOS SERVIÇOS</h3><p style="color:#000000;">Os serviços objeto deste contrato compreendem:</p><ul style="margin:8px 0 8px 20px; color:#000000;">${servicesList}</ul>
+          <h3 style="color:#000000;">CLÁUSULA 3ª - DO PRAZO</h3><p style="color:#000000;">O prazo para execução dos serviços será de <strong>${escapeHtml(deadline)}</strong>.</p>
+          <h3 style="color:#000000;">CLÁUSULA 4ª - DO VALOR E PAGAMENTO</h3><p style="color:#000000;">Valor total de <strong>${value}</strong>. Condições: ${escapeHtml(paymentTerms)}.</p>
+          <h3 style="color:#000000;">CLÁUSULA 5ª - DAS REVISÕES</h3><p style="color:#000000;">Inclusas <strong>${escapeHtml(revisions)} revisão(ões)</strong>.</p>
+          <h3 style="color:#000000;">CLÁUSULA 6ª - DOS DIREITOS AUTORAIS</h3><p style="color:#000000;">Transferidos após quitação integral.</p>
+          <h3 style="color:#000000;">CLÁUSULA 7ª - DO CANCELAMENTO</h3><p style="color:#000000;">Valores pagos não reembolsáveis em caso de cancelamento pelo contratante.</p>
+          ${extraClauses ? `<h3 style="color:#000000;">CLÁUSULAS ADICIONAIS</h3><p style="color:#000000;">${escapeHtml(extraClauses)}</p>` : ''}
+          <h3 style="color:#000000;">CLÁUSULA 8ª - DO FORO</h3><p style="color:#000000;">Foro da comarca do domicílio do CONTRATADO.</p>
+          <div style="margin-top:24px; padding-top:16px; border-top:1px solid #eee; display:grid; grid-template-columns:1fr 1fr; gap:24px; text-align:center;"><div><div style="border-top:1px solid ${primary}; padding-top:6px; margin-top:30px;"><div style="font-weight:600; color:#000000;">${escapeHtml(providerName)}</div><div style="color:#000000; font-size:10px;">CONTRATADO</div></div></div><div><div style="border-top:1px solid ${primary}; padding-top:6px; margin-top:30px;"><div style="font-weight:600; color:#000000;">${escapeHtml(clientName)}</div><div style="color:#000000; font-size:10px;">CONTRATANTE</div></div></div></div>
+        </div>
+      `;
+    }
+
+    // ============================================
+// PDF GENERATION - VERSÃO CORRIGIDA
+// ============================================
+
+async function generateReceiptPDF() {
+  const payer = document.getElementById('rec-payer-name')?.value.trim();
+  const service = document.getElementById('rec-service')?.value.trim();
+  const value = document.getElementById('rec-value')?.value;
+  
+  if (!payer || !service || !value) {
+    showToast('Preencha: pagador, serviço e valor!', 'error');
+    return;
+  }
+
+  updateReceiptPreview();
+  
+  const num = document.getElementById('rec-number')?.value || 'recibo';
+  const content = document.getElementById('receipt-preview').innerHTML;
+  const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2d8a8a';
+  const settings = appState?.settings || {};
+  const providerName = settings.name || 'Prestador';
+  
+  // Criar elemento temporário
+  const element = document.createElement('div');
+  element.innerHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>${num}</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+          font-family: 'Georgia', serif; 
+          background: white; 
+          padding: 40px; 
+          font-size: 11px; 
+          line-height: 1.5; 
+          color: #000000; 
+        }
+        .container { max-width: 680px; margin: 0 auto; background: white; }
+        h2 { font-size: 20px; font-weight: 800; margin: 0; letter-spacing: 1px; color: #000000; }
+        p, div, span { color: #000000; }
+        .receipt-box { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 16px; }
+        .value-box { background: ${primary}15; border-radius: 8px; padding: 12px; }
+        .signature-line { border-top: 1px solid #000000; padding-top: 6px; margin-top: 30px; display: inline-block; min-width: 200px; }
+        .service-text { white-space: pre-wrap; word-wrap: break-word; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        ${content}
+      </div>
+    </body>
+    </html>
+  `;
+  element.style.position = 'absolute';
+  element.style.left = '-9999px';
+  element.style.top = '-9999px';
+  element.style.width = '680px';
+  element.style.backgroundColor = '#ffffff';
+  element.style.padding = '20px';
+  document.body.appendChild(element);
+  
+  try {
+    // Aguardar um pequeno delay para garantir renderização
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      logging: false,
+      useCORS: false,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight
+    });
+    
+    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    const { jsPDF } = window.jspdf;
+    
+    // Calcular dimensões do PDF
+    const pdfWidth = 190; // mm
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    const pdf = new jsPDF({
+      unit: 'mm',
+      format: [pdfWidth, pdfHeight + 20],
+      orientation: 'portrait'
+    });
+    
+    pdf.addImage(imgData, 'JPEG', 10, 10, pdfWidth, pdfHeight);
+    pdf.save(`${num}.pdf`);
+    
+    document.body.removeChild(element);
+    showToast('PDF do recibo gerado com sucesso!', 'success');
+    
+  } catch (err) {
+    console.error('Erro ao gerar PDF:', err);
+    if (document.body.contains(element)) document.body.removeChild(element);
+    showToast('Erro ao gerar PDF: ' + err.message, 'error');
+  }
+}
+
+async function generateContractPDF() {
+  const clientName = document.getElementById('ctr-client-name')?.value.trim();
+  const value = document.getElementById('ctr-value')?.value;
+  
+  if (!clientName || !value) {
+    showToast('Preencha: cliente e valor!', 'error');
+    return;
+  }
+
+  updateContractPreview();
+  
+  const num = document.getElementById('ctr-number')?.value || 'contrato';
+  const content = document.getElementById('contract-preview').innerHTML;
+  const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#2d8a8a';
+  
+  // Criar elemento temporário
+  const element = document.createElement('div');
+  element.innerHTML = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>${num}</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+          font-family: 'Georgia', serif; 
+          background: white; 
+          padding: 40px; 
+          font-size: 11px; 
+          line-height: 1.6; 
+          color: #000000; 
+        }
+        .container { max-width: 680px; margin: 0 auto; background: white; }
+        h2 { font-size: 16px; font-weight: 700; margin: 0 0 8px 0; text-align: center; letter-spacing: 2px; text-transform: uppercase; color: #000000; }
+        h3 { font-size: 12px; font-weight: 700; margin-top: 16px; margin-bottom: 8px; color: #000000; }
+        p, div, span, li { color: #000000; }
+        .info-grid { background: #f8f9fa; border-radius: 8px; padding: 12px; margin: 12px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .signature-box { margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: center; }
+        .signature { border-top: 1px solid ${primary}; padding-top: 6px; margin-top: 30px; }
+        ul { margin: 8px 0 8px 20px; }
+        li { margin-bottom: 4px; }
+        .object-box { background: #f9fafb; padding: 12px; border-radius: 8px; margin: 8px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        ${content}
+      </div>
+    </body>
+    </html>
+  `;
+  element.style.position = 'absolute';
+  element.style.left = '-9999px';
+  element.style.top = '-9999px';
+  element.style.width = '680px';
+  element.style.backgroundColor = '#ffffff';
+  element.style.padding = '20px';
+  document.body.appendChild(element);
+  
+  try {
+    // Aguardar um pequeno delay para garantir renderização
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      logging: false,
+      useCORS: false,
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight
+    });
+    
+    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    const { jsPDF } = window.jspdf;
+    
+    // Calcular dimensões do PDF
+    const pdfWidth = 190; // mm
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    const pdf = new jsPDF({
+      unit: 'mm',
+      format: [pdfWidth, pdfHeight + 20],
+      orientation: 'portrait'
+    });
+    
+    pdf.addImage(imgData, 'JPEG', 10, 10, pdfWidth, pdfHeight);
+    pdf.save(`${num}.pdf`);
+    
+    document.body.removeChild(element);
+    showToast('PDF do contrato gerado com sucesso!', 'success');
+    
+  } catch (err) {
+    console.error('Erro ao gerar PDF:', err);
+    if (document.body.contains(element)) document.body.removeChild(element);
+    showToast('Erro ao gerar PDF: ' + err.message, 'error');
+  }
+}
+
+    // ============================================
+    // SAVE FUNCTIONS
+    // ============================================
+    function saveReceipt() {
+      const payer = document.getElementById('rec-payer-name')?.value.trim();
+      const value = document.getElementById('rec-value')?.value;
+      if (!payer || !value) { showToast('Preencha pagador e valor!', 'error'); return; }
+      const doc = { type: 'receipt', number: document.getElementById('rec-number')?.value, date: document.getElementById('rec-date')?.value, payerName: payer, payerDoc: document.getElementById('rec-payer-doc')?.value, service: document.getElementById('rec-service')?.value, value: parseFloat(value), paymentMethod: document.getElementById('rec-payment-method')?.value, notes: document.getElementById('rec-notes')?.value, createdAt: new Date().toISOString() };
+      documents.push(doc); saveDocuments(); showToast('Recibo salvo!', 'success');
+    }
+
+    function saveContract() {
+      const clientName = document.getElementById('ctr-client-name')?.value.trim();
+      const value = document.getElementById('ctr-value')?.value;
+      if (!clientName || !value) { showToast('Preencha cliente e valor!', 'error'); return; }
+      const doc = { type: 'contract', number: document.getElementById('ctr-number')?.value, date: document.getElementById('ctr-date')?.value, clientName, clientDoc: document.getElementById('ctr-client-doc')?.value, clientAddress: document.getElementById('ctr-client-address')?.value, clientEmail: document.getElementById('ctr-client-email')?.value, object: document.getElementById('ctr-object')?.value, servicesText: document.getElementById('ctr-services-text')?.value, value: parseFloat(value), paymentTerms: document.getElementById('ctr-payment-terms')?.value, deadline: document.getElementById('ctr-deadline')?.value, revisions: parseInt(document.getElementById('ctr-revisions')?.value) || 2, extraClauses: document.getElementById('ctr-extra-clauses')?.value, createdAt: new Date().toISOString() };
+      documents.push(doc); saveDocuments(); showToast('Contrato salvo!', 'success');
+    }
+
+    function clearReceiptForm() {
+      if (!confirm('Limpar formulário?')) return;
+      document.getElementById('rec-budget-select').value = ''; document.getElementById('rec-client-select').value = '';
+      document.getElementById('rec-payer-name').value = ''; document.getElementById('rec-payer-doc').value = '';
+      document.getElementById('rec-service').value = ''; document.getElementById('rec-value').value = '';
+      document.getElementById('rec-notes').value = ''; document.getElementById('rec-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('rec-number').value = generateDocNumber('receipt', null);
+      document.getElementById('rec-payment-method').value = 'PIX';
+      updateReceiptPreview(); showToast('Formulário limpo!', 'info');
+    }
+
+    function clearContractForm() {
+      if (!confirm('Limpar formulário?')) return;
+      document.getElementById('ctr-budget-select').value = ''; document.getElementById('ctr-client-select').value = '';
+      document.getElementById('ctr-client-name').value = ''; document.getElementById('ctr-client-doc').value = '';
+      document.getElementById('ctr-client-address').value = ''; document.getElementById('ctr-client-email').value = '';
+      document.getElementById('ctr-object').value = ''; document.getElementById('ctr-services-text').value = '';
+      document.getElementById('ctr-value').value = ''; document.getElementById('ctr-payment-terms').value = '';
+      document.getElementById('ctr-deadline').value = ''; document.getElementById('ctr-revisions').value = '2';
+      document.getElementById('ctr-extra-clauses').value = ''; document.getElementById('ctr-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('ctr-number').value = generateDocNumber('contract', null);
+      updateContractPreview(); showToast('Formulário limpo!', 'info');
+    }
+
+    // ============================================
+    // HISTORY
+    // ============================================
+    function renderHistory() {
+      const filter = document.getElementById('history-filter')?.value || 'all';
+      const filtered = filter === 'all' ? documents : documents.filter(d => d.type === filter);
+      const list = document.getElementById('history-list');
+      const empty = document.getElementById('history-empty');
+      if (filtered.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+      empty.classList.add('hidden');
+      list.innerHTML = [...filtered].reverse().map((doc, i) => {
+        const isReceipt = doc.type === 'receipt';
+        const title = isReceipt ? `Recibo para ${escapeHtml(doc.payerName || '—')}` : `Contrato com ${escapeHtml(doc.clientName || '—')}`;
+        const subtitle = isReceipt ? escapeHtml(doc.service?.substring(0, 60) || '—') : escapeHtml(doc.object?.substring(0, 60) || '—');
+        const value = (doc.value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const date = doc.date || doc.createdAt?.split('T')[0];
+        const dateStr = fmtDate(date);
+        const idx = documents.length - 1 - i;
+        const icon = isReceipt ? 'fa-receipt' : 'fa-file-contract';
+        const color = isReceipt ? 'text-emerald-600 bg-emerald-50' : 'text-blue-600 bg-blue-50';
+        return `<div class="doc-item bg-white dark:bg-gray-800 rounded-xl border p-4 flex items-center gap-4"><div class="w-10 h-10 rounded-xl ${color} flex items-center justify-center"><i class="fa-solid ${icon} text-sm"></i></div><div class="flex-1"><div class="flex items-center gap-2"><span class="text-sm font-semibold">${title}</span><span class="text-xs text-gray-400">${escapeHtml(doc.number || '—')}</span></div><p class="text-xs text-gray-500 mt-0.5 truncate">${subtitle}</p></div><div class="text-right"><div class="text-sm font-bold text-primary">${value}</div><div class="text-xs text-gray-400">${dateStr}</div></div><button onclick="deleteDocument(${idx})" class="w-8 h-8 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-600 transition-all"><i class="fa-solid fa-trash text-xs"></i></button></div>`;
+      }).join('');
+    }
+
+    function deleteDocument(idx) { if (confirm('Excluir documento?')) { documents.splice(idx, 1); saveDocuments(); renderHistory(); showToast('Documento removido.', 'info'); } }
+
+    // ============================================
+    // TABS & UTILS
+    // ============================================
+    function switchMainTab(name) {
+      ['receipt', 'contract', 'history'].forEach(t => { document.getElementById(`tab-${t}`).classList.add('hidden'); document.getElementById(`main-tab-${t}`).classList.remove('active'); });
+      document.getElementById(`tab-${name}`).classList.remove('hidden'); document.getElementById(`main-tab-${name}`).classList.add('active');
+      if (name === 'history') renderHistory();
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) { document.documentElement.classList.remove('dark'); localStorage.theme = 'light'; }
+      else { document.documentElement.classList.add('dark'); localStorage.theme = 'dark'; }
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const colors = { success: 'bg-emerald-600', error: 'bg-red-600', info: 'bg-blue-600' };
+      const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto px-4 py-3 rounded-xl shadow-xl text-white text-sm flex items-center gap-2 toast-in ${colors[type] || colors.success}`;
+      toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.success}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.replace('toast-in', 'toast-out'); setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    function applySavedTheme() {
+      const savedColors = localStorage.getItem('dbp_theme_colors');
+      if (savedColors) { try { const colors = JSON.parse(savedColors); const root = document.documentElement; if (colors.primary) { root.style.setProperty('--primary', colors.primary); root.style.setProperty('--primary-dark', colors.primaryDark || '#1e5f5f'); root.style.setProperty('--primary-light', colors.primaryLight || '#e6f3f3'); } } catch(e) {} }
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    }
+    applySavedTheme();
+  </script>
+</body>
+</html>
