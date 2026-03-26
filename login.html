@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Designer Budget Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2d8a8a;
+            --primary-dark: #1e5f5f;
+            --primary-light: #e6f3f3;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .login-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .dark .login-card {
+            background: rgba(31, 41, 55, 0.95);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(45, 138, 138, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="w-full max-w-md fade-in">
+        <div class="login-card p-8 shadow-2xl">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-primary text-white flex items-center justify-center text-3xl shadow-lg">
+                    <i class="fa-solid fa-palette"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Designer Budget Pro</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Sistema de Orçamentos e Gestão para Designers</p>
+            </div>
+            
+            <!-- Botões de Login -->
+            <div class="space-y-4">
+                <button onclick="loginWithAuth0()" class="btn-primary w-full py-3 px-4 rounded-xl text-white font-medium flex items-center justify-center gap-3 transition-all">
+                    <i class="fa-brands fa-google text-lg"></i>
+                    Entrar com Google
+                </button>
+                
+                <button onclick="loginWithAuth0()" class="btn-primary w-full py-3 px-4 rounded-xl text-white font-medium flex items-center justify-center gap-3 transition-all">
+                    <i class="fa-brands fa-github text-lg"></i>
+                    Entrar com GitHub
+                </button>
+                
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">ou</span>
+                    </div>
+                </div>
+                
+                <button onclick="loginWithEmail()" class="w-full py-3 px-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium flex items-center justify-center gap-3 hover:border-primary hover:text-primary transition-all">
+                    <i class="fa-regular fa-envelope text-lg"></i>
+                    Entrar com E-mail
+                </button>
+            </div>
+            
+            <!-- Formulário de E-mail (inicialmente oculto) -->
+            <div id="email-login-form" class="hidden mt-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail</label>
+                    <input type="email" id="login-email" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="seu@email.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha</label>
+                    <input type="password" id="login-password" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="••••••">
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="submitEmailLogin()" class="flex-1 bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-all">Entrar</button>
+                    <button onclick="showEmailRegister()" class="flex-1 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-lg hover:bg-gray-300 transition-all">Cadastrar</button>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                <p class="text-xs text-gray-500">
+                    <i class="fa-solid fa-shield-alt text-primary mr-1"></i>
+                    Seus dados são protegidos com Auth0
+                </p>
+                <button onclick="createDemoAccount()" class="mt-3 text-xs text-primary hover:underline">
+                    <i class="fa-solid fa-flask mr-1"></i> Criar conta demo
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mensagem de status -->
+        <div id="status-message" class="fixed bottom-4 right-4 hidden"></div>
+    </div>
+    
+    <script>
+        // ============================================
+        // FUNÇÕES DE LOGIN
+        // ============================================
+        
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('status-message');
+            if (!container) return;
+            
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                info: 'bg-blue-500'
+            };
+            
+            container.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white text-sm ${colors[type]} shadow-lg`;
+            container.innerHTML = message;
+            container.classList.remove('hidden');
+            
+            setTimeout(() => {
+                container.classList.add('hidden');
+            }, 3000);
+        }
+        
+        async function loginWithAuth0() {
+            try {
+                await Auth0.init();
+                Auth0.login();
+            } catch (error) {
+                console.error('Erro ao iniciar Auth0:', error);
+                showToast('Erro ao conectar com Auth0', 'error');
+            }
+        }
+        
+        function loginWithEmail() {
+            const form = document.getElementById('email-login-form');
+            const isHidden = form.classList.contains('hidden');
+            
+            if (isHidden) {
+                form.classList.remove('hidden');
+                form.classList.add('fade-in');
+            } else {
+                form.classList.add('hidden');
+            }
+        }
+        
+        async function submitEmailLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showToast('Preencha e-mail e senha', 'error');
+                return;
+            }
+            
+            // Aqui você pode implementar login com email/senha via Auth0
+            // ou usar o sistema local como fallback
+            showToast('Login com e-mail em desenvolvimento. Use Google ou GitHub.', 'info');
+        }
+        
+        function showEmailRegister() {
+            showToast('Cadastro com e-mail em desenvolvimento. Use Google ou GitHub.', 'info');
+        }
+        
+        async function createDemoAccount() {
+            try {
+                // Criar conta demo local
+                const demoUser = {
+                    userId: 'demo_' + Date.now(),
+                    name: 'Usuário Demo',
+                    email: 'demo@designerbudget.com',
+                    picture: null
+                };
+                
+                localStorage.setItem('dbp_user', JSON.stringify(demoUser));
+                localStorage.setItem('dbp_last_user', demoUser.userId);
+                localStorage.setItem('auth0_access_token', 'demo_token_' + Date.now());
+                
+                showToast('Conta demo criada! Redirecionando...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } catch (error) {
+                showToast('Erro ao criar conta demo', 'error');
+            }
+        }
+        
+        // Verificar se já está logado
+        if (localStorage.getItem('auth0_access_token') && localStorage.getItem('dbp_user')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+    
+    <script src="js/auth/auth0-config.js"></script>
+</body>
+</html>
