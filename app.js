@@ -45,21 +45,26 @@ const app = {
     init() {
     console.log('🚀 Inicializando Designer Budget Pro...');
     
-    // Verificar autenticação
-    const isAuthenticated = localStorage.getItem('auth0_access_token');
-    const userData = localStorage.getItem('dbp_user');
+    // Verificar autenticação com AuthSimple
+    const isAuthenticated = Auth.isAuthenticated();
+    const userData = Auth.getCurrentUser();
     
     if (!isAuthenticated || !userData) {
-        window.location.href = 'login.html';
+        console.log('Usuário não autenticado, redirecionando para login...');
+        // Pequeno delay para evitar loop
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 100);
         return;
     }
     
-    // Carregar dados do usuário
-    const user = JSON.parse(userData);
-    const lastUser = user.userId;
+    console.log('✅ Usuário autenticado:', userData);
     
     // Inicializar gerenciador de tema
     ThemeManager.init();
+    
+    // Carregar dados do usuário
+    const lastUser = userData.userId;
     
     if (lastUser) {
         Store.load(lastUser);
@@ -67,7 +72,8 @@ const app = {
         this.updateUIFromStore();
         
         // Determinar qual view mostrar
-        let initialView = 'dashboard'; // padrão
+        let initialView = 'dashboard';
+        const targetView = localStorage.getItem('dbp_target_view');
         
         if (targetView && ['dashboard', 'budgets', 'clients', 'services', 'settings', 'documents', 'profile'].includes(targetView)) {
             initialView = targetView;
@@ -77,7 +83,7 @@ const app = {
         // Navegar para a view inicial
         this.navigate(initialView);
         
-        // ✅ FORÇAR ATUALIZAÇÃO DO DASHBOARD SE FOR A VIEW INICIAL
+        // Forçar atualização do dashboard
         if (initialView === 'dashboard') {
             setTimeout(() => {
                 this.updateDashboard();
@@ -87,9 +93,6 @@ const app = {
                 this.syncCalculatorWithSettings();
             }, 100);
         }
-    } else {
-        // Nenhum usuário logado, mostrar login
-        this.showLogin();
     }
     
     this.setupNavigation();
@@ -102,14 +105,11 @@ const app = {
     Store.startAutoBackup();
     setInterval(() => this.checkExpiringBudgets(), 3600000);
     
-    // Inicializar calculadoras mesmo sem login (valores padrão)
+    // Inicializar calculadoras
     setTimeout(() => {
         this.calcHourlyRate();
         this.calcProjectPrice();
         if (this.isLoggedIn) {
-            this.renderGoals();
-            this.renderBackupSection();
-            this.updateDashboard();
             this.applySavedThemeIfAny();
             this.syncCalculatorWithSettings();
         }
