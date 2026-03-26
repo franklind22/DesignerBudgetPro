@@ -8,15 +8,15 @@
 // ============================================
 
 const AUTH0_CONFIG = {
-    domain: 'dev-wubvk8jpjm83zr75.us.auth0.com',     // Substitua pelo seu domínio Auth0
-    clientId: 'e3OghAJL1TNIs90G2toGsD1X3sBjggbX',           // Substitua pelo seu Client ID
+    domain: 'dev-wubvk8jpjm83zr75.us.auth0.com',
+    clientId: 'e3OghAJL1TNIs90G2toGsD1X3sBjggbX',
     audience: 'https://designerbudgetpro/api',
     scope: 'openid profile email',
     redirectUri: window.location.origin + '/callback.html'
 };
 
 // ============================================
-// CLASSE DE AUTENTICAÇÃO
+// CLASSE DE AUTENTICAÇÃO AUTH0
 // ============================================
 
 class Auth0Service {
@@ -32,10 +32,8 @@ class Auth0Service {
         if (this.isInitialized) return;
         
         try {
-            // Carregar o SDK do Auth0 dinamicamente
             await this.loadAuth0SDK();
             
-            // Criar instância do cliente Auth0
             this.auth0 = new auth0.WebAuth({
                 domain: AUTH0_CONFIG.domain,
                 clientID: AUTH0_CONFIG.clientId,
@@ -76,10 +74,44 @@ class Auth0Service {
     login() {
         if (!this.isInitialized) {
             console.error('Auth0 não inicializado');
+            this.init().then(() => this.auth0.authorize());
             return;
         }
-        
         this.auth0.authorize();
+    }
+    
+    /**
+     * Login com Google (conexão específica)
+     */
+    loginWithGoogle() {
+        if (!this.isInitialized) {
+            this.init().then(() => {
+                this.auth0.authorize({
+                    connection: 'google-oauth2'
+                });
+            });
+            return;
+        }
+        this.auth0.authorize({
+            connection: 'google-oauth2'
+        });
+    }
+    
+    /**
+     * Login com GitHub
+     */
+    loginWithGitHub() {
+        if (!this.isInitialized) {
+            this.init().then(() => {
+                this.auth0.authorize({
+                    connection: 'github'
+                });
+            });
+            return;
+        }
+        this.auth0.authorize({
+            connection: 'github'
+        });
     }
     
     /**
@@ -113,7 +145,7 @@ class Auth0Service {
                         // Salvar dados do usuário
                         const userData = {
                             userId: profile.sub,
-                            name: profile.name || profile.nickname,
+                            name: profile.name || profile.nickname || profile.email.split('@')[0],
                             email: profile.email,
                             picture: profile.picture,
                             createdAt: new Date().toISOString()
@@ -122,6 +154,7 @@ class Auth0Service {
                         localStorage.setItem('dbp_user', JSON.stringify(userData));
                         localStorage.setItem('dbp_last_user', userData.userId);
                         
+                        console.log('✅ Usuário autenticado:', userData.email);
                         resolve(userData);
                     });
                 } else {
@@ -136,7 +169,19 @@ class Auth0Service {
      */
     isAuthenticated() {
         const token = localStorage.getItem('auth0_access_token');
-        return !!token;
+        if (!token) return false;
+        
+        // Verificar expiração básica (opcional)
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.exp && payload.exp < Date.now() / 1000) {
+                return false;
+            }
+        } catch (e) {
+            // Ignorar erros de parsing
+        }
+        
+        return true;
     }
     
     /**
@@ -157,6 +202,9 @@ class Auth0Service {
      * Realiza logout
      */
     logout() {
+        const user = this.getCurrentUser();
+        console.log('👋 Logout:', user?.email || 'usuário');
+        
         // Limpar dados locais
         localStorage.removeItem('auth0_access_token');
         localStorage.removeItem('auth0_id_token');
@@ -169,17 +217,14 @@ class Auth0Service {
     }
     
     /**
-     * Renova o token automaticamente
+     * Cria usuário demo (apenas para teste - no Auth0 isso é gerenciado pelo dashboard)
      */
-    scheduleTokenRenewal() {
-        // Verificar token a cada 30 minutos
-        setInterval(() => {
-            const token = localStorage.getItem('auth0_access_token');
-            if (token) {
-                // Aqui você pode implementar renovação de token
-                console.log('Verificando token...');
-            }
-        }, 30 * 60 * 1000);
+    createDemoUser() {
+        return new Promise((resolve, reject) => {
+            // No Auth0, não criamos usuários diretamente
+            // O usuário deve se registrar via formulário de cadastro do Auth0
+            reject(new Error('Para criar conta, use o botão "Sign Up" na tela de login do Auth0'));
+        });
     }
 }
 
@@ -189,4 +234,6 @@ const Auth0 = new Auth0Service();
 // Expor globalmente
 if (typeof window !== 'undefined') {
     window.Auth0 = Auth0;
+    // Manter compatibilidade com código existente
+    window.Auth = Auth0;
 }
