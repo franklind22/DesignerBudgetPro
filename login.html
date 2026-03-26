@@ -46,58 +46,50 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Sistema de Orçamentos e Gestão para Designers</p>
             </div>
             
-            <!-- Tabs -->
-            <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
-                <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2 text-sm font-medium border-b-2 border-primary text-primary transition-all">
-                    Entrar
+            <!-- Botões de Login Social -->
+            <div class="space-y-3">
+                <button onclick="loginWithGoogle()" class="w-full py-3 px-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium flex items-center justify-center gap-3 hover:border-primary hover:text-primary transition-all">
+                    <i class="fa-brands fa-google text-lg"></i>
+                    Continuar com Google
                 </button>
-                <button onclick="switchTab('register')" id="tab-register" class="flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-all">
-                    Cadastrar
+                
+                <button onclick="loginWithGitHub()" class="w-full py-3 px-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium flex items-center justify-center gap-3 hover:border-primary hover:text-primary transition-all">
+                    <i class="fa-brands fa-github text-lg"></i>
+                    Continuar com GitHub
                 </button>
             </div>
             
-            <!-- Formulário de Login -->
-            <div id="form-login" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail</label>
-                    <input type="email" id="login-email" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="seu@email.com">
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha</label>
-                    <input type="password" id="login-password" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="••••••">
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white dark:bg-gray-800 text-gray-500">ou</span>
                 </div>
-                <button onclick="submitLogin()" class="w-full btn-primary text-white py-2 rounded-lg font-medium transition-all">Entrar</button>
             </div>
             
-            <!-- Formulário de Cadastro -->
-            <div id="form-register" class="space-y-4 hidden">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome</label>
-                    <input type="text" id="register-name" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Seu nome">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">E-mail</label>
-                    <input type="email" id="register-email" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="seu@email.com">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Senha</label>
-                    <input type="password" id="register-password" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Mínimo 6 caracteres">
-                </div>
-                <button onclick="submitRegister()" class="w-full btn-primary text-white py-2 rounded-lg font-medium transition-all">Criar Conta</button>
-            </div>
+            <!-- Login com E-mail (via Auth0 Universal Login) -->
+            <button onclick="loginWithEmail()" class="w-full py-3 px-4 rounded-xl btn-primary text-white font-medium flex items-center justify-center gap-3">
+                <i class="fa-regular fa-envelope text-lg"></i>
+                Entrar com e-mail
+            </button>
             
-            <!-- Demo -->
-            <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-                <button onclick="createDemoAccount()" class="text-xs text-primary hover:underline">
-                    <i class="fa-solid fa-flask mr-1"></i> Criar conta demo
-                </button>
+            <!-- Footer -->
+            <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+                <p class="text-xs text-gray-500">
+                    <i class="fa-solid fa-shield-alt text-primary mr-1"></i>
+                    Autenticação segura com Auth0
+                </p>
+                <p class="text-xs text-gray-400 mt-2">
+                    Ao continuar, você concorda com nossos Termos de Uso
+                </p>
             </div>
         </div>
         
         <div id="toast-message" class="fixed bottom-4 right-4 hidden px-4 py-2 rounded-lg text-white text-sm shadow-lg"></div>
     </div>
     
-    <script src="js/auth/auth-simple.js"></script>
+    <script src="js/auth/auth0-config.js"></script>
     <script>
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast-message');
@@ -108,85 +100,40 @@
             setTimeout(() => toast.classList.add('hidden'), 3000);
         }
         
-        function switchTab(tab) {
-            const loginForm = document.getElementById('form-login');
-            const registerForm = document.getElementById('form-register');
-            const loginTab = document.getElementById('tab-login');
-            const registerTab = document.getElementById('tab-register');
-            
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden');
-                registerForm.classList.add('hidden');
-                loginTab.classList.add('border-primary', 'text-primary');
-                loginTab.classList.remove('border-transparent', 'text-gray-500');
-                registerTab.classList.remove('border-primary', 'text-primary');
-                registerTab.classList.add('border-transparent', 'text-gray-500');
-            } else {
-                loginForm.classList.add('hidden');
-                registerForm.classList.remove('hidden');
-                registerTab.classList.add('border-primary', 'text-primary');
-                registerTab.classList.remove('border-transparent', 'text-gray-500');
-                loginTab.classList.remove('border-primary', 'text-primary');
-                loginTab.classList.add('border-transparent', 'text-gray-500');
-            }
-        }
-        
-        async function submitLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                showToast('Preencha e-mail e senha', 'error');
-                return;
-            }
-            
+        async function loginWithGoogle() {
             try {
-                const user = await Auth.login(email, password);
-                showToast(`Bem-vindo, ${user.name}!`, 'success');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                await Auth0.init();
+                Auth0.loginWithGoogle();
             } catch (error) {
-                showToast(error.message, 'error');
+                showToast('Erro ao conectar com Auth0', 'error');
+                console.error(error);
             }
         }
         
-        async function submitRegister() {
-            const name = document.getElementById('register-name').value.trim();
-            const email = document.getElementById('register-email').value.trim();
-            const password = document.getElementById('register-password').value;
-            
-            if (!name || !email || !password) {
-                showToast('Preencha todos os campos', 'error');
-                return;
-            }
-            
+        async function loginWithGitHub() {
             try {
-                const user = await Auth.register(email, password, name);
-                showToast(`Conta criada! Bem-vindo, ${user.name}!`, 'success');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                await Auth0.init();
+                Auth0.loginWithGitHub();
             } catch (error) {
-                showToast(error.message, 'error');
+                showToast('Erro ao conectar com Auth0', 'error');
+                console.error(error);
             }
         }
         
-        async function createDemoAccount() {
+        async function loginWithEmail() {
             try {
-                const user = await Auth.createDemoUser();
-                showToast('Conta demo criada! Redirecionando...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                await Auth0.init();
+                Auth0.login();
             } catch (error) {
-                showToast(error.message, 'error');
+                showToast('Erro ao conectar com Auth0', 'error');
+                console.error(error);
             }
         }
         
-        // ✅ NÃO FAZER REDIRECIONAMENTO AUTOMÁTICO AQUI
-        // Apenas se o usuário já estiver logado, redireciona (opcional, mas causa loop)
-        // Removido para evitar loop
+        // Verificar se já está logado (evitar loop)
+        if (Auth0.isAuthenticated() && Auth0.getCurrentUser()) {
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
