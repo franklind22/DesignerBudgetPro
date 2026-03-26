@@ -6,15 +6,9 @@
   <title>Designer Budget Pro</title>
   
     <script>
-    // Verificar autenticação
-    (function checkAuth() {
-        const isAuthenticated = localStorage.getItem('auth0_access_token') && localStorage.getItem('dbp_user');
-        const isDemo = localStorage.getItem('auth0_access_token')?.startsWith('demo_token');
-        
-        if (!isAuthenticated && !isDemo) {
-            window.location.href = 'login.html';
-        }
-    })();
+    // Verificar autenticação apenas UMA VEZ, sem redirecionamento automático
+    // O app.js vai cuidar disso
+    window.isCheckingAuth = true;
 </script>
   
   <!-- Tailwind via CDN -->
