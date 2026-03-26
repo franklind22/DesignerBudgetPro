@@ -8,8 +8,8 @@
 // ============================================
 
 const AUTH0_CONFIG = {
-    domain: 'SEU_DOMINIO.auth0.com',     // Substitua pelo seu domínio Auth0
-    clientId: 'SEU_CLIENT_ID',           // Substitua pelo seu Client ID
+    domain: 'dev-wubvk8jpjm83zr75.us.auth0.com',     // Substitua pelo seu domínio Auth0
+    clientId: 'e3OghAJL1TNIs90G2toGsD1X3sBjggbX',           // Substitua pelo seu Client ID
     audience: 'https://designerbudgetpro/api',
     scope: 'openid profile email',
     redirectUri: window.location.origin + '/callback.html'
