@@ -45,54 +45,65 @@ const app = {
     init() {
     console.log('🚀 Inicializando Designer Budget Pro...');
     
-    // Verificar autenticação com AuthSimple
-    const isAuthenticated = Auth.isAuthenticated();
-    const userData = Auth.getCurrentUser();
+    // Verificar autenticação com Auth0
+    const isAuthenticated = Auth0.isAuthenticated();
+    const userData = Auth0.getCurrentUser();
     
     if (!isAuthenticated || !userData) {
-        console.log('Usuário não autenticado, redirecionando para login...');
-        // Pequeno delay para evitar loop
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 100);
+        console.log('❌ Usuário não autenticado, redirecionando para login...');
+        // Prevenir loop com flag
+        if (!sessionStorage.getItem('redirecting')) {
+            sessionStorage.setItem('redirecting', 'true');
+            setTimeout(() => {
+                sessionStorage.removeItem('redirecting');
+                window.location.href = 'login.html';
+            }, 100);
+        }
         return;
     }
     
-    console.log('✅ Usuário autenticado:', userData);
+    sessionStorage.removeItem('redirecting');
+    console.log('✅ Usuário autenticado:', userData.email);
     
     // Inicializar gerenciador de tema
     ThemeManager.init();
     
-    // Carregar dados do usuário
-    const lastUser = userData.userId;
+    // Carregar dados do Store usando userId do Auth0
+    const userId = userData.userId;
     
-    if (lastUser) {
-        Store.load(lastUser);
-        this.isLoggedIn = true;
-        this.updateUIFromStore();
-        
-        // Determinar qual view mostrar
-        let initialView = 'dashboard';
-        const targetView = localStorage.getItem('dbp_target_view');
-        
-        if (targetView && ['dashboard', 'budgets', 'clients', 'services', 'settings', 'documents', 'profile'].includes(targetView)) {
-            initialView = targetView;
-            localStorage.removeItem('dbp_target_view');
-        }
-        
-        // Navegar para a view inicial
-        this.navigate(initialView);
-        
-        // Forçar atualização do dashboard
-        if (initialView === 'dashboard') {
-            setTimeout(() => {
-                this.updateDashboard();
-                this.renderGoals();
-                this.renderBackupSection();
-                this.updateAboutStats();
-                this.syncCalculatorWithSettings();
-            }, 100);
-        }
+    Store.load(userId);
+    this.isLoggedIn = true;
+    
+    // Atualizar nome do usuário no Store se não existir
+    if (!Store.state.settings.name) {
+        Store.state.settings.name = userData.name;
+        Store.state.settings.email = userData.email;
+        Store.save();
+    }
+    
+    this.updateUIFromStore();
+    
+    // Determinar qual view mostrar
+    let initialView = 'dashboard';
+    const targetView = localStorage.getItem('dbp_target_view');
+    
+    if (targetView && ['dashboard', 'budgets', 'clients', 'services', 'settings', 'documents', 'profile'].includes(targetView)) {
+        initialView = targetView;
+        localStorage.removeItem('dbp_target_view');
+    }
+    
+    // Navegar para a view inicial
+    this.navigate(initialView);
+    
+    // Forçar atualização do dashboard
+    if (initialView === 'dashboard') {
+        setTimeout(() => {
+            this.updateDashboard();
+            this.renderGoals();
+            this.renderBackupSection();
+            this.updateAboutStats();
+            this.syncCalculatorWithSettings();
+        }, 100);
     }
     
     this.setupNavigation();
